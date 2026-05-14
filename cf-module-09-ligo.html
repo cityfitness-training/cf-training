@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>CF Training | Module 09: LIGO Objections</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:ital,wght@0,400;0,500;0,600;1,400;1,600&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg: #111210;
+  --surface: #181714;
+  --card: #1e1c18;
+  --border: #2a2724;
+  --border-light: #363330;
+  --copper: #B87C4C;
+  --copper-light: #C9A07A;
+  --copper-dim: rgba(184,124,76,0.12);
+  --copper-glow: rgba(184,124,76,0.05);
+  --tan: #BF9B6F;
+  --white: #F0EDE8;
+  --grey: #6e7068;
+  --dim: #909288;
+  --red: #c0392b;
+  --red-dim: rgba(192,57,43,0.08);
+  --green: #4a9a60;
+  --green-dim: rgba(74,154,96,0.1);
+  --gold: #c4a44a;
+  --gold-dim: rgba(196,164,74,0.1);
+  --grad: linear-gradient(135deg, #B87C4C 0%, #C9A07A 100%);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--white);font-family:'Barlow',sans-serif;line-height:1.65;overflow-x:hidden;}
+
+.top-bar{position:fixed;top:0;left:0;right:0;height:3px;background:var(--border);z-index:9999;}
+.top-bar-fill{height:100%;background:var(--grad);width:0%;transition:width .3s ease;}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:80px 60px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 50% 70% at 80% 50%, rgba(192,57,43,0.04) 0%, transparent 70%);}
+.hero-eyebrow{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--copper);letter-spacing:4px;text-transform:uppercase;margin-bottom:18px;display:flex;align-items:center;gap:12px;position:relative;z-index:1;}
+.hero-eyebrow::before{content:'';display:block;width:32px;height:2px;background:var(--copper);}
+.hero-title{font-family:'Barlow Condensed',sans-serif;font-size:clamp(52px,8vw,100px);font-weight:900;line-height:.88;text-transform:uppercase;letter-spacing:-2px;margin-bottom:22px;max-width:700px;position:relative;z-index:1;}
+.hero-title em{font-style:normal;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.ligo-pills{display:flex;gap:6px;margin-bottom:28px;position:relative;z-index:1;flex-wrap:wrap;}
+.ligo-pill{padding:10px 18px;border-radius:6px;display:flex;flex-direction:column;align-items:center;gap:3px;background:var(--surface);border:1px solid var(--border);}
+.ligo-letter{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;color:var(--copper);line-height:1;}
+.ligo-word{font-size:10px;color:var(--grey);letter-spacing:1px;text-transform:uppercase;}
+.hero-desc{font-size:16px;color:var(--dim);line-height:1.75;margin-bottom:36px;max-width:580px;position:relative;z-index:1;}
+.hero-stats{display:flex;gap:36px;margin-bottom:44px;position:relative;z-index:1;}
+.stat{display:flex;flex-direction:column;}
+.stat-num{font-family:'Barlow Condensed',sans-serif;font-size:34px;font-weight:900;color:var(--copper);line-height:1;}
+.stat-label{font-size:11px;color:var(--grey);text-transform:uppercase;letter-spacing:2px;margin-top:3px;}
+.hero-btn{display:inline-flex;align-items:center;gap:10px;background:var(--grad);border:none;padding:16px 32px;color:white;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;letter-spacing:2px;text-transform:uppercase;border-radius:4px;cursor:pointer;transition:.2s;position:relative;z-index:1;}
+.hero-btn:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(184,124,76,0.3);}
+
+/* LAYOUT */
+.module-wrap{max-width:900px;margin:0 auto;padding:0 40px 120px;}
+.section-header{padding:70px 0 36px;}
+.s-eyebrow{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--copper);letter-spacing:4px;text-transform:uppercase;display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+.s-eyebrow::after{content:'';width:48px;height:1px;background:var(--copper);opacity:.4;}
+.s-title{font-family:'Barlow Condensed',sans-serif;font-size:clamp(30px,5vw,46px);font-weight:900;text-transform:uppercase;letter-spacing:-.5px;line-height:1.05;margin-bottom:10px;}
+.s-sub{font-size:16px;color:var(--dim);max-width:680px;line-height:1.6;}
+
+/* LESSONS */
+.lesson-grid{display:flex;flex-direction:column;gap:2px;}
+.lesson-card{background:var(--surface);border:1px solid var(--border);overflow:hidden;}
+.lesson-card:first-child{border-radius:10px 10px 0 0;}
+.lesson-card:last-child{border-radius:0 0 10px 10px;}
+.lesson-header{display:flex;align-items:center;gap:20px;padding:20px 26px;cursor:pointer;user-select:none;transition:.15s;}
+.lesson-header:hover{background:var(--copper-glow);}
+.lesson-num{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--copper);letter-spacing:2px;min-width:34px;}
+.lesson-title-text{font-size:16px;font-weight:700;flex:1;}
+.lesson-tag{font-size:10px;font-weight:700;color:var(--copper);background:var(--copper-dim);padding:4px 10px;border-radius:20px;text-transform:uppercase;letter-spacing:1px;white-space:nowrap;}
+.lesson-arrow{color:var(--grey);font-size:11px;transition:.3s;font-style:normal;}
+.lesson-card.open .lesson-arrow{transform:rotate(180deg);color:var(--copper);}
+.lesson-card.open .lesson-header{border-bottom:1px solid var(--border);}
+.lesson-body{display:none;padding:28px 26px 26px;}
+.lesson-card.open .lesson-body{display:block;}
+.lesson-body p{color:var(--dim);font-size:15px;line-height:1.75;margin-bottom:14px;}
+.lesson-body p:last-child{margin-bottom:0;}
+.lesson-body strong{color:var(--white);font-weight:700;}
+.lesson-body em{color:var(--tan);font-style:italic;}
+
+/* CALLOUTS */
+.callout{border-radius:8px;padding:18px 22px;margin:18px 0;font-size:15px;line-height:1.65;}
+.callout-rule{border-left:3px solid var(--copper);background:var(--copper-dim);color:var(--copper-light);}
+.callout-script{border-left:3px solid var(--tan);background:rgba(191,155,111,0.07);color:var(--tan);font-style:italic;}
+.callout-warn{border-left:3px solid var(--red);background:var(--red-dim);color:#d97060;}
+.callout-tip{border-left:3px solid var(--green);background:var(--green-dim);color:#7ac09a;}
+.callout-gold{border-left:3px solid var(--gold);background:var(--gold-dim);color:#d4b870;}
+.callout-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:3px;text-transform:uppercase;margin-bottom:7px;opacity:.7;display:block;}
+
+/* LIGO LETTER CARDS */
+.ligo-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:24px;display:grid;grid-template-columns:60px 1fr;gap:20px;align-items:start;margin:10px 0;}
+.ligo-big-letter{font-family:'Barlow Condensed',sans-serif;font-size:64px;font-weight:900;color:var(--copper);line-height:1;opacity:.4;}
+.ligo-content{}
+.ligo-name{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--copper);margin-bottom:8px;}
+.ligo-desc{font-size:15px;color:var(--dim);line-height:1.65;margin-bottom:10px;}
+.ligo-desc strong{color:var(--white);}
+.ligo-script{font-size:14px;color:var(--tan);font-style:italic;padding:12px 16px;background:rgba(191,155,111,0.06);border-radius:6px;line-height:1.6;}
+.ligo-trap{font-size:13px;color:#d97060;padding:10px 14px;background:var(--red-dim);border-radius:6px;margin-top:8px;line-height:1.55;}
+.ligo-trap::before{content:'AVOID: ';font-weight:800;letter-spacing:1px;}
+
+/* OBJECTION CARDS */
+.objection-set{background:var(--surface);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin:18px 0;}
+.objection-header{padding:16px 22px;background:var(--copper-dim);border-bottom:1px solid rgba(184,124,76,0.15);}
+.objection-name{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--copper);}
+.objection-quote{font-size:15px;font-style:italic;color:var(--tan);margin-top:4px;}
+.objection-body{padding:22px;}
+.obj-what{font-size:14px;color:var(--dim);margin-bottom:16px;line-height:1.6;}
+.obj-what strong{color:var(--white);}
+
+/* DIALOGUE */
+.dialogue-block{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:22px;margin:12px 0;}
+.dialogue-title{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--copper);letter-spacing:3px;text-transform:uppercase;margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+.line{display:flex;gap:14px;margin-bottom:14px;align-items:flex-start;}
+.line:last-child{margin-bottom:0;}
+.speaker{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;min-width:90px;padding-top:3px;}
+.speaker.prospect{color:var(--grey);}
+.speaker.consultant{color:var(--copper);}
+.speaker.step{color:var(--gold);}
+.speaker.action{color:rgba(191,155,111,0.5);}
+.line-text{font-size:15px;color:var(--dim);line-height:1.65;}
+.line-text em{color:var(--white);font-style:normal;font-weight:600;}
+.line-text.step-text{color:rgba(196,164,74,0.7);font-size:13px;font-style:italic;}
+.line-text.action-text{color:rgba(191,155,111,0.45);font-size:13px;font-style:italic;}
+
+/* MIND MAP */
+.mind-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0;}
+.mind-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:16px 18px;}
+.mind-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;}
+.mind-text{font-size:14px;color:var(--dim);line-height:1.55;}
+.mind-text strong{color:var(--white);}
+
+/* MISTAKES */
+.mistakes-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px;}
+.mistake-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:18px;}
+.mistake-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:3px;text-transform:uppercase;margin-bottom:8px;}
+.mistake-label.bad{color:var(--red);}
+.mistake-label.good{color:var(--green);}
+.mistake-text{font-size:14px;line-height:1.6;color:var(--dim);}
+.mistake-text strong{color:var(--white);}
+
+/* ROLEPLAY */
+.roleplay-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:14px;}
+.roleplay-header{padding:18px 22px;background:var(--copper-dim);display:flex;justify-content:space-between;align-items:center;}
+.roleplay-scenario{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--copper);}
+.roleplay-type{font-size:11px;color:var(--grey);}
+.roleplay-body{padding:22px;}
+.roleplay-setup{font-size:15px;font-style:italic;color:var(--tan);margin-bottom:14px;padding:12px 16px;background:rgba(191,155,111,0.06);border-radius:6px;line-height:1.6;}
+.roleplay-objective{font-size:14px;color:var(--dim);line-height:1.6;}
+.roleplay-objective strong{color:var(--white);}
+.coaching-note{margin-top:12px;padding:12px 16px;background:rgba(184,124,76,0.07);border-radius:6px;font-size:13px;color:var(--copper-light);line-height:1.6;}
+.coaching-note::before{content:'COACHING NOTE  ';font-weight:800;letter-spacing:2px;font-size:10px;display:block;margin-bottom:3px;opacity:.7;}
+
+/* DIVIDER */
+.divider-label{display:flex;align-items:center;gap:16px;color:var(--grey);font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin:56px 0 30px;}
+.divider-label::before,.divider-label::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* STUDY BANNER */
+.study-complete-banner{background:var(--copper-dim);border:1px solid rgba(184,124,76,0.3);border-radius:12px;padding:28px;text-align:center;margin:36px 0;display:none;}
+.study-complete-banner h3{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;color:var(--copper);margin-bottom:6px;}
+.study-complete-banner p{color:var(--dim);font-size:14px;margin-bottom:18px;}
+
+/* QUIZ */
+.quiz-section{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-top:36px;}
+.quiz-locked{padding:56px 40px;text-align:center;}
+.quiz-locked-icon{font-size:36px;margin-bottom:14px;opacity:.3;}
+.quiz-locked h3{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;text-transform:uppercase;color:var(--grey);margin-bottom:6px;}
+.quiz-locked p{color:var(--grey);font-size:14px;}
+.quiz-active{padding:38px;}
+.q-progress-wrap{height:3px;background:var(--border);border-radius:2px;margin-bottom:28px;overflow:hidden;}
+.q-progress-bar{height:100%;background:var(--grad);width:0%;transition:.4s;}
+.q-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;}
+.q-counter{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--copper);letter-spacing:2px;text-transform:uppercase;}
+.q-topic{font-size:11px;color:var(--grey);}
+.q-text{font-size:20px;font-weight:700;color:var(--white);margin-bottom:26px;line-height:1.4;}
+.q-options{display:flex;flex-direction:column;gap:9px;}
+.q-opt{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:15px 18px;color:var(--dim);font-size:15px;text-align:left;cursor:pointer;transition:.2s;font-family:'Barlow',sans-serif;}
+.q-opt:hover{border-color:var(--copper);color:var(--white);background:var(--copper-glow);}
+.name-panel{padding:38px;}
+.name-panel h3{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;color:var(--white);margin-bottom:5px;}
+.name-panel p{color:var(--dim);font-size:14px;margin-bottom:22px;}
+.cf-input{background:var(--bg);border:1px solid var(--border);color:var(--white);padding:13px 16px;width:100%;border-radius:8px;font-family:'Barlow',sans-serif;font-size:16px;margin-bottom:14px;outline:none;transition:.2s;}
+.cf-input:focus{border-color:var(--copper);}
+.cf-btn{background:var(--grad);border:none;padding:15px 28px;color:white;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;letter-spacing:2px;text-transform:uppercase;border-radius:8px;cursor:pointer;width:100%;transition:.2s;}
+.cf-btn:hover{opacity:.9;transform:translateY(-1px);}
+.results-panel{padding:38px;display:none;}
+.result-score{font-family:'Barlow Condensed',sans-serif;font-size:70px;font-weight:900;line-height:1;margin-bottom:6px;}
+.result-pass{color:var(--copper);}
+.result-fail{color:var(--red);}
+.result-label{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--grey);margin-bottom:22px;}
+.missed-label{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--dim);letter-spacing:3px;text-transform:uppercase;margin-bottom:10px;margin-top:22px;}
+.missed-item{background:rgba(192,57,43,0.07);border-left:3px solid var(--red);border-radius:0 6px 6px 0;padding:13px 15px;margin-bottom:7px;}
+.missed-q{font-size:14px;color:var(--dim);margin-bottom:5px;}
+.missed-a{font-size:14px;color:var(--tan);font-weight:600;}
+
+.module-footer{text-align:center;padding:50px 40px;border-top:1px solid var(--border);}
+.module-footer p{color:var(--grey);font-size:11px;letter-spacing:3px;text-transform:uppercase;}
+
+@media(max-width:700px){
+  .hero{padding:80px 24px 50px;}
+  .module-wrap{padding:0 20px 80px;}
+  .ligo-card{grid-template-columns:1fr;}
+  .mind-grid{grid-template-columns:1fr;}
+  .mistakes-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar"><div class="top-bar-fill" id="topFill"></div></div>
+
+<section class="hero">
+  <div class="hero-eyebrow">City Fitness Training · Deep Module Series</div>
+  <h1 class="hero-title">LIGO<br><em>Objections.</em></h1>
+  <div class="ligo-pills">
+    <div class="ligo-pill"><span class="ligo-letter">L</span><span class="ligo-word">Listen</span></div>
+    <div class="ligo-pill"><span class="ligo-letter">I</span><span class="ligo-word">Identify</span></div>
+    <div class="ligo-pill"><span class="ligo-letter">G</span><span class="ligo-word">Give Permission</span></div>
+    <div class="ligo-pill"><span class="ligo-letter">O</span><span class="ligo-word">Offer Alternative</span></div>
+  </div>
+  <p class="hero-desc">Objections are not rejections. They are requests — for more information, for reassurance, for permission to say yes. LIGO is the framework that turns every hesitation into an opportunity for deeper connection. Master this and you will never lose a close to an objection that could have been handled.</p>
+  <div class="hero-stats">
+    <div class="stat"><span class="stat-num">8</span><span class="stat-label">Core Lessons</span></div>
+    <div class="stat"><span class="stat-num">6</span><span class="stat-label">Full Objection Scripts</span></div>
+    <div class="stat"><span class="stat-num">4</span><span class="stat-label">Role-Play Scenarios</span></div>
+    <div class="stat"><span class="stat-num">16</span><span class="stat-label">Quiz Questions</span></div>
+  </div>
+  <button class="hero-btn" onclick="document.getElementById('lessons').scrollIntoView({behavior:'smooth'})">Begin Training ↓</button>
+</section>
+
+<div class="module-wrap">
+
+  <div class="section-header" style="padding-top:50px;">
+    <div class="s-eyebrow">The Reframe</div>
+    <h2 class="s-title">An Objection Is Not a No.<br>It Is a Request.</h2>
+    <p class="s-sub">When a guest says "I want to think about it" or "I need to talk to my partner," they are almost never saying no. They are saying: <strong style="color:var(--white);">"I have a concern I haven't voiced yet"</strong> or <strong style="color:var(--white);">"I need reassurance that this is the right decision."</strong> LIGO is how you hear what they are actually saying — and help them through it.</p>
+  </div>
+
+  <div class="callout callout-rule">
+    <div class="callout-label">The Core Truth About Objections</div>
+    Most objections are not about the thing they appear to be about. "I need to think about it" is rarely about needing more time — it is about being unsure of something specific that they cannot yet articulate. Your job through LIGO is to find that thing, name it, and resolve it. The objection is the door. LIGO is the key.
+  </div>
+
+  <div class="section-header" id="lessons">
+    <div class="s-eyebrow">Core Lessons</div>
+    <h2 class="s-title">8 Lessons to Handle<br>Every Objection</h2>
+    <p class="s-sub">Open all 8 lessons in order. Certification unlocks when you finish.</p>
+  </div>
+
+  <div class="lesson-grid" id="lessonGrid">
+
+    <!-- L1 -->
+    <div class="lesson-card" data-lesson="1">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">01</span>
+        <span class="lesson-title-text">The Mental Landscape of the Prospect — Why They Hesitate</span>
+        <span class="lesson-tag">Foundation</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>Before you can handle an objection skillfully, you need to understand what is happening in the guest's mind at the moment of hesitation. They just said yes to HACCL. They watched you walk through the price. You asked for the sale. And now something stopped them.</p>
+        <p>That something is almost never the price itself — even when they say it is. Here is what is actually flooding their mind in that moment:</p>
+        <div class="mind-grid">
+          <div class="mind-card">
+            <div class="mind-label">The Practical Flood</div>
+            <div class="mind-text">Do I need new shoes and gym clothes? Can I fit workouts into my schedule before or after work? What does this do to our family budget? Who walks the dog while I'm here?</div>
+          </div>
+          <div class="mind-card">
+            <div class="mind-label">The Fear of Failure</div>
+            <div class="mind-text">What if I start and stop again? I've joined gyms before and never used them. I don't want to waste the money. What if nothing changes this time?</div>
+          </div>
+          <div class="mind-card">
+            <div class="mind-label">The Social Consideration</div>
+            <div class="mind-text">Should I talk to my partner about this? Will they think this is a good use of money? What if they want to join too — is that double the cost?</div>
+          </div>
+          <div class="mind-card">
+            <div class="mind-label">The Change Resistance</div>
+            <div class="mind-text">Is now the right time? Maybe I should wait until after the holidays. Maybe I should try working out at home first. Maybe I'm not ready.</div>
+          </div>
+        </div>
+        <p>When all of this floods someone's mind at once, it surfaces as a single, simple sentence: <em>"I want to think about it."</em> That sentence is not a description of their real concern — it is a lid on top of it. LIGO lifts the lid.</p>
+        <div class="callout callout-gold">
+          <div class="callout-label">The Empathy Advantage</div>
+          Understanding this mental landscape is what allows you to identify with genuine empathy rather than defensive pushback. The guest is not being difficult. They are being human. The moment you see their hesitation through that lens, your entire approach changes — and so does their response to you.
+        </div>
+      </div>
+    </div>
+
+    <!-- L2 -->
+    <div class="lesson-card" data-lesson="2">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">02</span>
+        <span class="lesson-title-text">True vs. False Objections — Knowing the Difference</span>
+        <span class="lesson-tag">Diagnosis</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>Not all objections are equal. Some are genuine barriers. Most are surface-level hesitations that dissolve when handled with empathy and logic. Knowing the difference determines how you respond.</p>
+        <p><strong>False Objections</strong> — the most common — are the ones that sound like reasons but are really expressions of uncertainty or discomfort with the commitment. "I want to think about it." "I need to talk to my partner." "I want to shop around." These are not real barriers. They are delays driven by anxiety about change. LIGO handles these every time.</p>
+        <p><strong>True Objections</strong> are rare and genuinely limiting: "I cannot afford it" (real budget constraint, not discomfort), "I have a medical condition that prevents me from joining right now," "I am moving out of the city next month." These require a different conversation — acknowledgment, honest assessment, and sometimes a genuine recommendation to return when circumstances change.</p>
+        <div class="callout callout-rule">
+          <div class="callout-label">How to Tell the Difference</div>
+          Ask yourself: if this concern were fully resolved, would they join today? If yes — it is a false objection and LIGO is your tool. If no — it is a true objection and honesty is your tool. Trying to LIGO a true objection feels manipulative because it is. But most objections you encounter will be false ones.
+        </div>
+        <div class="callout callout-tip">
+          <div class="callout-label">The Most Important Skill</div>
+          The ability to diagnose quickly — false or true — before choosing your response separates good objection handlers from great ones. A great consultant does not apply the same formula to every objection. They read the guest first.
+        </div>
+      </div>
+    </div>
+
+    <!-- L3 -->
+    <div class="lesson-card" data-lesson="3">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">03</span>
+        <span class="lesson-title-text">L — Listen: Silent in Voice and Mind</span>
+        <span class="lesson-tag">Letter L</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>The first step of LIGO sounds obvious. It is not. Most salespeople think they listen to objections — what they actually do is hear the first few words and immediately start formulating their rebuttal. That is not listening. That is waiting to speak.</p>
+        <p>True listening in LIGO means two things: silent audibly AND silent in your thoughts. You do not interrupt. You do not begin constructing your response. You absorb everything they say completely — including the pauses, the uncertainty in their voice, the specific words they choose. All of it is information.</p>
+        <div class="ligo-card">
+          <div class="ligo-big-letter">L</div>
+          <div class="ligo-content">
+            <div class="ligo-name">Listen — Fully and Completely</div>
+            <div class="ligo-desc">Let the prospect voice their concern entirely without interruption. The moment you speak over them, you signal that you already know what they are going to say — and that signal kills trust instantly.</div>
+            <div class="ligo-script">"[Guest begins objecting. Consultant says nothing. Maintains calm, warm eye contact. Nods slightly. Does not rush to speak. Allows complete silence after they finish.]"</div>
+            <div class="ligo-trap">"So you want to think about it? What's there to think about?" — This is argumentative and dismissive. Never interrupt or challenge the objection before fully hearing it.</div>
+          </div>
+        </div>
+        <div class="callout callout-rule">
+          <div class="callout-label">The Hidden Objection Rule</div>
+          Buried inside almost every surface objection is the real one — but it only comes out if you give it space. Interrupting before they finish means you react to the surface and miss what is underneath. Wait for the full statement. Sometimes the real concern only emerges in the last sentence.
+        </div>
+      </div>
+    </div>
+
+    <!-- L4 -->
+    <div class="lesson-card" data-lesson="4">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">04</span>
+        <span class="lesson-title-text">I — Identify: Empathize and Confirm</span>
+        <span class="lesson-tag">Letter I</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>After listening completely, you identify with their position — you show them that you understand not just what they said, but how they feel about it. This is the empathy step. It is not agreement with the objection. It is acknowledgment of the person behind it.</p>
+        <p>Two things happen here: you share a relatable scenario that positions you on their side, and then you confirm that you understood correctly. The confirmation question — "Is that how you're feeling?" or "Am I hearing you right?" — does something powerful: it forces them to say yes to your empathetic framing, which builds agreement before you have said anything about the membership.</p>
+        <div class="ligo-card">
+          <div class="ligo-big-letter">I</div>
+          <div class="ligo-content">
+            <div class="ligo-name">Identify — Empathize and Confirm</div>
+            <div class="ligo-desc">Show a willingness to understand their position. Share a scenario that mirrors their feeling. Confirm you are on the same page. The goal is for them to say "yes, exactly" — you have just built your first agreement inside the objection handling.</div>
+            <div class="ligo-script">Example (for "I want to think about it"): "I hear you — and honestly, if I were in your position, I'd probably want to do the same. When you're faced with a new commitment, especially one that costs real money and takes real time, it makes complete sense to pause and really ask yourself: is this the right time, is this the right place, am I doing this for the right reasons. Is that kind of where your head is at right now?"</div>
+            <div class="ligo-trap">"I get that, but..." — jumping straight to your alternative before confirming you understood. "But" erases everything that came before it and signals you were not really listening.</div>
+          </div>
+        </div>
+        <div class="callout callout-warn">
+          <div class="callout-label">Be Genuine — They Will Know If You Are Not</div>
+          The Identify step only works if it is authentic. If your empathy sounds scripted or mechanical, the guest will disengage completely. Before you speak, actually take a moment to consider their position. What would it feel like to be in their shoes right now? Let that genuine consideration show in your voice and your words.
+        </div>
+      </div>
+    </div>
+
+    <!-- L5 -->
+    <div class="lesson-card" data-lesson="5">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">05</span>
+        <span class="lesson-title-text">G — Give Permission: Agree and Disarm</span>
+        <span class="lesson-tag">Letter G</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>This is the step that surprises people. After identifying with their position, you agree with it. You tell them it is completely reasonable to feel the way they do. You give them explicit permission to feel that way.</p>
+        <p>Why does this work? Because a guest who raises an objection is braced for pushback. They expect you to argue. They have already prepared their defense. When you instead agree with their position, you do the one thing they did not anticipate — and it disarms them completely. The guard they raised drops, because there is nothing left to defend against.</p>
+        <div class="ligo-card">
+          <div class="ligo-big-letter">G</div>
+          <div class="ligo-content">
+            <div class="ligo-name">Give Permission — Agree and Disarm</div>
+            <div class="ligo-desc">Explicitly agree with their feeling and give them permission to hold it. This is counterintuitive — which is exactly why it works. They expected an argument. You gave them understanding. Then you ask if you can offer a different way to look at it.</div>
+            <div class="ligo-script">"I completely understand — and I think that's actually a really healthy instinct. A commitment like this deserves serious thought. I'm glad you're taking it seriously. I would just love to share maybe a different way of looking at it, if that's okay with you?"</div>
+            <div class="ligo-trap">"I understand, BUT here's why you should join anyway..." — The word "but" signals you did not really give permission. It was a setup. They feel it immediately.</div>
+          </div>
+        </div>
+        <div class="callout callout-rule">
+          <div class="callout-label">The Psychology of Disarmament</div>
+          After Give Permission, ask: "Would you be open to looking at it a different way?" or "Can I share something that might help?" This question does two things: it asks for consent before you offer your alternative — which respects their autonomy — and it gets one more yes before you pivot. That yes is important.
+        </div>
+      </div>
+    </div>
+
+    <!-- L6 -->
+    <div class="lesson-card" data-lesson="6">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">06</span>
+        <span class="lesson-title-text">O — Offer Alternative: Pivot Back to the X-Factor</span>
+        <span class="lesson-tag">Letter O</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>This is where you influence a different decision. Not by arguing that their objection was wrong. Not by defending the price. By reconnecting them to everything they told you they wanted — and showing how the decision to join today is the decision that actually serves those goals.</p>
+        <p>The Offer Alternative should always be rooted in two things: their X-Factor and their stated frequency commitments from B+F. You are not making a new argument. You are returning them to the conversation they had with themselves earlier — and asking them to honor it.</p>
+        <div class="ligo-card">
+          <div class="ligo-big-letter">O</div>
+          <div class="ligo-content">
+            <div class="ligo-name">Offer Alternative — Reconnect and Pivot</div>
+            <div class="ligo-desc">Pivot from their stated objection back to their stated goals. Use their exact language. Connect the decision to join today to the life they described wanting. Then ask for the sale again — directly.</div>
+            <div class="ligo-script">Example (for "I want to think about it"): "I can see how much thought and intention you're bringing to this decision — that really says something about how seriously you're taking your health. And I want to make sure that intention has somewhere to go. You told me that you want to feel like yourself again. That you want to have energy for your kids. Everything you said you'd use here — the pool, the recovery suite, the classes — is waiting for you. The only question I'd ask is: what's going to change between now and whenever you decide? And is waiting going to make that easier or harder?" Then: "So — debit or credit?"</div>
+          </div>
+        </div>
+        <div class="callout callout-tip">
+          <div class="callout-label">Always Re-Ask for the Sale</div>
+          After the Offer Alternative, you must ask for the sale again. LIGO is not complete until you re-close. This is the step most consultants skip — they apply LIGO beautifully and then wait for the guest to volunteer a decision. They will not. You must ask again: "So, [Name] — debit or credit?"
+        </div>
+        <div class="callout callout-warn">
+          <div class="callout-label">Do Not Argue the Objection</div>
+          "But the price really is fair when you consider..." or "That's not really a good enough reason to wait..." are arguments. Arguments create defensiveness and lose sales. The Offer Alternative does not argue with the objection — it redirects the conversation entirely. Never meet resistance with resistance.
+        </div>
+      </div>
+    </div>
+
+    <!-- L7 -->
+    <div class="lesson-card" data-lesson="7">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">07</span>
+        <span class="lesson-title-text">The Most Common Objections — Handled in Full</span>
+        <span class="lesson-tag">Complete Scripts</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>These are the four objections you will hear most often. Each one has a complete LIGO dialogue — every step, in the right sequence, with the exact language that works.</p>
+
+        <!-- OBJECTION 1 -->
+        <div class="objection-set">
+          <div class="objection-header">
+            <div class="objection-name">Objection 01</div>
+            <div class="objection-quote">"I want to think about it."</div>
+          </div>
+          <div class="objection-body">
+            <div class="obj-what"><strong>What it usually means:</strong> "I'm unsure about something specific and I don't know what it is yet." Or: "I've made this decision before and it hasn't worked out — I'm scared to fail again."</div>
+            <div class="dialogue-block">
+              <div class="dialogue-title">Full LIGO — "I want to think about it"</div>
+              <div class="line"><span class="speaker prospect">Guest</span><span class="line-text">"I think I want to take a few days to think about it."</span></div>
+              <div class="line"><span class="speaker step">L</span><span class="line-text step-text">Consultant nods. Pauses. Does not rush.</span></div>
+              <div class="line"><span class="speaker step">I</span><span class="line-text step-text">Empathize and confirm.</span></div>
+              <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"That makes complete sense. If I were looking at a decision like this — one that takes money and commitment and time — I'd want to be sure too. What I'm hearing is that you want to make sure this is the right moment, the right place, and that you're doing it for the right reasons. Is that a fair read?"</em></span></div>
+              <div class="line"><span class="speaker prospect">Guest</span><span class="line-text">"Yeah, exactly."</span></div>
+              <div class="line"><span class="speaker step">G</span><span class="line-text step-text">Give permission.</span></div>
+              <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"Good. That's actually the right instinct. A commitment like this deserves that. I'm proud of you for taking it seriously. Can I share just one thought — a different way of looking at it?"</em></span></div>
+              <div class="line"><span class="speaker prospect">Guest</span><span class="line-text">"Sure."</span></div>
+              <div class="line"><span class="speaker step">O</span><span class="line-text step-text">Offer alternative. Reconnect to X-Factor.</span></div>
+              <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"You told me today that you want to feel like yourself again — that you want to have energy for your kids and stop getting winded on the stairs. Everything we saw today is built for exactly that. My only question is: what's going to be different in three days? What information do you still need that you didn't already get today? Because sometimes 'think about it' means there's a specific question that's still unanswered — and if that's true, I'd love to answer it right now."</em></span></div>
+              <div class="line"><span class="speaker prospect">Guest</span><span class="line-text">"I guess I'm just not sure about the commitment."</span></div>
+              <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"That I can work with. Tell me more about what scares you there."</em> [LIGO begins again on the new specific objection.]</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- OBJECTION 2 -->
+        <div class="objection-set">
+          <div class="objection-header">
+            <div class="objection-name">Objection 02</div>
+            <div class="objection-quote">"I need to talk to my partner first."</div>
+          </div>
+          <div class="objection-body">
+            <div class="obj-what"><strong>What it usually means:</strong> "I need permission" or more often "I want to feel included in making a major financial decision with someone I share finances with." This is about inclusion, not dependency.</div>
+            <div class="dialogue-block">
+              <div class="dialogue-title">Full LIGO — "I need to discuss with my partner"</div>
+              <div class="line"><span class="speaker prospect">Guest</span><span class="line-text">"I'd like to talk to my partner before committing to anything."</span></div>
+              <div class="line"><span class="speaker step">I</span><span class="line-text step-text">Empathize — and reframe correctly.</span></div>
+              <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"I love that. It sounds like you are genuinely excited and you want to include them in this decision — not because you need permission, but because big decisions feel better made together. Is that closer to where you're coming from?"</em></span></div>
+              <div class="line"><span class="speaker prospect">Guest</span><span class="line-text">"Yeah, we just usually talk about things like this."</span></div>
+              <div class="line"><span class="speaker step">G</span><span class="line-text step-text">Give permission and ask to offer a different perspective.</span></div>
+              <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"Communication is everything — I completely get that. I think it's great that you operate that way. Can I offer just one thought before you go?"</em></span></div>
+              <div class="line"><span class="speaker prospect">Guest</span><span class="line-text">"Sure."</span></div>
+              <div class="line"><span class="speaker step">O</span><span class="line-text step-text">The partner pivot.</span></div>
+              <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"Imagine your partner was here today. They sat with us in that discovery conversation — they heard the passion in your voice when you talked about wanting to feel like yourself again, wanting to be there for your family. They walked through the club with us. They saw everything you got excited about. And right when I asked if you were ready to join — you looked at them. What do you think they would say?"</em></span></div>
+              <div class="line"><span class="speaker prospect">Guest</span><span class="line-text">"Honestly? They'd probably say just do it."</span></div>
+              <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"They would. Because what your partner wants for you is exactly what you want for yourself — to be healthy and happy. Trust that support. Go home tonight and tell them you made the commitment — not that you're thinking about it. So — debit or credit?"</em></span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- OBJECTION 3 -->
+        <div class="objection-set">
+          <div class="objection-header">
+            <div class="objection-name">Objection 03</div>
+            <div class="objection-quote">"It's a little more than I wanted to spend."</div>
+          </div>
+          <div class="objection-body">
+            <div class="obj-what"><strong>What it usually means:</strong> "I'm not sure the value justifies the cost" or "I haven't fully connected the price to what I'm getting." This is your B+F objection — return to their numbers.</div>
+            <div class="dialogue-block">
+              <div class="dialogue-title">Full LIGO — "It's more than I wanted to spend"</div>
+              <div class="line"><span class="speaker prospect">Guest</span><span class="line-text">"Performance+ is a little higher than I was planning."</span></div>
+              <div class="line"><span class="speaker step">I</span><span class="line-text step-text">Empathize genuinely.</span></div>
+              <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"I hear you — and I want to make sure this makes complete sense financially. You're balancing getting everything you need with what feels comfortable, right?"</em></span></div>
+              <div class="line"><span class="speaker prospect">Guest</span><span class="line-text">"Exactly."</span></div>
+              <div class="line"><span class="speaker step">G</span><span class="line-text step-text">Give permission.</span></div>
+              <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"That's smart — and it's the right way to approach any investment. Would you be open to just walking through the numbers one more time? I want to see if it still feels like too much in a different context."</em></span></div>
+              <div class="line"><span class="speaker prospect">Guest</span><span class="line-text">"Sure."</span></div>
+              <div class="line"><span class="speaker step">O</span><span class="line-text step-text">B+F math — their numbers, their value.</span></div>
+              <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"You told me you'd use Revive after most workouts — that is a $30–$60 recovery session every single time you come in. You said the pool 4–6 times a month. You said 2–3 studio classes a week. Add those up separately and you are looking at $300–$400+ a month in services you would pay individually elsewhere. Performance+ gives you all of it for $79.50 every two weeks — which is roughly $40 a week. Does the price feel the same when you look at it that way?"</em></span></div>
+              <div class="line"><span class="speaker prospect">Guest</span><span class="line-text">"When you put it like that, not really."</span></div>
+              <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"Then let's get you started. Debit or credit?"</em></span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- OBJECTION 4 -->
+        <div class="objection-set">
+          <div class="objection-header">
+            <div class="objection-name">Objection 04</div>
+            <div class="objection-quote">"I want to shop around a little more."</div>
+          </div>
+          <div class="objection-body">
+            <div class="obj-what"><strong>What it usually means:</strong> "I'm not sure City Fitness is clearly the best option, and I feel like I might be leaving something better on the table." This is a confidence and differentiation issue.</div>
+            <div class="dialogue-block">
+              <div class="dialogue-title">Full LIGO — "I want to shop around"</div>
+              <div class="line"><span class="speaker prospect">Guest</span><span class="line-text">"I'm looking at a couple of places — I just want to see what else is out there."</span></div>
+              <div class="line"><span class="speaker step">I</span><span class="line-text step-text">Empathize and validate.</span></div>
+              <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"That's completely fair — this is a real commitment and you want to make sure you're making the best choice. I'd probably do the same thing. Is it more about making sure you're getting the best value, or is there something specific you're hoping to find elsewhere?"</em></span></div>
+              <div class="line"><span class="speaker prospect">Guest</span><span class="line-text">"Just want to make sure I'm not missing something better."</span></div>
+              <div class="line"><span class="speaker step">G</span><span class="line-text step-text">Give permission.</span></div>
+              <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"Totally reasonable. I respect that. Can I just say one thing before you go?"</em></span></div>
+              <div class="line"><span class="speaker step">O</span><span class="line-text step-text">Differentiate with specifics.</span></div>
+              <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"You mentioned wanting the pool, the recovery suite, and studio classes all in one place. In Philadelphia, there is nowhere else that offers all three under one roof at this price point — and I say that confidently. But I understand — go look. What I'd ask is: when you're touring, bring the criteria you gave me today and hold every place to that same standard. And if anything we have here still stands out, you know where I am. My door is open."</em></span></div>
+              <div class="line"><span class="speaker action">NOTE</span><span class="line-text action-text">Get their contact info. Set a follow-up. The shopping-around guest who leaves and returns is still a sale — just on a different timeline.</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- L8 -->
+    <div class="lesson-card" data-lesson="8">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">08</span>
+        <span class="lesson-title-text">LIGO Principles — What Makes It Work Every Time</span>
+        <span class="lesson-tag">Mastery</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>LIGO is not a script. It is a philosophy. The four letters are a structure, but the thing that makes them work is the genuine empathy and belief in your solution that runs through every word. Here are the principles that elevate LIGO from a technique to a skill.</p>
+        <div class="callout callout-rule">
+          <div class="callout-label">Principle 1 — Never Argue</div>
+          The moment you argue with an objection — even if you are factually right — you create a defensive dynamic. The guest digs in. You dig in. Nobody moves. LIGO's power is that it never argues. It validates, redirects, and reconnects. Resistance meeting resistance is a wall. Empathy meeting resistance is a door.
+        </div>
+        <div class="callout callout-rule">
+          <div class="callout-label">Principle 2 — Always Re-Ask for the Sale</div>
+          LIGO without a re-close is an incomplete cycle. After the Offer Alternative, you must ask for the sale again — confidently and directly. "So, debit or credit?" Do not wait. Do not hint. Ask. The close question re-starts the sequence, and often that second ask is the one that lands.
+        </div>
+        <div class="callout callout-rule">
+          <div class="callout-label">Principle 3 — LIGO Can Run Twice</div>
+          If the first round of LIGO surfaces a new, more specific objection — that is progress, not failure. The guest is now telling you what they really need. Apply LIGO again to the new objection. Two rounds of LIGO on two different objections is still a cleaner path to the close than never surfacing the real barrier.
+        </div>
+        <div class="callout callout-rule">
+          <div class="callout-label">Principle 4 — When to Accept a No</div>
+          If after two clean rounds of LIGO the guest is firm and their reason is genuine, accept it with warmth. "I completely respect that. Can I take your contact info and follow up in a few weeks?" A graceful exit preserves the relationship. Pushing past two rounds of genuine resistance damages it. The guest who leaves feeling respected comes back. The one who leaves feeling pressured tells 10 people.
+        </div>
+        <div class="callout callout-gold">
+          <div class="callout-label">Principle 5 — Involve the Manager (T.O.) When Needed</div>
+          If you have applied LIGO twice and asked for the sale three times without success, it is time for a Turn Over. This is not a failure — it is strategy. A fresh voice, a higher authority, and new information from a manager can bridge a gap you have been unable to close alone. Set it up properly: "I want to see if my manager can explore any options to make this work for you today." Then step back and be completely silent.
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end lesson grid -->
+
+  <div class="study-complete-banner" id="studyBanner">
+    <h3>All 8 Lessons Complete</h3>
+    <p>LIGO is your most powerful close tool. Certification quiz is now unlocked.</p>
+    <button class="cf-btn" onclick="unlockQuiz()" style="max-width:300px;margin:0 auto;">Unlock Certification ↓</button>
+  </div>
+
+  <!-- MISTAKES -->
+  <div class="divider-label">Common Mistakes</div>
+  <div class="section-header" style="padding-top:0;">
+    <div class="s-eyebrow">What Breaks the Handle</div>
+    <h2 class="s-title">6 LIGO Mistakes<br>& How to Fix Them</h2>
+  </div>
+  <div class="mistakes-grid">
+    <div class="mistake-card">
+      <div class="mistake-label bad">✗ The Mistake</div>
+      <div class="mistake-text">Interrupting the objection before the guest finishes. <strong>You react to the first three words and miss the real concern buried in the last sentence.</strong></div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label good">✓ The Fix</div>
+      <div class="mistake-text"><strong>Let them finish completely. Every word.</strong> The real objection often lives in the pause after the main statement. The consultant who waits for that pause hears things others miss.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label bad">✗ The Mistake</div>
+      <div class="mistake-text">Using "I understand, BUT..." — <strong>The word "but" erases everything before it. The guest hears: "I didn't actually listen, I was just waiting to argue."</strong></div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label good">✓ The Fix</div>
+      <div class="mistake-text">Replace "but" with "and" or a full stop. <strong>"I completely understand. [Pause.] Can I share a different way of looking at it?"</strong> No "but." Ever.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label bad">✗ The Mistake</div>
+      <div class="mistake-text">Skipping Give Permission and going straight from Identify to Offer Alternative. <strong>The guest expected agreement and got another pitch. Their guard goes back up.</strong></div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label good">✓ The Fix</div>
+      <div class="mistake-text"><strong>Give Permission is the disarmament step — it cannot be skipped.</strong> Explicitly agree with their feeling before asking to offer an alternative. That agreement is what earns you the right to be heard again.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label bad">✗ The Mistake</div>
+      <div class="mistake-text">Not re-asking for the sale after LIGO. <strong>You applied all four steps perfectly and then waited for them to volunteer a decision. They will not. You lost the close you earned.</strong></div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label good">✓ The Fix</div>
+      <div class="mistake-text"><strong>LIGO always ends with the close question.</strong> "So — debit or credit?" After the Offer Alternative, ask immediately. The re-close is not optional. It is the point of the entire sequence.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label bad">✗ The Mistake</div>
+      <div class="mistake-text">Applying LIGO mechanically with no genuine empathy. <strong>The guest can feel when your "I understand" is a formula rather than a real attempt to understand them. Trust evaporates instantly.</strong></div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label good">✓ The Fix</div>
+      <div class="mistake-text"><strong>Before you speak, actually put yourself in their position for one moment.</strong> What would it feel like? Let that inform your words. Genuine empathy is the thing LIGO scripts cannot teach — it has to come from you.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label bad">✗ The Mistake</div>
+      <div class="mistake-text">Pushing past two rounds of genuine resistance. <strong>You have moved from handling an objection to pressuring a person. This damages the relationship and guarantees they never come back.</strong></div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label good">✓ The Fix</div>
+      <div class="mistake-text"><strong>After two rounds, either T.O. or gracefully exit.</strong> "I respect that completely — let me take your number and follow up in a few weeks." A warm exit preserves the lead. Pressure kills it permanently.</div>
+    </div>
+  </div>
+
+  <!-- ROLE PLAY -->
+  <div class="divider-label">Role-Play Scenarios</div>
+  <div class="section-header" style="padding-top:0;">
+    <div class="s-eyebrow">Practice</div>
+    <h2 class="s-title">4 LIGO Scenarios<br>to Train On</h2>
+  </div>
+
+  <div class="roleplay-card">
+    <div class="roleplay-header">
+      <span class="roleplay-scenario">Scenario 01 — "I Want to Think About It"</span>
+      <span class="roleplay-type">Most Common</span>
+    </div>
+    <div class="roleplay-body">
+      <div class="roleplay-setup">You asked the close question. After 15 seconds of silence, the guest says: "I appreciate everything, but I just want to sit with it for a few days before I commit."</div>
+      <div class="roleplay-objective"><strong>Your objective:</strong> Execute full LIGO. In the Identify step, surface what "sitting with it" actually means — are they unsure about the commitment, the price, the timing? In the Offer Alternative, return to their specific X-Factor and ask: "What information do you still need that you didn't get today?" This often reveals the real objection underneath, which you can then handle specifically. Re-ask for the sale at the end.</div>
+      <div class="coaching-note">The most important thing in this scenario is that your Identify step draws out the specific concern, not just acknowledges the general one. "I want to think about it" is a wrapper — your job is to unwrap it. The question "what specific information would help you decide?" is your most powerful tool here.</div>
+    </div>
+  </div>
+
+  <div class="roleplay-card">
+    <div class="roleplay-header">
+      <span class="roleplay-scenario">Scenario 02 — "My Partner Needs to See It"</span>
+      <span class="roleplay-type">Partner Objection</span>
+    </div>
+    <div class="roleplay-body">
+      <div class="roleplay-setup">After the close question, the guest says: "I really want my wife to see this before I sign anything. She'd want to check it out too."</div>
+      <div class="roleplay-objective"><strong>Your objective:</strong> Use the partner pivot. Identify the inclusion angle (not permission — inclusion). Give Permission enthusiastically ("that's great — communication is everything"). In the Offer Alternative, ask the hypothetical: "If she were here today and heard the passion in your voice when you talked about [X-Factor]... what do you think she would say?" Then pivot: "So trust that support — go home and tell her you made the commitment, not that you're thinking about it." Re-ask for the sale. If they are still firm, offer to book a joint appointment with both partners for the following week.</div>
+      <div class="coaching-note">The partner objection has two outcomes: they join today (most common when LIGO is well executed) or you book a joint appointment for both of them to come in together. The joint appointment is not a loss — it is two potential memberships. Never let a partner objection end in a vague "I'll call you" with no confirmed next step.</div>
+    </div>
+  </div>
+
+  <div class="roleplay-card">
+    <div class="roleplay-header">
+      <span class="roleplay-scenario">Scenario 03 — LIGO Surfaces a New Objection</span>
+      <span class="roleplay-type">Layered Objection</span>
+    </div>
+    <div class="roleplay-body">
+      <div class="roleplay-setup">You applied LIGO to "I want to think about it" and in your Offer Alternative you asked what information they still needed. They respond: "Honestly, I'm worried about the 12-month commitment. What if I move or lose my job?"</div>
+      <div class="roleplay-objective"><strong>Your objective:</strong> Recognize this as a new, more specific objection — which is progress. Apply LIGO again to the new concern. Identify: "That's a totally legitimate concern — you're thinking about life circumstances that could change, and you want to make sure you're protected." Give Permission. Offer Alternative: Address the freeze policy, the ability to pause, transfer, or any relevant membership flexibility. If Performance+ has limited flexibility, be honest — and pivot to whether Studio+ (with a shorter option) might address the concern. Re-ask for the sale.</div>
+      <div class="coaching-note">Two rounds of LIGO on two different objections is not a bad sign — it means you are doing discovery during the close. Each round surfaces a more specific, more solvable concern. The guest who reaches objection #2 is further along than the one who said "I want to think about it" and left. Stay patient and stay curious.</div>
+    </div>
+  </div>
+
+  <div class="roleplay-card">
+    <div class="roleplay-header">
+      <span class="roleplay-scenario">Scenario 04 — The Genuine No</span>
+      <span class="roleplay-type">Graceful Exit</span>
+    </div>
+    <div class="roleplay-body">
+      <div class="roleplay-setup">You have applied LIGO twice. You have asked for the sale three times. The guest is polite but firm: "I really appreciate everything, but today is just not the day for me. I need to sort some things out first."</div>
+      <div class="roleplay-objective"><strong>Your objective:</strong> Accept this gracefully and warmly. Do not apply LIGO a third time. Do not push. Say: "I completely respect that — and I want you to know the door is always open here. Can I take your number so I can follow up with you in a few weeks? I'd love to be the one to help you when the timing is right." Get their contact information. Log it. Set a specific follow-up date. Leave them feeling respected and genuinely welcomed back — because they likely will come back if the exit was warm.</div>
+      <div class="coaching-note">How you handle a genuine no defines your reputation more than how you handle an easy yes. The guest who leaves feeling pressured tells everyone they know. The guest who leaves feeling genuinely respected tells the same number of people — but with a very different message. The graceful exit is not a sales loss. It is a long-term investment.</div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="divider-label">Certification</div>
+  <div class="section-header" style="padding-top:0;">
+    <div class="s-eyebrow">Knowledge Check</div>
+    <h2 class="s-title">LIGO Certification</h2>
+    <p class="s-sub">16 questions. 80% or higher to pass. Complete all 8 lessons above to unlock.</p>
+  </div>
+
+  <div class="quiz-section" id="quizSection">
+    <div class="quiz-locked" id="quizLocked">
+      <div class="quiz-locked-icon">🔒</div>
+      <h3>Complete All Lessons to Unlock</h3>
+      <p>Open all 8 lessons above. The quiz unlocks automatically when you finish.</p>
+    </div>
+    <div class="name-panel" id="namePanel" style="display:none;">
+      <h3>Certification Registry</h3>
+      <p>Enter your full name as it should appear on your certification record.</p>
+      <input type="text" class="cf-input" id="empNameInput" placeholder="Full Name"/>
+      <button class="cf-btn" onclick="startQuiz()">Begin Official Test →</button>
+    </div>
+    <div class="quiz-active" id="quizActive" style="display:none;">
+      <div class="q-progress-wrap"><div class="q-progress-bar" id="qBar"></div></div>
+      <div class="q-meta">
+        <span class="q-counter" id="qCounter"></span>
+        <span class="q-topic">Module 09 · LIGO Objections</span>
+      </div>
+      <div class="q-text" id="qText"></div>
+      <div class="q-options" id="qOptions"></div>
+    </div>
+    <div class="results-panel" id="resultsPanel">
+      <div class="result-score" id="resultScore"></div>
+      <div class="result-label" id="resultLabel"></div>
+      <div id="missedSection"></div>
+      <button class="cf-btn" onclick="resetModule()" style="margin-top:22px;">Return to Module</button>
+    </div>
+  </div>
+
+</div><!-- end module-wrap -->
+
+<div class="module-footer">
+  <p>City Fitness Philadelphia &nbsp;·&nbsp; Deep Training Module 09 &nbsp;·&nbsp; 2026</p>
+</div>
+
+<iframe name="cf_hidden" id="cf_hidden" style="display:none;"></iframe>
+<form id="certForm" target="cf_hidden" method="GET" action="https://script.google.com/a/macros/cityfitness.com/s/AKfycbzZokf4OQGpHYEkb_9mcVdJ-t9jop9RWIpclIcLSjTWRcBQfeDJ751bl0qO8k7VrZwe/exec">
+  <input type="hidden" name="employee" id="formEmployee"/>
+  <input type="hidden" name="topic" id="formTopic"/>
+  <input type="hidden" name="result" id="formResult"/>
+</form>
+
+<script>
+window.addEventListener('scroll',()=>{
+  const el=document.documentElement;
+  const pct=(el.scrollTop/(el.scrollHeight-el.clientHeight))*100;
+  document.getElementById('topFill').style.width=pct+'%';
+});
+
+let openedLessons=new Set();
+const totalLessons=8;
+
+function toggleLesson(header){
+  const card=header.parentElement;
+  const isOpen=card.classList.contains('open');
+  card.classList.toggle('open',!isOpen);
+  if(!isOpen){
+    openedLessons.add(parseInt(card.dataset.lesson));
+    checkStudyComplete();
+  }
+}
+
+function checkStudyComplete(){
+  if(openedLessons.size>=totalLessons){
+    const banner=document.getElementById('studyBanner');
+    banner.style.display='block';
+    banner.scrollIntoView({behavior:'smooth',block:'center'});
+  }
+}
+
+function unlockQuiz(){
+  document.getElementById('quizLocked').style.display='none';
+  document.getElementById('namePanel').style.display='block';
+  document.getElementById('quizSection').scrollIntoView({behavior:'smooth'});
+}
+
+const questions=[
+  {q:"What does LIGO stand for?",a:["Lead, Influence, Guide, Overcome","Listen, Identify, Give Permission, Offer Alternative","Listen, Isolate, Generate, Offer","Learn, Identify, Guide, Offer"],c:1},
+  {q:"What does 'I want to think about it' almost always mean?",a:["The guest definitively does not want to join","The guest needs more information about the membership tiers","There is a specific concern the guest cannot yet articulate — or a fear of repeating past failures","The guest is comparison shopping"],c:2},
+  {q:"What is the difference between a 'true' and 'false' objection?",a:["True objections involve pricing; false objections involve timing","True objections are genuine barriers that may prevent joining; false objections are surface hesitations driven by anxiety or uncertainty","True objections come from Avid Exercisers; false objections from Never Fitness guests","There is no meaningful difference — all objections are handled the same way"],c:1},
+  {q:"What does 'Listen' in LIGO require beyond just not speaking?",a:["Taking notes while they talk","Being silent in both voice AND thoughts — not formulating a rebuttal while they speak","Maintaining eye contact only","Agreeing with everything they say"],c:1},
+  {q:"Why should you never interrupt an objection before the guest finishes?",a:["It is impolite","The real concern often emerges in the last part of what they say — interrupting means you miss it","It violates City Fitness policy","It makes the interaction longer than necessary"],c:1},
+  {q:"What is the goal of the 'Identify' step?",a:["To diagnose which bucket they fall into","To confirm you have the right membership selected","To empathize genuinely and get them to confirm you understood their position — building the first agreement inside the objection","To present the membership alternatives"],c:2},
+  {q:"Why does 'Give Permission' work so powerfully?",a:["Because guests always respond well to agreement","Because it shortens the interaction","Because the guest expected pushback — agreeing with their position is disarming and unexpected, causing their defensive guard to drop","Because it signals you are willing to offer a discount"],c:2},
+  {q:"What word should you NEVER use between Identify and Offer Alternative?",a:["However","Therefore","But","Although"],c:2},
+  {q:"What should the Offer Alternative always reconnect the guest to?",a:["The current promotional pricing","Their X-Factor and stated frequency commitments from B+F Logic","The features of the membership tier","The HACCL questions they already answered yes to"],c:1},
+  {q:"What must you do immediately after the Offer Alternative?",a:["Wait for the guest to make a decision on their own","Re-ask for the sale directly — 'So, debit or credit?'","Introduce the manager for a T.O.","Give them a brochure to take home"],c:1},
+  {q:"For the 'I need to talk to my partner' objection, how should you frame it in the Identify step?",a:["As a permission issue — they need approval","As a communication and inclusion instinct — not dependency","As a stalling tactic","As a budget concern in disguise"],c:1},
+  {q:"In the partner pivot Offer Alternative, the core question is:",a:["'Why can't you make this decision yourself?'","'Can you call them right now?'","'If your partner were here and heard everything you said today, what do you think they would say?'","'Would you both like to join together?'"],c:2},
+  {q:"For the 'It's more than I wanted to spend' objection, what is your primary Offer Alternative tool?",a:["Offer a discount immediately","Present the Neighborhood membership instead","Return to their B+F frequency commitments and calculate the standalone value of their stated usage","Tell them the price is non-negotiable"],c:2},
+  {q:"How many rounds of LIGO should you apply before accepting a no or initiating a T.O.?",a:["One round only — if it doesn't work, accept the no","Three or more — never give up","Two rounds — after two well-executed rounds of LIGO, either T.O. or exit gracefully","As many as it takes regardless of the guest's response"],c:1},
+  {q:"What is the correct response when LIGO surfaces a new, more specific objection?",a:["Accept it as a genuine no and end the interaction","Recognize it as progress — the guest is now being more honest — and apply LIGO again to the new specific concern","Skip directly to the T.O.","Ignore the new objection and re-ask for the sale immediately"],c:1},
+  {q:"What is the most important thing about how you handle a genuine no at the end of two LIGO rounds?",a:["Push one more time with urgency","Offer a significant discount as a final attempt","Accept it warmly, get their contact information, and set a specific follow-up — the graceful exit preserves the relationship and the future sale","End the interaction quickly to save time for other guests"],c:2}
+];
+
+let empName='',qIndex=0,score=0,missed=[];
+
+function startQuiz(){
+  empName=document.getElementById('empNameInput').value.trim();
+  if(!empName){alert('Please enter your full name.');return;}
+  document.getElementById('namePanel').style.display='none';
+  document.getElementById('quizActive').style.display='block';
+  qIndex=0;score=0;missed=[];
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const q=questions[qIndex];
+  document.getElementById('qBar').style.width=((qIndex/questions.length)*100)+'%';
+  document.getElementById('qCounter').textContent=`Question ${qIndex+1} of ${questions.length}`;
+  document.getElementById('qText').textContent=q.q;
+  const opts=document.getElementById('qOptions');
+  opts.innerHTML='';
+  q.a.forEach((opt,i)=>{
+    const btn=document.createElement('button');
+    btn.className='q-opt';
+    btn.textContent=opt;
+    btn.onclick=()=>handleAnswer(i);
+    opts.appendChild(btn);
+  });
+}
+
+function handleAnswer(idx){
+  const q=questions[qIndex];
+  if(idx===q.c){score++;}
+  else{missed.push({q:q.q,a:q.a[q.c]});}
+  qIndex++;
+  if(qIndex<questions.length){renderQuestion();}
+  else{showResults();}
+}
+
+function showResults(){
+  const pct=Math.round((score/questions.length)*100);
+  document.getElementById('quizActive').style.display='none';
+  const rp=document.getElementById('resultsPanel');
+  rp.style.display='block';
+  const scoreEl=document.getElementById('resultScore');
+  scoreEl.textContent=pct+'%';
+  scoreEl.className='result-score '+(pct>=80?'result-pass':'result-fail');
+  document.getElementById('resultLabel').textContent=pct>=80?'Certification Passed — Module 09: LIGO Objections':'Retake Required — Review Missed Questions Below';
+  let missedHtml='';
+  if(missed.length){
+    missedHtml='<div class="missed-label">Knowledge Gaps — Review These</div>';
+    missed.forEach(m=>{
+      missedHtml+=`<div class="missed-item"><div class="missed-q">${m.q}</div><div class="missed-a">Correct Answer: ${m.a}</div></div>`;
+    });
+  }
+  document.getElementById('missedSection').innerHTML=missedHtml;
+  document.getElementById('formEmployee').value=empName;
+  document.getElementById('formTopic').value='Module 09 - LIGO Objections';
+  document.getElementById('formResult').value=pct;
+  document.getElementById('certForm').submit();
+}
+
+function resetModule(){
+  document.getElementById('resultsPanel').style.display='none';
+  document.getElementById('namePanel').style.display='block';
+  document.getElementById('empNameInput').value='';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
