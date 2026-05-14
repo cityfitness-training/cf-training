@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>CF Training | Module 04: The Buckets</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:ital,wght@0,400;0,500;0,600;1,400;1,600&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg: #0f1014;
+  --surface: #15171c;
+  --card: #1b1e24;
+  --border: #252830;
+  --border-light: #30343e;
+  --copper: #B87C4C;
+  --copper-light: #C9A07A;
+  --copper-dim: rgba(184,124,76,0.12);
+  --copper-glow: rgba(184,124,76,0.05);
+  --tan: #BF9B6F;
+  --white: #ECEEF5;
+  --grey: #6a6e7a;
+  --dim: #8e92a0;
+  --red: #c0392b;
+  --green: #4a9a6a;
+  --grad: linear-gradient(135deg, #B87C4C 0%, #C9A07A 100%);
+  /* Bucket colors */
+  --b1: #5b8fd4;
+  --b1-dim: rgba(91,143,212,0.1);
+  --b1-border: rgba(91,143,212,0.25);
+  --b2: #B87C4C;
+  --b2-dim: rgba(184,124,76,0.1);
+  --b2-border: rgba(184,124,76,0.25);
+  --b3: #6aaa80;
+  --b3-dim: rgba(106,170,128,0.1);
+  --b3-border: rgba(106,170,128,0.25);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--white);font-family:'Barlow',sans-serif;line-height:1.65;overflow-x:hidden;}
+
+.top-bar{position:fixed;top:0;left:0;right:0;height:3px;background:var(--border);z-index:9999;}
+.top-bar-fill{height:100%;background:var(--grad);width:0%;transition:width .3s;}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:80px 60px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 20% 50%, rgba(91,143,212,0.04) 0%, transparent 60%), radial-gradient(ellipse 60% 80% at 80% 50%, rgba(106,170,128,0.04) 0%, transparent 60%);}
+.hero-eyebrow{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--copper);letter-spacing:4px;text-transform:uppercase;margin-bottom:18px;display:flex;align-items:center;gap:12px;}
+.hero-eyebrow::before{content:'';display:block;width:32px;height:2px;background:var(--copper);}
+.hero-title{font-family:'Barlow Condensed',sans-serif;font-size:clamp(54px,9vw,110px);font-weight:900;line-height:.85;text-transform:uppercase;letter-spacing:-2px;margin-bottom:22px;}
+.hero-title em{font-style:normal;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.hero-desc{font-size:17px;color:var(--dim);line-height:1.75;margin-bottom:36px;max-width:580px;}
+.hero-stats{display:flex;gap:36px;margin-bottom:44px;}
+.stat{display:flex;flex-direction:column;}
+.stat-num{font-family:'Barlow Condensed',sans-serif;font-size:34px;font-weight:900;color:var(--copper);line-height:1;}
+.stat-label{font-size:11px;color:var(--grey);text-transform:uppercase;letter-spacing:2px;margin-top:3px;}
+.hero-btn{display:inline-flex;align-items:center;gap:10px;background:var(--grad);border:none;padding:16px 32px;color:white;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;letter-spacing:2px;text-transform:uppercase;border-radius:4px;cursor:pointer;transition:.2s;}
+.hero-btn:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(184,124,76,0.3);}
+
+/* BUCKET OVERVIEW CARDS */
+.bucket-overview{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin:24px 0;}
+.bo-card{border-radius:10px;padding:24px;border:1px solid;}
+.bo-card.b1{background:var(--b1-dim);border-color:var(--b1-border);}
+.bo-card.b2{background:var(--b2-dim);border-color:var(--b2-border);}
+.bo-card.b3{background:var(--b3-dim);border-color:var(--b3-border);}
+.bo-num{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;letter-spacing:3px;text-transform:uppercase;margin-bottom:10px;}
+.bo-num.b1{color:var(--b1);}
+.bo-num.b2{color:var(--b2);}
+.bo-num.b3{color:var(--b3);}
+.bo-title{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;margin-bottom:8px;}
+.bo-title.b1{color:var(--b1);}
+.bo-title.b2{color:var(--b2);}
+.bo-title.b3{color:var(--b3);}
+.bo-desc{font-size:13px;color:var(--dim);line-height:1.55;}
+
+/* LAYOUT */
+.module-wrap{max-width:900px;margin:0 auto;padding:0 40px 120px;}
+.section-header{padding:70px 0 36px;}
+.s-eyebrow{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--copper);letter-spacing:4px;text-transform:uppercase;display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+.s-eyebrow::after{content:'';width:48px;height:1px;background:var(--copper);opacity:.4;}
+.s-title{font-family:'Barlow Condensed',sans-serif;font-size:clamp(30px,5vw,46px);font-weight:900;text-transform:uppercase;letter-spacing:-.5px;line-height:1.05;margin-bottom:10px;}
+.s-sub{font-size:16px;color:var(--dim);max-width:680px;line-height:1.6;}
+
+/* LESSONS */
+.lesson-grid{display:flex;flex-direction:column;gap:2px;}
+.lesson-card{background:var(--surface);border:1px solid var(--border);overflow:hidden;transition:.15s;}
+.lesson-card:first-child{border-radius:10px 10px 0 0;}
+.lesson-card:last-child{border-radius:0 0 10px 10px;}
+.lesson-card.b1-card.open{border-left:3px solid var(--b1);}
+.lesson-card.b2-card.open{border-left:3px solid var(--b2);}
+.lesson-card.b3-card.open{border-left:3px solid var(--b3);}
+.lesson-header{display:flex;align-items:center;gap:20px;padding:20px 26px;cursor:pointer;user-select:none;transition:.15s;}
+.lesson-header:hover{background:var(--copper-glow);}
+.lesson-num{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--copper);letter-spacing:2px;min-width:34px;}
+.lesson-title-text{font-size:16px;font-weight:700;flex:1;}
+.lesson-tag{font-size:10px;font-weight:700;padding:4px 10px;border-radius:20px;text-transform:uppercase;letter-spacing:1px;white-space:nowrap;}
+.lesson-tag.b1{color:var(--b1);background:var(--b1-dim);}
+.lesson-tag.b2{color:var(--b2);background:var(--b2-dim);}
+.lesson-tag.b3{color:var(--b3);background:var(--b3-dim);}
+.lesson-tag.neutral{color:var(--copper);background:var(--copper-dim);}
+.lesson-arrow{color:var(--grey);font-size:11px;transition:.3s;font-style:normal;}
+.lesson-card.open .lesson-arrow{transform:rotate(180deg);color:var(--copper);}
+.lesson-card.open .lesson-header{border-bottom:1px solid var(--border);}
+.lesson-body{display:none;padding:28px 26px 26px;}
+.lesson-card.open .lesson-body{display:block;}
+.lesson-body p{color:var(--dim);font-size:15px;line-height:1.75;margin-bottom:14px;}
+.lesson-body p:last-child{margin-bottom:0;}
+.lesson-body strong{color:var(--white);font-weight:700;}
+.lesson-body em{color:var(--tan);font-style:italic;}
+
+/* CALLOUTS */
+.callout{border-radius:8px;padding:18px 22px;margin:18px 0;font-size:15px;line-height:1.65;}
+.callout-rule{border-left:3px solid var(--copper);background:var(--copper-dim);color:var(--copper-light);}
+.callout-script{border-left:3px solid var(--tan);background:rgba(191,155,111,0.07);color:var(--tan);font-style:italic;}
+.callout-warn{border-left:3px solid var(--red);background:rgba(192,57,43,0.08);color:#d97060;}
+.callout-tip{border-left:3px solid var(--green);background:rgba(74,154,106,0.08);color:#7ac09a;}
+.callout-b1{border-left:3px solid var(--b1);background:var(--b1-dim);color:#8ab4e8;}
+.callout-b2{border-left:3px solid var(--b2);background:var(--b2-dim);color:var(--copper-light);}
+.callout-b3{border-left:3px solid var(--b3);background:var(--b3-dim);color:#8ad4a8;}
+.callout-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:3px;text-transform:uppercase;margin-bottom:7px;opacity:.7;display:block;}
+
+/* TRAIT GRID */
+.trait-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:16px 0;}
+.trait-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px 16px;}
+.trait-label{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;margin-bottom:5px;opacity:.7;}
+.trait-label.b1{color:var(--b1);}
+.trait-label.b2{color:var(--b2);}
+.trait-label.b3{color:var(--b3);}
+.trait-text{font-size:14px;color:var(--dim);line-height:1.5;}
+.trait-text strong{color:var(--white);}
+
+/* TOUR FOCUS */
+.tour-focus{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:22px;margin:18px 0;}
+.tf-title{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;letter-spacing:3px;text-transform:uppercase;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+.tf-title.b1{color:var(--b1);}
+.tf-title.b2{color:var(--b2);}
+.tf-title.b3{color:var(--b3);}
+.tf-items{display:flex;flex-direction:column;gap:8px;}
+.tf-item{display:flex;align-items:flex-start;gap:12px;font-size:14px;color:var(--dim);line-height:1.5;}
+.tf-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:6px;}
+.tf-dot.b1{background:var(--b1);}
+.tf-dot.b2{background:var(--b2);}
+.tf-dot.b3{background:var(--b3);}
+.tf-item strong{color:var(--white);}
+
+/* DIALOGUE */
+.dialogue-block{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:22px;margin:18px 0;}
+.dialogue-title{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--copper);letter-spacing:3px;text-transform:uppercase;margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+.line{display:flex;gap:14px;margin-bottom:14px;align-items:flex-start;}
+.line:last-child{margin-bottom:0;}
+.speaker{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;min-width:90px;padding-top:3px;}
+.speaker.prospect{color:var(--grey);}
+.speaker.consultant{color:var(--copper);}
+.line-text{font-size:15px;color:var(--dim);line-height:1.65;}
+.line-text em{color:var(--white);font-style:normal;font-weight:600;}
+
+/* BUCKET IDENTIFIER */
+.identifier-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:16px 0;}
+.id-card{border-radius:8px;padding:16px;border:1px solid;}
+.id-card.b1{background:var(--b1-dim);border-color:var(--b1-border);}
+.id-card.b2{background:var(--b2-dim);border-color:var(--b2-border);}
+.id-card.b3{background:var(--b3-dim);border-color:var(--b3-border);}
+.id-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:3px;text-transform:uppercase;margin-bottom:8px;}
+.id-label.b1{color:var(--b1);}
+.id-label.b2{color:var(--b2);}
+.id-label.b3{color:var(--b3);}
+.id-phrase{font-size:13px;font-style:italic;color:var(--dim);line-height:1.5;margin-bottom:8px;}
+.id-signal{font-size:12px;font-weight:700;line-height:1.4;}
+.id-signal.b1{color:var(--b1);}
+.id-signal.b2{color:var(--b2);}
+.id-signal.b3{color:var(--b3);}
+
+/* MISTAKES */
+.mistakes-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px;}
+.mistake-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:18px;}
+.mistake-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:3px;text-transform:uppercase;margin-bottom:8px;}
+.mistake-label.bad{color:var(--red);}
+.mistake-label.good{color:var(--green);}
+.mistake-text{font-size:14px;line-height:1.6;color:var(--dim);}
+.mistake-text strong{color:var(--white);}
+
+/* ROLEPLAY */
+.roleplay-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:14px;}
+.roleplay-header{padding:18px 22px;display:flex;justify-content:space-between;align-items:center;}
+.roleplay-header.b1{background:var(--b1-dim);border-bottom:1px solid var(--b1-border);}
+.roleplay-header.b2{background:var(--b2-dim);border-bottom:1px solid var(--b2-border);}
+.roleplay-header.b3{background:var(--b3-dim);border-bottom:1px solid var(--b3-border);}
+.roleplay-scenario{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase;}
+.roleplay-scenario.b1{color:var(--b1);}
+.roleplay-scenario.b2{color:var(--b2);}
+.roleplay-scenario.b3{color:var(--b3);}
+.roleplay-type{font-size:11px;color:var(--grey);}
+.roleplay-body{padding:22px;}
+.roleplay-setup{font-size:15px;font-style:italic;color:var(--tan);margin-bottom:14px;padding:12px 16px;background:rgba(191,155,111,0.06);border-radius:6px;line-height:1.6;}
+.roleplay-objective{font-size:14px;color:var(--dim);line-height:1.6;}
+.roleplay-objective strong{color:var(--white);}
+.coaching-note{margin-top:12px;padding:12px 16px;background:rgba(184,124,76,0.07);border-radius:6px;font-size:13px;color:var(--copper-light);line-height:1.6;}
+.coaching-note::before{content:'COACHING NOTE  ';font-weight:800;letter-spacing:2px;font-size:10px;display:block;margin-bottom:3px;opacity:.7;}
+
+/* DIVIDER */
+.divider-label{display:flex;align-items:center;gap:16px;color:var(--grey);font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin:56px 0 30px;}
+.divider-label::before,.divider-label::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* STUDY BANNER */
+.study-complete-banner{background:var(--copper-dim);border:1px solid rgba(184,124,76,0.3);border-radius:12px;padding:28px;text-align:center;margin:36px 0;display:none;}
+.study-complete-banner h3{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;color:var(--copper);margin-bottom:6px;}
+.study-complete-banner p{color:var(--dim);font-size:14px;margin-bottom:18px;}
+
+/* QUIZ */
+.quiz-section{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-top:36px;}
+.quiz-locked{padding:56px 40px;text-align:center;}
+.quiz-locked-icon{font-size:36px;margin-bottom:14px;opacity:.3;}
+.quiz-locked h3{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;text-transform:uppercase;color:var(--grey);margin-bottom:6px;}
+.quiz-locked p{color:var(--grey);font-size:14px;}
+.quiz-active{padding:38px;}
+.q-progress-wrap{height:3px;background:var(--border);border-radius:2px;margin-bottom:28px;overflow:hidden;}
+.q-progress-bar{height:100%;background:var(--grad);width:0%;transition:.4s;}
+.q-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;}
+.q-counter{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--copper);letter-spacing:2px;text-transform:uppercase;}
+.q-topic{font-size:11px;color:var(--grey);}
+.q-text{font-size:20px;font-weight:700;color:var(--white);margin-bottom:26px;line-height:1.4;}
+.q-options{display:flex;flex-direction:column;gap:9px;}
+.q-opt{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:15px 18px;color:var(--dim);font-size:15px;text-align:left;cursor:pointer;transition:.2s;font-family:'Barlow',sans-serif;}
+.q-opt:hover{border-color:var(--copper);color:var(--white);background:var(--copper-glow);}
+.name-panel{padding:38px;}
+.name-panel h3{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;color:var(--white);margin-bottom:5px;}
+.name-panel p{color:var(--dim);font-size:14px;margin-bottom:22px;}
+.cf-input{background:var(--bg);border:1px solid var(--border);color:var(--white);padding:13px 16px;width:100%;border-radius:8px;font-family:'Barlow',sans-serif;font-size:16px;margin-bottom:14px;outline:none;transition:.2s;}
+.cf-input:focus{border-color:var(--copper);}
+.cf-btn{background:var(--grad);border:none;padding:15px 28px;color:white;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;letter-spacing:2px;text-transform:uppercase;border-radius:8px;cursor:pointer;width:100%;transition:.2s;}
+.cf-btn:hover{opacity:.9;transform:translateY(-1px);}
+.results-panel{padding:38px;display:none;}
+.result-score{font-family:'Barlow Condensed',sans-serif;font-size:70px;font-weight:900;line-height:1;margin-bottom:6px;}
+.result-pass{color:var(--copper);}
+.result-fail{color:var(--red);}
+.result-label{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--grey);margin-bottom:22px;}
+.missed-label{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--dim);letter-spacing:3px;text-transform:uppercase;margin-bottom:10px;margin-top:22px;}
+.missed-item{background:rgba(192,57,43,0.07);border-left:3px solid var(--red);border-radius:0 6px 6px 0;padding:13px 15px;margin-bottom:7px;}
+.missed-q{font-size:14px;color:var(--dim);margin-bottom:5px;}
+.missed-a{font-size:14px;color:var(--tan);font-weight:600;}
+.module-footer{text-align:center;padding:50px 40px;border-top:1px solid var(--border);}
+.module-footer p{color:var(--grey);font-size:11px;letter-spacing:3px;text-transform:uppercase;}
+
+@media(max-width:700px){
+  .hero{padding:80px 24px 50px;}
+  .module-wrap{padding:0 20px 80px;}
+  .bucket-overview{grid-template-columns:1fr;}
+  .trait-grid{grid-template-columns:1fr;}
+  .identifier-grid{grid-template-columns:1fr;}
+  .mistakes-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar"><div class="top-bar-fill" id="topFill"></div></div>
+
+<section class="hero">
+  <div class="hero-eyebrow">City Fitness Training · Deep Module Series</div>
+  <h1 class="hero-title">The<br><em>Buckets.</em></h1>
+  <p class="hero-desc">Not everyone who walks through the door is the same person. The Buckets Theory is how you stop giving generic tours and start giving experiences that feel personally built for whoever is standing in front of you.</p>
+  <div class="hero-stats">
+    <div class="stat"><span class="stat-num">7</span><span class="stat-label">Core Lessons</span></div>
+    <div class="stat"><span class="stat-num">3</span><span class="stat-label">Bucket Deep Dives</span></div>
+    <div class="stat"><span class="stat-num">4</span><span class="stat-label">Role-Play Scenarios</span></div>
+    <div class="stat"><span class="stat-num">16</span><span class="stat-label">Quiz Questions</span></div>
+  </div>
+  <button class="hero-btn" onclick="document.getElementById('lessons').scrollIntoView({behavior:'smooth'})">Begin Training ↓</button>
+</section>
+
+<div class="module-wrap">
+
+  <div class="section-header" style="padding-top:50px;">
+    <div class="s-eyebrow">The Framework</div>
+    <h2 class="s-title">Three Buckets.<br>One Question.</h2>
+    <p class="s-sub">Everything starts with: <strong style="color:var(--white)">"Where are you on your fitness journey?"</strong> The answer tells you exactly which bucket they are in — and which bucket determines how you speak, what you show, and what you emphasize for the rest of the interaction.</p>
+  </div>
+
+  <div class="bucket-overview">
+    <div class="bo-card b1">
+      <div class="bo-num b1">Bucket 01</div>
+      <div class="bo-title b1">Avid Exerciser</div>
+      <div class="bo-desc">Regular exercise history. Self-motivated. Knows the language. Looking to upgrade, break plateaus, or access better equipment and programming.</div>
+    </div>
+    <div class="bo-card b2">
+      <div class="bo-num b2">Bucket 02</div>
+      <div class="bo-title b2">Start & Stopper</div>
+      <div class="bo-desc">Has tried before. Knows what a gym is. Struggles with consistency and accountability. Needs a different reason to believe this time is different.</div>
+    </div>
+    <div class="bo-card b3">
+      <div class="bo-num b3">Bucket 03</div>
+      <div class="bo-title b3">Never Fitness</div>
+      <div class="bo-desc">Little to no gym experience. Intimidated. Needs safety, simplicity, and a welcoming environment before anything else.</div>
+    </div>
+  </div>
+
+  <div class="callout callout-rule">
+    <div class="callout-label">The Point of the Buckets</div>
+    The Buckets Theory exists to kill the museum tour — the generic, feature-by-feature walkthrough that ignores who the person actually is. A tour built for an Avid Exerciser delivered to a Never Fitness guest will overwhelm and lose them. A Never Fitness tour delivered to an Avid Exerciser will bore and insult them. The bucket determines everything.
+  </div>
+
+  <div class="section-header" id="lessons">
+    <div class="s-eyebrow">Core Lessons</div>
+    <h2 class="s-title">7 Lessons on Reading<br>& Meeting Your Guest</h2>
+    <p class="s-sub">Open each lesson in order. The certification unlocks when all 7 are complete.</p>
+  </div>
+
+  <div class="lesson-grid" id="lessonGrid">
+
+    <!-- L1 -->
+    <div class="lesson-card" data-lesson="1">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">01</span>
+        <span class="lesson-title-text">How to Identify the Bucket — Within 5 Minutes</span>
+        <span class="lesson-tag neutral">Identification</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>You do not need a form or a checklist to identify the bucket. You need to listen carefully to how someone answers <em>"Where are you on your fitness journey?"</em> and ask one or two follow-up questions. The language they use, the confidence they carry, and what they lead with will tell you everything within the first 3–5 minutes.</p>
+        <div class="identifier-grid">
+          <div class="id-card b1">
+            <div class="id-label b1">Avid Exerciser</div>
+            <div class="id-phrase">"I've been lifting for years but I've hit a plateau on my squat..."</div>
+            <div class="id-signal b1">Uses fitness terminology. Talks about specifics. Self-aware about their training.</div>
+          </div>
+          <div class="id-card b2">
+            <div class="id-label b2">Start & Stopper</div>
+            <div class="id-phrase">"I keep starting and then life gets in the way. I've had memberships before..."</div>
+            <div class="id-signal b2">Acknowledges past attempts. Slightly apologetic. Looking for something different.</div>
+          </div>
+          <div class="id-card b3">
+            <div class="id-label b3">Never Fitness</div>
+            <div class="id-phrase">"I've never really done this before. I don't really know where to start..."</div>
+            <div class="id-signal b3">Uncertain language. Admits inexperience. Looking for reassurance first, information second.</div>
+          </div>
+        </div>
+        <div class="callout callout-rule">
+          <div class="callout-label">The 5-Minute Standard</div>
+          You should know the bucket within 5 minutes of sitting down. If you are still unsure after 5 minutes, you are either not asking the right follow-up questions or not listening to the signals they are sending. Speed here matters — the sooner you know, the sooner the tour becomes personal.
+        </div>
+        <div class="callout callout-warn">
+          <div class="callout-label">The Bucket Is a Guide, Not a Box</div>
+          The buckets are a framework for calibration, not a label. Some people are between buckets. Some will surprise you. Stay flexible — use the bucket to set your starting point, then adjust as the conversation develops. The goal is a personalized experience, not a perfectly sorted database entry.
+        </div>
+      </div>
+    </div>
+
+    <!-- L2 -->
+    <div class="lesson-card b1-card" data-lesson="2">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">02</span>
+        <span class="lesson-title-text">Bucket 1: The Avid Exerciser — Expert to Expert</span>
+        <span class="lesson-tag b1">Bucket 01</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>This guest has been in gyms before. They know what a rack is, what a PR means, and how to use most of the equipment without instruction. They are not here to be taught the basics — they are here to be impressed. Treat them as a peer, not a beginner.</p>
+        <div class="trait-grid">
+          <div class="trait-card">
+            <div class="trait-label b1">Proud of Their History</div>
+            <div class="trait-text">They will reference past achievements. <strong>Acknowledge and respect it.</strong> Do not minimize it by moving on too quickly.</div>
+          </div>
+          <div class="trait-card">
+            <div class="trait-label b1">Knows the Language</div>
+            <div class="trait-text">You can use fitness terminology freely. <strong>Do not over-explain basic concepts</strong> — it signals that you underestimated them.</div>
+          </div>
+          <div class="trait-card">
+            <div class="trait-label b1">Has Specific Goals</div>
+            <div class="trait-text">Not "get fit" — something specific. <strong>A race time, a lift number, a physique goal.</strong> Focus your tour around exactly that.</div>
+          </div>
+          <div class="trait-card">
+            <div class="trait-label b1">Self-Motivated</div>
+            <div class="trait-text">They do not need convincing to work out. <strong>They need convincing that City Fitness is worth switching to.</strong> Different sales job entirely.</div>
+          </div>
+          <div class="trait-card">
+            <div class="trait-label b1">May Have Hit a Plateau</div>
+            <div class="trait-text">Stagnation is a common reason avid exercisers switch gyms. <strong>New equipment, programming, and Revive recovery</strong> are your differentiators here.</div>
+          </div>
+          <div class="trait-card">
+            <div class="trait-label b1">Authenticity Matters</div>
+            <div class="trait-text">If they bring up something you do not know — admit it. <strong>"I'm not an expert in that area, but we have coaches who specialize in exactly that."</strong> Honesty builds more trust than bluffing.</div>
+          </div>
+        </div>
+        <div class="tour-focus">
+          <div class="tf-title b1">What to Emphasize on the Tour — Avid Exerciser</div>
+          <div class="tf-items">
+            <div class="tf-item"><div class="tf-dot b1"></div><span><strong>Advanced equipment and free weight selection</strong> — show them what they cannot get elsewhere</span></div>
+            <div class="tf-item"><div class="tf-dot b1"></div><span><strong>Revive recovery suite</strong> — cryo, infrared sauna, red light, Normatec — this is a massive differentiator for serious athletes</span></div>
+            <div class="tf-item"><div class="tf-dot b1"></div><span><strong>Specialized studio classes</strong> — metric-based cycling, WE/Fit functional training — programming built for people who take fitness seriously</span></div>
+            <div class="tf-item"><div class="tf-dot b1"></div><span><strong>Thrive assessment</strong> — frame it as data and optimization, not beginner guidance</span></div>
+            <div class="tf-item"><div class="tf-dot b1"></div><span><strong>Multi-club access</strong> — the convenience of having eight locations is a practical upgrade for someone already committed to regular training</span></div>
+          </div>
+        </div>
+        <div class="callout callout-b1">
+          <div class="callout-label">The Avid Exerciser Script Approach</div>
+          "Based on what you're describing, it sounds like you've already got the discipline locked in — what you need is an environment that matches that level. Let me show you what we've built for exactly that."
+        </div>
+      </div>
+    </div>
+
+    <!-- L3 -->
+    <div class="lesson-card b2-card" data-lesson="3">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">03</span>
+        <span class="lesson-title-text">Bucket 2: The Start & Stopper — Structure and Support</span>
+        <span class="lesson-tag b2">Bucket 02</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>This is your most common prospect. They have tried before. They know what a gym is. They have had memberships, started routines, and then — life happened. They quit. They know they are capable of being consistent. They just have not been able to maintain it, and they carry a layer of frustration and mild embarrassment about that.</p>
+        <p>Your entire approach with this person must answer one unspoken question: <em>Why is this time going to be different?</em> Everything you show them and say to them needs to point toward an answer to that question.</p>
+        <div class="trait-grid">
+          <div class="trait-card">
+            <div class="trait-label b2">Has Tried Before</div>
+            <div class="trait-text">They know the basics. <strong>Do not over-explain equipment.</strong> Treat them as someone who just needs the right environment, not the right education.</div>
+          </div>
+          <div class="trait-card">
+            <div class="trait-label b2">Struggled With Consistency</div>
+            <div class="trait-text">The pattern is familiar to them. <strong>Acknowledge it without shame.</strong> "A lot of our members come in exactly where you are right now."</div>
+          </div>
+          <div class="trait-card">
+            <div class="trait-label b2">Needs Accountability</div>
+            <div class="trait-text">This is the #1 gap for Start & Stoppers. <strong>Thrive coaching, studio classes, and workout buddies</strong> are your accountability tools. Lead with them.</div>
+          </div>
+          <div class="trait-card">
+            <div class="trait-label b2">May Have Health Concerns</div>
+            <div class="trait-text">Often restarting due to a doctor's visit or a health scare. <strong>Take it seriously. Acknowledge it.</strong> This is often the X-Factor hiding under the surface.</div>
+          </div>
+          <div class="trait-card">
+            <div class="trait-label b2">Needs to Feel Different</div>
+            <div class="trait-text">They are not just choosing a gym — they are choosing to believe this time is different. <strong>Your job is to show them the specific things that make that true.</strong></div>
+          </div>
+          <div class="trait-card">
+            <div class="trait-label b2">Deep "What Else?" Required</div>
+            <div class="trait-text">The surface answer will always be a vague goal. <strong>Dig. Ask what has held them back before.</strong> The answer to that question tells you exactly what to sell.</div>
+          </div>
+        </div>
+        <div class="tour-focus">
+          <div class="tf-title b2">What to Emphasize on the Tour — Start & Stopper</div>
+          <div class="tf-items">
+            <div class="tf-item"><div class="tf-dot b2"></div><span><strong>Thrive coaching program</strong> — professional guidance, accountability, and a plan. This is the structural missing piece for most Start & Stoppers.</span></div>
+            <div class="tf-item"><div class="tf-dot b2"></div><span><strong>Studio classes and community</strong> — showing up for a class is harder to skip than a solo workout. Community = accountability.</span></div>
+            <div class="tf-item"><div class="tf-dot b2"></div><span><strong>Introduce them to staff</strong> — a face-to-face connection with a Thrive coach or manager makes the club feel like a place where people know them.</span></div>
+            <div class="tf-item"><div class="tf-dot b2"></div><span><strong>The welcoming environment</strong> — emphasize that this is a place for real people at every level, not an intimidating performance gym.</span></div>
+            <div class="tf-item"><div class="tf-dot b2"></div><span><strong>Ask what made them stop before</strong> — then show them specifically what is different here. Turn their past barrier into your present differentiator.</span></div>
+          </div>
+        </div>
+        <div class="callout callout-b2">
+          <div class="callout-label">The Start & Stopper Script Approach</div>
+          "You mentioned you've tried to get consistent before and life got in the way — that's incredibly common. The difference here is that you won't be doing it alone. Let me show you what we've built specifically for that."
+        </div>
+        <div class="dialogue-block">
+          <div class="dialogue-title">Handling the "I've Tried Before" Moment</div>
+          <div class="line"><span class="speaker prospect">Guest</span><span class="line-text">"I've had memberships before and honestly I just stopped going. I don't really know what's going to be different this time."</span></div>
+          <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"I really appreciate you being honest about that — and honestly that's the most common thing I hear. Most people don't stop going because they lost the desire. They stop because they didn't have the right structure around them."</em></span></div>
+          <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"What usually triggered it for you — was it schedule, was it feeling like you didn't know what to do when you got here, or something else?"</em></span></div>
+          <div class="line"><span class="speaker prospect">Guest</span><span class="line-text">"Mostly schedule. And I'd get there and kind of wander around not knowing what to do."</span></div>
+          <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"That's exactly what I want to show you we solve here. Come on back."</em></span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- L4 -->
+    <div class="lesson-card b3-card" data-lesson="4">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">04</span>
+        <span class="lesson-title-text">Bucket 3: Never Fitness — Safety and Vision First</span>
+        <span class="lesson-tag b3">Bucket 03</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>This person has little to no gym experience. They may have never been in a fitness facility before, or their experience is so minimal that it barely counts. Walking in here took courage — and they may not look like it on the surface, but they are in a vulnerable state.</p>
+        <p>Your entire approach must lead with safety, simplicity, and possibility. Everything you say should lower the barrier, not raise the bar. This is not the time to showcase your most advanced equipment. This is the time to make someone believe they belong here.</p>
+        <div class="trait-grid">
+          <div class="trait-card">
+            <div class="trait-label b3">No Assumption of Knowledge</div>
+            <div class="trait-text"><strong>Zero fitness jargon.</strong> Do not say "selectorized," "metabolic conditioning," or "periodization." If you need to explain a machine, do it in plain English.</div>
+          </div>
+          <div class="trait-card">
+            <div class="trait-label b3">Intimidated by the Environment</div>
+            <div class="trait-text">A room full of people who know what they are doing can feel overwhelming to someone who does not. <strong>Normalize it. Make it feel approachable.</strong></div>
+          </div>
+          <div class="trait-card">
+            <div class="trait-label b3">Needs to Dream First</div>
+            <div class="trait-text">Before features, before pricing — they need to <strong>visualize themselves here.</strong> Paint the picture of what their life could look like once fitness becomes a habit.</div>
+          </div>
+          <div class="trait-card">
+            <div class="trait-label b3">Requires Patient Pacing</div>
+            <div class="trait-text">They may have many questions. They may process slowly. <strong>Never rush them.</strong> A rushed Never Fitness guest is a lost sale every time.</div>
+          </div>
+          <div class="trait-card">
+            <div class="trait-label b3">Personal Connection Critical</div>
+            <div class="trait-text">Introduce them to staff by name early. <strong>A familiar face makes a gym feel safe.</strong> They need to know there are real people here who will help them.</div>
+          </div>
+          <div class="trait-card">
+            <div class="trait-label b3">The X-Factor Is Everything</div>
+            <div class="trait-text">There is always a powerful reason someone with no gym history finally walked in. <strong>Find it. It is usually emotional, personal, and significant.</strong> Build everything around it.</div>
+          </div>
+        </div>
+        <div class="tour-focus">
+          <div class="tf-title b3">What to Emphasize on the Tour — Never Fitness</div>
+          <div class="tf-items">
+            <div class="tf-item"><div class="tf-dot b3"></div><span><strong>The welcoming atmosphere</strong> — the first thing they need to feel is that they will not be judged here. Say it explicitly if you have to.</span></div>
+            <div class="tf-item"><div class="tf-dot b3"></div><span><strong>Thrive consultation</strong> — frame it as "we build a plan just for you so you never have to wonder what to do when you get here." This directly addresses their biggest fear.</span></div>
+            <div class="tf-item"><div class="tf-dot b3"></div><span><strong>Simple, accessible areas first</strong> — do not open with the advanced barbell area. Start where they can picture themselves.</span></div>
+            <div class="tf-item"><div class="tf-dot b3"></div><span><strong>Introduce staff by name</strong> — a real personal connection with a Thrive coach or manager transforms "a gym" into "my gym."</span></div>
+            <div class="tf-item"><div class="tf-dot b3"></div><span><strong>Keep the tour focused</strong> — do not overwhelm with every amenity. Hit the highlights that speak to their stated goals and leave the rest for after they join.</span></div>
+          </div>
+        </div>
+        <div class="callout callout-b3">
+          <div class="callout-label">The Never Fitness Script Approach</div>
+          "First thing I want you to know — everybody here started exactly where you are right now. There is no wrong starting point. Our job is just to make sure you never have to figure this out alone."
+        </div>
+        <div class="callout callout-warn">
+          <div class="callout-label">The Jargon Trap</div>
+          The fastest way to lose a Never Fitness guest is to make them feel stupid. Using terminology they do not understand without explanation does exactly that. When in doubt, speak to a friend who is curious about fitness for the first time — that is your target voice for this bucket.
+        </div>
+      </div>
+    </div>
+
+    <!-- L5 -->
+    <div class="lesson-card" data-lesson="5">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">05</span>
+        <span class="lesson-title-text">Language Calibration — Speaking Their Language</span>
+        <span class="lesson-tag neutral">Communication</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>The bucket does not just change what you show on the tour. It changes how you speak. The words you choose, the terms you use, the assumptions you make — all of it needs to calibrate to where this person is. Speaking over someone's head loses them. Speaking beneath them insults them. The bucket tells you exactly where to pitch your language.</p>
+        <div class="dialogue-block">
+          <div class="dialogue-title">Same Feature — Three Different Languages</div>
+          <div class="line"><span class="speaker consultant">For Avid</span><span class="line-text"><em>"Our Revive suite includes Normatec compression, cryo chamber, and infrared — serious athletes are using this daily for recovery optimization between sessions."</em></span></div>
+          <div class="line"><span class="speaker consultant">For Start/Stop</span><span class="line-text"><em>"We have a recovery area that helps your body bounce back faster — so you are not as sore and you actually want to come back the next day. A lot of people find it becomes one of their favorite parts of the membership."</em></span></div>
+          <div class="line"><span class="speaker consultant">For Never</span><span class="line-text"><em>"We have this amazing area where you can recover after a workout — there is heat therapy, cold therapy, and compression. Think of it as a spa that makes your body feel better after you exercise. You would be surprised how much you end up looking forward to it."</em></span></div>
+        </div>
+        <p>The same amenity. The same truth. Three completely different deliveries — each one calibrated to where the person is. None of them are dumbed down or inflated. They are just right-sized for the audience.</p>
+        <div class="callout callout-rule">
+          <div class="callout-label">The Language Rule</div>
+          Match their vocabulary, not yours. If they use a term, you can use it. If they do not use a term, explain it before you use it — or skip it entirely and describe the outcome instead. Outcomes are universally understood. Terminology is not.
+        </div>
+      </div>
+    </div>
+
+    <!-- L6 -->
+    <div class="lesson-card" data-lesson="6">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">06</span>
+        <span class="lesson-title-text">The Museum Tour — What You Are Trying to Avoid</span>
+        <span class="lesson-tag neutral">Anti-Pattern</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>The museum tour is what happens when a consultant ignores the bucket entirely and just walks every guest through the same route in the same order with the same scripted lines. It is the default mode for undertrained or disengaged consultants — and it is the single biggest tour-level reason for lost sales.</p>
+        <p>It looks like this: start at the front desk, walk left past the cardio deck, point out the weight room, mention the studios, gesture at the pool, end at the membership desk. Same for everyone. Feature after feature. No personalization. No connection to what the person actually cares about.</p>
+        <div class="callout callout-warn">
+          <div class="callout-label">Why the Museum Tour Fails</div>
+          The guest feels like a number moving through a process. They are not inspired. They are not emotionally connected. And when it comes time to close, there is nothing personal to anchor the conversation to. The bucket-based tour makes every stop feel like it was chosen specifically for them — because it was.
+        </div>
+        <p>Compare these two closings:</p>
+        <div class="dialogue-block">
+          <div class="dialogue-title">Museum Tour Close vs. Bucket-Based Tour Close</div>
+          <div class="line"><span class="speaker consultant">Museum</span><span class="line-text">"So you saw everything — we have cardio, weights, classes, and the pool. What do you think?"</span></div>
+          <div class="line"><span class="speaker consultant">Bucket-Based</span><span class="line-text"><em>"Based on everything you shared about wanting to finally feel consistent and having someone in your corner — we showed you the Thrive program, you met Coach [Name], and you saw the class schedule that fits your mornings. I think we've got exactly what makes the difference for you. Let's make it official."</em></span></div>
+        </div>
+        <p>One of those closes connects. One does not. The bucket is what made the difference — and it started at the very beginning of the pre-tour, not at the membership desk.</p>
+      </div>
+    </div>
+
+    <!-- L7 -->
+    <div class="lesson-card" data-lesson="7">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">07</span>
+        <span class="lesson-title-text">Between Buckets — When It Is Not Obvious</span>
+        <span class="lesson-tag neutral">Edge Cases</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>Not every guest fits neatly into one bucket. Some are on the border. Some will surprise you mid-tour by revealing more than you expected. Some Start & Stoppers have more fitness knowledge than their hesitancy suggests. Some Avid Exercisers are secretly more fragile about their consistency than they let on. Here is how to handle the edge cases.</p>
+        <p><strong>When they seem like a Start & Stopper but talk like an Avid Exerciser:</strong> Meet them where their confidence is — use appropriate terminology, acknowledge their knowledge — but still build accountability and structure into your pitch. They have the knowledge. What they need is the system.</p>
+        <p><strong>When they seem like an Avid Exerciser but mention significant inconsistency:</strong> Do not assume. Ask: <em>"It sounds like you have a solid foundation — what has gotten in the way of staying consistent?"</em> That answer will recalibrate your approach immediately.</p>
+        <p><strong>When you genuinely cannot tell:</strong> Start closer to the middle — respectful of fitness knowledge, warm about the supportive environment. And keep asking questions. The bucket will reveal itself. It always does.</p>
+        <div class="callout callout-tip">
+          <div class="callout-label">The Adjustment Rule</div>
+          You can change buckets mid-tour. If new information comes out that reframes who this person is, adjust. The bucket is a starting point, not a locked-in decision. The consultant who adapts in real time builds more trust than the one who sticks rigidly to their first read.
+        </div>
+        <div class="callout callout-rule">
+          <div class="callout-label">The Universal Truth Across All Buckets</div>
+          Regardless of which bucket someone is in — the X-Factor, active listening, genuine curiosity, and a tour built around their specific life are non-negotiable. The bucket changes the delivery. It never changes the standard of care.
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end lesson grid -->
+
+  <div class="study-complete-banner" id="studyBanner">
+    <h3>All 7 Lessons Complete</h3>
+    <p>You know the buckets. Now prove it. Certification quiz is unlocked below.</p>
+    <button class="cf-btn" onclick="unlockQuiz()" style="max-width:300px;margin:0 auto;">Unlock Certification ↓</button>
+  </div>
+
+  <!-- MISTAKES -->
+  <div class="divider-label">Common Mistakes</div>
+  <div class="section-header" style="padding-top:0;">
+    <div class="s-eyebrow">What Kills the Personalization</div>
+    <h2 class="s-title">6 Bucket Mistakes<br>& How to Fix Them</h2>
+  </div>
+  <div class="mistakes-grid">
+    <div class="mistake-card">
+      <div class="mistake-label bad">✗ The Mistake</div>
+      <div class="mistake-text">Giving every guest the same tour regardless of who they are. <strong>The museum tour. Feature after feature. No personalization. No connection.</strong></div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label good">✓ The Fix</div>
+      <div class="mistake-text"><strong>Identify the bucket within 5 minutes.</strong> Every stop on the tour should feel like it was chosen specifically for this person — because it was.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label bad">✗ The Mistake</div>
+      <div class="mistake-text">Using fitness jargon with a Never Fitness guest. <strong>"Let's check out our selectorized circuit and functional training turf."</strong> They have no idea what that means.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label good">✓ The Fix</div>
+      <div class="mistake-text"><strong>Describe outcomes in plain language.</strong> "This area has machines that help you build strength in different parts of your body — and there are instructional videos right on them so you always know what to do."</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label bad">✗ The Mistake</div>
+      <div class="mistake-text">Treating an Avid Exerciser like a beginner. Over-explaining basics, showing them introductory equipment. <strong>They feel condescended to and you lose credibility immediately.</strong></div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label good">✓ The Fix</div>
+      <div class="mistake-text"><strong>Match their level.</strong> Speak peer to peer. Go straight to the advanced equipment, the recovery suite, the programming that matches their goals. Show them the upgrade.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label bad">✗ The Mistake</div>
+      <div class="mistake-text">Skipping accountability and structure for a Start & Stopper. <strong>Showing them equipment when what they actually need is a reason to believe this time is different.</strong></div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label good">✓ The Fix</div>
+      <div class="mistake-text"><strong>Lead with the system.</strong> Thrive coaching. Studio classes. Staff introductions. Community. Show them the accountability architecture that has been missing every time before.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label bad">✗ The Mistake</div>
+      <div class="mistake-text">Rushing a Never Fitness guest through the tour. <strong>They need time to process, ask questions, and feel safe. Speed communicates pressure — and pressure makes them leave.</strong></div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label good">✓ The Fix</div>
+      <div class="mistake-text"><strong>Slow down. Answer every question thoroughly.</strong> For a Never Fitness guest, the moment they feel rushed is the moment they decide to "think about it."</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label bad">✗ The Mistake</div>
+      <div class="mistake-text">Locking in a bucket read and never adjusting. <strong>New information comes out mid-tour. You ignore it because you already decided who this person is.</strong></div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label good">✓ The Fix</div>
+      <div class="mistake-text"><strong>Stay flexible.</strong> The bucket is a starting point. If new information changes the picture, adjust immediately. The best consultants recalibrate in real time.</div>
+    </div>
+  </div>
+
+  <!-- ROLE PLAY -->
+  <div class="divider-label">Role-Play Scenarios</div>
+  <div class="section-header" style="padding-top:0;">
+    <div class="s-eyebrow">Practice</div>
+    <h2 class="s-title">4 Scenarios — One<br>Per Bucket Plus a Curveball</h2>
+    <p class="s-sub">Practice identifying the bucket from the opening answer and adjusting your entire approach accordingly. Speed and accuracy are both part of the standard.</p>
+  </div>
+
+  <div class="roleplay-card">
+    <div class="roleplay-header b1">
+      <span class="roleplay-scenario b1">Scenario 01 — The Competitive Athlete</span>
+      <span class="roleplay-type">Bucket 01 · Avid Exerciser</span>
+    </div>
+    <div class="roleplay-body">
+      <div class="roleplay-setup">"I've been running competitively for three years and I'm getting more into strength training. My last gym just didn't have the equipment I needed for the programming my coach gave me."</div>
+      <div class="roleplay-objective"><strong>Your objective:</strong> Immediately match their level. No basics. Go straight to the free weight selection, the strength training area, and Revive recovery — frame all of it around performance enhancement and recovery between training blocks. Ask about their specific programming so you can show them exactly what applies. Introduce Thrive as a performance optimization tool, not a beginner consultation.</div>
+      <div class="coaching-note">The competitive athlete has a high bar for credibility. If you over-explain something they already know, you lose ground instantly. Stay in your lane — speak to what City Fitness offers, and if they go deep on sport-specific programming you are not expert in, say so and connect them to someone who is.</div>
+    </div>
+  </div>
+
+  <div class="roleplay-card">
+    <div class="roleplay-header b2">
+      <span class="roleplay-scenario b2">Scenario 02 — The Returning Member</span>
+      <span class="roleplay-type">Bucket 02 · Start & Stopper</span>
+    </div>
+    <div class="roleplay-body">
+      <div class="roleplay-setup">"I was actually a member here about two years ago. I got really consistent for a while and then work got crazy and I just stopped coming. I feel bad about it honestly."</div>
+      <div class="roleplay-objective"><strong>Your objective:</strong> Remove the guilt immediately — normalize it, validate it, and move forward. Ask what was working when they were consistent and what specifically triggered the fall-off. Use that answer to show them what is different or what they can put in place now to prevent the same pattern. Accountability structures are your pitch — Thrive, classes, a community that notices when you are gone.</div>
+      <div class="coaching-note">The returning member is actually your warmest Start & Stopper lead. They already know City Fitness. They liked it enough to come back. Your job is simply to give them a better reason to stay this time. Find out what broke down before and sell the solution to exactly that.</div>
+    </div>
+  </div>
+
+  <div class="roleplay-card">
+    <div class="roleplay-header b3">
+      <span class="roleplay-scenario b3">Scenario 03 — The First-Timer</span>
+      <span class="roleplay-type">Bucket 03 · Never Fitness</span>
+    </div>
+    <div class="roleplay-body">
+      <div class="roleplay-setup">"My doctor told me I need to start exercising. I've honestly never been in a gym before. I don't really know what I'm supposed to do and I don't want to look stupid in front of everyone."</div>
+      <div class="roleplay-objective"><strong>Your objective:</strong> Safety and belonging before everything else. Acknowledge the courage it took to walk in. Normalize their experience — "Most people feel exactly that way the first time." Introduce Thrive as the answer to "I don't know what to do" — frame it as a professional who builds a plan just for them so they never have to guess. Keep the tour focused, avoid overwhelming them with the full facility, and introduce a staff member by name to create a personal anchor point.</div>
+      <div class="coaching-note">This guest is one genuine moment of connection away from being your most loyal long-term member. They came in vulnerable and they need to leave feeling capable and welcome. The close for this person is not price — it is belief. Sell the belief first.</div>
+    </div>
+  </div>
+
+  <div class="roleplay-card">
+    <div class="roleplay-header b2">
+      <span class="roleplay-scenario b2">Scenario 04 — The Curveball</span>
+      <span class="roleplay-type">Between Buckets</span>
+    </div>
+    <div class="roleplay-body">
+      <div class="roleplay-setup">"I used to be really into fitness — like seriously into it, competed and everything. But that was ten years ago. I've barely touched a gym since then. I'm not sure where I even am anymore."</div>
+      <div class="roleplay-objective"><strong>Your objective:</strong> Do not assume either bucket. This person has the knowledge of an Avid Exerciser and the current state of a Start & Stopper. Ask: "What does getting back into it look like for you — are you thinking about picking up where you left off or starting fresh?" Their answer tells you which direction to lean. Likely a hybrid approach: respect their history and knowledge, but build in accountability and a structured re-entry plan through Thrive.</div>
+      <div class="coaching-note">The ten-years-away former athlete is one of the most interesting prospects you will meet. Their identity is still tied to fitness — they just lost the path back. Your job is to be the bridge. Acknowledge who they were, meet them where they are now, and show them the route forward.</div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="divider-label">Certification</div>
+  <div class="section-header" style="padding-top:0;">
+    <div class="s-eyebrow">Knowledge Check</div>
+    <h2 class="s-title">Buckets Certification</h2>
+    <p class="s-sub">16 questions. 80% or higher to pass. Complete all 7 lessons above to unlock.</p>
+  </div>
+
+  <div class="quiz-section" id="quizSection">
+    <div class="quiz-locked" id="quizLocked">
+      <div class="quiz-locked-icon">🔒</div>
+      <h3>Complete All Lessons to Unlock</h3>
+      <p>Open all 7 lessons above. The quiz unlocks automatically when you finish.</p>
+    </div>
+    <div class="name-panel" id="namePanel" style="display:none;">
+      <h3>Certification Registry</h3>
+      <p>Enter your full name as it should appear on your certification record.</p>
+      <input type="text" class="cf-input" id="empNameInput" placeholder="Full Name"/>
+      <button class="cf-btn" onclick="startQuiz()">Begin Official Test →</button>
+    </div>
+    <div class="quiz-active" id="quizActive" style="display:none;">
+      <div class="q-progress-wrap"><div class="q-progress-bar" id="qBar"></div></div>
+      <div class="q-meta">
+        <span class="q-counter" id="qCounter"></span>
+        <span class="q-topic">Module 04 · The Buckets</span>
+      </div>
+      <div class="q-text" id="qText"></div>
+      <div class="q-options" id="qOptions"></div>
+    </div>
+    <div class="results-panel" id="resultsPanel">
+      <div class="result-score" id="resultScore"></div>
+      <div class="result-label" id="resultLabel"></div>
+      <div id="missedSection"></div>
+      <button class="cf-btn" onclick="resetModule()" style="margin-top:22px;">Return to Module</button>
+    </div>
+  </div>
+
+</div>
+
+<div class="module-footer">
+  <p>City Fitness Philadelphia &nbsp;·&nbsp; Deep Training Module 04 &nbsp;·&nbsp; 2026</p>
+</div>
+
+<iframe name="cf_hidden" id="cf_hidden" style="display:none;"></iframe>
+<form id="certForm" target="cf_hidden" method="GET" action="https://script.google.com/a/macros/cityfitness.com/s/AKfycbzZokf4OQGpHYEkb_9mcVdJ-t9jop9RWIpclIcLSjTWRcBQfeDJ751bl0qO8k7VrZwe/exec">
+  <input type="hidden" name="employee" id="formEmployee"/>
+  <input type="hidden" name="topic" id="formTopic"/>
+  <input type="hidden" name="result" id="formResult"/>
+</form>
+
+<script>
+window.addEventListener('scroll',()=>{
+  const el=document.documentElement;
+  const pct=(el.scrollTop/(el.scrollHeight-el.clientHeight))*100;
+  document.getElementById('topFill').style.width=pct+'%';
+});
+
+let openedLessons=new Set();
+const totalLessons=7;
+
+function toggleLesson(header){
+  const card=header.parentElement;
+  const isOpen=card.classList.contains('open');
+  card.classList.toggle('open',!isOpen);
+  if(!isOpen){
+    openedLessons.add(parseInt(card.dataset.lesson));
+    checkStudyComplete();
+  }
+}
+
+function checkStudyComplete(){
+  if(openedLessons.size>=totalLessons){
+    const banner=document.getElementById('studyBanner');
+    banner.style.display='block';
+    banner.scrollIntoView({behavior:'smooth',block:'center'});
+  }
+}
+
+function unlockQuiz(){
+  document.getElementById('quizLocked').style.display='none';
+  document.getElementById('namePanel').style.display='block';
+  document.getElementById('quizSection').scrollIntoView({behavior:'smooth'});
+}
+
+const questions=[
+  {q:"What is the primary question used to identify which bucket a guest falls into?",a:["What is your budget?","Where are you on your fitness journey?","Have you been to a gym before?","What membership are you interested in?"],c:1},
+  {q:"How quickly should you identify a guest's bucket?",a:["By the end of the tour","After the price presentation","Within the first 5 minutes of the pre-tour","During the T.I."],c:2},
+  {q:"What is the 'museum tour' and why is it a problem?",a:["A tour that focuses only on the Revive suite","A generic feature-by-feature walkthrough that is the same for every guest regardless of who they are","A tour that lasts too long","A tour that skips important amenities"],c:1},
+  {q:"Which bucket describes a guest who says: 'I've been lifting seriously for years and I'm looking for better equipment and a recovery suite'?",a:["Never Fitness","Start & Stopper","Avid Exerciser","None of the above"],c:2},
+  {q:"For the Avid Exerciser, what is the primary sales job?",a:["Teaching them how to use equipment","Convincing them that exercise is important","Convincing them that City Fitness is worth switching to","Getting them comfortable in a gym environment"],c:2},
+  {q:"What is the #1 gap you are trying to fill for a Start & Stopper?",a:["Basic fitness knowledge","Equipment quality","Accountability and structure — giving them a reason to believe this time is different","Price value"],c:2},
+  {q:"Which of the following is the correct approach for a Never Fitness guest?",a:["Show them the most advanced equipment first to impress them","Use standard fitness terminology to help them learn","Lead with safety, simplicity, and belonging — help them dream before you inform","Move quickly so they do not feel overwhelmed"],c:2},
+  {q:"Why should you NEVER use fitness jargon with a Never Fitness guest?",a:["It makes the tour too long","It can make them feel stupid and excluded, which causes them to disengage","It reveals too much about the membership features","It is against company policy"],c:1},
+  {q:"What should you emphasize most on a tour for a Start & Stopper?",a:["The most advanced equipment available","Thrive coaching, studio classes, staff introductions — the accountability architecture","The price value compared to other gyms","The cleanliness of the facility"],c:1},
+  {q:"When showing the Revive recovery suite to an Avid Exerciser vs. a Never Fitness guest, what should change?",a:["Nothing — the same explanation works for everyone","The location you show them first","The language — technical and performance-focused for Avid, simple outcome-focused for Never Fitness","The price you present for the upgrade"],c:2},
+  {q:"What does it mean that 'the bucket is a guide, not a box'?",a:["Buckets are optional guidelines that consultants can ignore","You must always assign a bucket before starting the tour","Buckets set your starting approach but you should stay flexible and adjust if new information changes the picture","Each guest falls into exactly one bucket with no overlap"],c:2},
+  {q:"A guest says: 'I keep starting and then life gets in the way — I've had memberships before.' Which bucket are they in?",a:["Avid Exerciser","Never Fitness","Start & Stopper","Cannot be determined"],c:2},
+  {q:"For a Never Fitness guest who says 'I don't want to look stupid in front of everyone,' the correct response is:",a:["Tell them the gym is not actually that intimidating","Normalize it and immediately connect them to Thrive as the answer to never having to guess what to do","Skip the weight room on the tour","Reassure them that the equipment is easy to use"],c:1},
+  {q:"When a guest seems to be between buckets — like a former competitive athlete who has not trained in ten years — what should you do?",a:["Default to the Avid Exerciser approach since they have the history","Default to the Never Fitness approach since they have been away so long","Ask a clarifying question about where they feel they are now and let their answer guide your calibration","Skip the buckets entirely and give a standard tour"],c:2},
+  {q:"What is the universal truth that applies regardless of which bucket a guest is in?",a:["Always lead with pricing to qualify interest","Always show the Revive suite first","Genuine curiosity, active listening, and a tour built around their specific life are non-negotiable for every guest","Always spend at least 45 minutes on the tour"],c:2},
+  {q:"Which of the following correctly describes the Avid Exerciser bucket?",a:["Has tried gyms before but struggles with consistency","Has little to no gym experience and is intimidated by the environment","Has a history of regular exercise, is self-motivated, and uses fitness terminology comfortably","Is motivated primarily by a doctor's recommendation"],c:2}
+];
+
+let empName='',qIndex=0,score=0,missed=[];
+
+function startQuiz(){
+  empName=document.getElementById('empNameInput').value.trim();
+  if(!empName){alert('Please enter your full name.');return;}
+  document.getElementById('namePanel').style.display='none';
+  document.getElementById('quizActive').style.display='block';
+  qIndex=0;score=0;missed=[];
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const q=questions[qIndex];
+  document.getElementById('qBar').style.width=((qIndex/questions.length)*100)+'%';
+  document.getElementById('qCounter').textContent=`Question ${qIndex+1} of ${questions.length}`;
+  document.getElementById('qText').textContent=q.q;
+  const opts=document.getElementById('qOptions');
+  opts.innerHTML='';
+  q.a.forEach((opt,i)=>{
+    const btn=document.createElement('button');
+    btn.className='q-opt';
+    btn.textContent=opt;
+    btn.onclick=()=>handleAnswer(i);
+    opts.appendChild(btn);
+  });
+}
+
+function handleAnswer(idx){
+  const q=questions[qIndex];
+  if(idx===q.c){score++;}
+  else{missed.push({q:q.q,a:q.a[q.c]});}
+  qIndex++;
+  if(qIndex<questions.length){renderQuestion();}
+  else{showResults();}
+}
+
+function showResults(){
+  const pct=Math.round((score/questions.length)*100);
+  document.getElementById('quizActive').style.display='none';
+  const rp=document.getElementById('resultsPanel');
+  rp.style.display='block';
+  const scoreEl=document.getElementById('resultScore');
+  scoreEl.textContent=pct+'%';
+  scoreEl.className='result-score '+(pct>=80?'result-pass':'result-fail');
+  document.getElementById('resultLabel').textContent=pct>=80?'Certification Passed — Module 04: The Buckets':'Retake Required — Review Missed Questions Below';
+  let missedHtml='';
+  if(missed.length){
+    missedHtml='<div class="missed-label">Knowledge Gaps — Review These</div>';
+    missed.forEach(m=>{
+      missedHtml+=`<div class="missed-item"><div class="missed-q">${m.q}</div><div class="missed-a">Correct Answer: ${m.a}</div></div>`;
+    });
+  }
+  document.getElementById('missedSection').innerHTML=missedHtml;
+  document.getElementById('formEmployee').value=empName;
+  document.getElementById('formTopic').value='Module 04 - The Buckets';
+  document.getElementById('formResult').value=pct;
+  document.getElementById('certForm').submit();
+}
+
+function resetModule(){
+  document.getElementById('resultsPanel').style.display='none';
+  document.getElementById('namePanel').style.display='block';
+  document.getElementById('empNameInput').value='';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
