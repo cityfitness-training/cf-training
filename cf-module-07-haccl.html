@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>CF Training | Module 07: H.A.C.C.L.</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:ital,wght@0,400;0,500;0,600;1,400;1,600&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg: #131110;
+  --surface: #1a1816;
+  --card: #201e1b;
+  --border: #2d2a26;
+  --border-light: #3a3630;
+  --copper: #B87C4C;
+  --copper-light: #C9A07A;
+  --copper-dim: rgba(184,124,76,0.12);
+  --copper-glow: rgba(184,124,76,0.05);
+  --tan: #BF9B6F;
+  --white: #F0EDE8;
+  --grey: #6e7068;
+  --dim: #909288;
+  --red: #c0392b;
+  --green: #4a9a60;
+  --green-dim: rgba(74,154,96,0.1);
+  --gold: #c4a44a;
+  --gold-dim: rgba(196,164,74,0.1);
+  --grad: linear-gradient(135deg, #B87C4C 0%, #C9A07A 100%);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--white);font-family:'Barlow',sans-serif;line-height:1.65;overflow-x:hidden;}
+
+.top-bar{position:fixed;top:0;left:0;right:0;height:3px;background:var(--border);z-index:9999;}
+.top-bar-fill{height:100%;background:var(--grad);width:0%;transition:width .3s ease;}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:80px 60px;position:relative;overflow:hidden;}
+.hero::after{content:'H.A.C.C.L.';position:absolute;right:-60px;top:50%;transform:translateY(-50%);font-family:'Barlow Condensed',sans-serif;font-size:clamp(80px,12vw,160px);font-weight:900;color:transparent;-webkit-text-stroke:1px rgba(184,124,76,0.06);pointer-events:none;user-select:none;letter-spacing:-4px;line-height:1;white-space:nowrap;}
+.hero-eyebrow{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--copper);letter-spacing:4px;text-transform:uppercase;margin-bottom:18px;display:flex;align-items:center;gap:12px;}
+.hero-eyebrow::before{content:'';display:block;width:32px;height:2px;background:var(--copper);}
+.hero-title{font-family:'Barlow Condensed',sans-serif;font-size:clamp(52px,8vw,100px);font-weight:900;line-height:.88;text-transform:uppercase;letter-spacing:-2px;margin-bottom:16px;max-width:700px;}
+.hero-title em{font-style:normal;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.hero-acronym{display:flex;gap:8px;margin-bottom:28px;flex-wrap:wrap;}
+.acr-pill{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:8px 14px;display:flex;flex-direction:column;align-items:center;gap:2px;}
+.acr-letter{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;color:var(--copper);line-height:1;}
+.acr-word{font-size:10px;color:var(--grey);letter-spacing:1px;text-transform:uppercase;}
+.hero-desc{font-size:16px;color:var(--dim);line-height:1.75;margin-bottom:36px;max-width:580px;}
+.hero-stats{display:flex;gap:36px;margin-bottom:44px;}
+.stat{display:flex;flex-direction:column;}
+.stat-num{font-family:'Barlow Condensed',sans-serif;font-size:34px;font-weight:900;color:var(--copper);line-height:1;}
+.stat-label{font-size:11px;color:var(--grey);text-transform:uppercase;letter-spacing:2px;margin-top:3px;}
+.hero-btn{display:inline-flex;align-items:center;gap:10px;background:var(--grad);border:none;padding:16px 32px;color:white;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;letter-spacing:2px;text-transform:uppercase;border-radius:4px;cursor:pointer;transition:.2s;}
+.hero-btn:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(184,124,76,0.3);}
+
+/* LAYOUT */
+.module-wrap{max-width:900px;margin:0 auto;padding:0 40px 120px;}
+.section-header{padding:70px 0 36px;}
+.s-eyebrow{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--copper);letter-spacing:4px;text-transform:uppercase;display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+.s-eyebrow::after{content:'';width:48px;height:1px;background:var(--copper);opacity:.4;}
+.s-title{font-family:'Barlow Condensed',sans-serif;font-size:clamp(30px,5vw,46px);font-weight:900;text-transform:uppercase;letter-spacing:-.5px;line-height:1.05;margin-bottom:10px;}
+.s-sub{font-size:16px;color:var(--dim);max-width:680px;line-height:1.6;}
+
+/* LESSONS */
+.lesson-grid{display:flex;flex-direction:column;gap:2px;}
+.lesson-card{background:var(--surface);border:1px solid var(--border);overflow:hidden;}
+.lesson-card:first-child{border-radius:10px 10px 0 0;}
+.lesson-card:last-child{border-radius:0 0 10px 10px;}
+.lesson-header{display:flex;align-items:center;gap:20px;padding:20px 26px;cursor:pointer;user-select:none;transition:.15s;}
+.lesson-header:hover{background:var(--copper-glow);}
+.lesson-num{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--copper);letter-spacing:2px;min-width:34px;}
+.lesson-title-text{font-size:16px;font-weight:700;flex:1;}
+.lesson-tag{font-size:10px;font-weight:700;color:var(--copper);background:var(--copper-dim);padding:4px 10px;border-radius:20px;text-transform:uppercase;letter-spacing:1px;white-space:nowrap;}
+.lesson-arrow{color:var(--grey);font-size:11px;transition:.3s;font-style:normal;}
+.lesson-card.open .lesson-arrow{transform:rotate(180deg);color:var(--copper);}
+.lesson-card.open .lesson-header{border-bottom:1px solid var(--border);}
+.lesson-body{display:none;padding:28px 26px 26px;}
+.lesson-card.open .lesson-body{display:block;}
+.lesson-body p{color:var(--dim);font-size:15px;line-height:1.75;margin-bottom:14px;}
+.lesson-body p:last-child{margin-bottom:0;}
+.lesson-body strong{color:var(--white);font-weight:700;}
+.lesson-body em{color:var(--tan);font-style:italic;}
+
+/* CALLOUTS */
+.callout{border-radius:8px;padding:18px 22px;margin:18px 0;font-size:15px;line-height:1.65;}
+.callout-rule{border-left:3px solid var(--copper);background:var(--copper-dim);color:var(--copper-light);}
+.callout-script{border-left:3px solid var(--tan);background:rgba(191,155,111,0.07);color:var(--tan);font-style:italic;}
+.callout-warn{border-left:3px solid var(--red);background:rgba(192,57,43,0.08);color:#d97060;}
+.callout-tip{border-left:3px solid var(--green);background:var(--green-dim);color:#7ac09a;}
+.callout-gold{border-left:3px solid var(--gold);background:var(--gold-dim);color:#d4b870;}
+.callout-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:3px;text-transform:uppercase;margin-bottom:7px;opacity:.7;display:block;}
+
+/* HACCL LETTER CARDS */
+.haccl-grid{display:flex;flex-direction:column;gap:10px;margin:20px 0;}
+.haccl-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:22px 24px;display:grid;grid-template-columns:56px 1fr;gap:20px;align-items:start;}
+.haccl-letter-wrap{display:flex;flex-direction:column;align-items:center;gap:4px;}
+.haccl-letter{font-family:'Barlow Condensed',sans-serif;font-size:48px;font-weight:900;color:var(--copper);line-height:1;}
+.haccl-word{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--grey);}
+.haccl-content{}
+.haccl-question{font-size:15px;color:var(--tan);font-style:italic;margin-bottom:10px;line-height:1.55;}
+.haccl-why{font-size:14px;color:var(--dim);line-height:1.6;}
+.haccl-why strong{color:var(--white);}
+.haccl-example{margin-top:10px;font-size:13px;color:var(--dim);background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:10px 14px;line-height:1.5;}
+.haccl-example strong{color:var(--copper-light);}
+
+/* YES MOMENTUM VISUAL */
+.yes-stack{display:flex;flex-direction:column;gap:6px;margin:16px 0;}
+.yes-row{display:flex;align-items:center;gap:14px;padding:12px 18px;border-radius:8px;background:var(--surface);border:1px solid var(--border);}
+.yes-check{font-size:14px;color:var(--green);min-width:20px;}
+.yes-q{font-size:14px;color:var(--dim);flex:1;line-height:1.4;}
+.yes-answer{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--green);min-width:32px;}
+.yes-final-row{display:flex;align-items:center;gap:14px;padding:16px 18px;border-radius:8px;background:var(--copper-dim);border:1px solid rgba(184,124,76,0.3);margin-top:4px;}
+.yes-final-q{font-size:14px;color:var(--copper-light);flex:1;font-weight:600;line-height:1.4;}
+.yes-final-answer{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--copper);}
+
+/* DIALOGUE */
+.dialogue-block{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:22px;margin:18px 0;}
+.dialogue-title{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--copper);letter-spacing:3px;text-transform:uppercase;margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+.line{display:flex;gap:14px;margin-bottom:14px;align-items:flex-start;}
+.line:last-child{margin-bottom:0;}
+.speaker{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;min-width:90px;padding-top:3px;}
+.speaker.prospect{color:var(--grey);}
+.speaker.consultant{color:var(--copper);}
+.speaker.action{color:rgba(191,155,111,0.6);}
+.line-text{font-size:15px;color:var(--dim);line-height:1.65;}
+.line-text em{color:var(--white);font-style:normal;font-weight:600;}
+.line-text.action-text{font-style:italic;color:rgba(191,155,111,0.5);font-size:13px;}
+
+/* MISTAKES */
+.mistakes-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px;}
+.mistake-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:18px;}
+.mistake-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:3px;text-transform:uppercase;margin-bottom:8px;}
+.mistake-label.bad{color:var(--red);}
+.mistake-label.good{color:var(--green);}
+.mistake-text{font-size:14px;line-height:1.6;color:var(--dim);}
+.mistake-text strong{color:var(--white);}
+
+/* ROLEPLAY */
+.roleplay-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:14px;}
+.roleplay-header{padding:18px 22px;background:var(--copper-dim);display:flex;justify-content:space-between;align-items:center;}
+.roleplay-scenario{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--copper);}
+.roleplay-type{font-size:11px;color:var(--grey);}
+.roleplay-body{padding:22px;}
+.roleplay-setup{font-size:15px;font-style:italic;color:var(--tan);margin-bottom:14px;padding:12px 16px;background:rgba(191,155,111,0.06);border-radius:6px;line-height:1.6;}
+.roleplay-objective{font-size:14px;color:var(--dim);line-height:1.6;}
+.roleplay-objective strong{color:var(--white);}
+.coaching-note{margin-top:12px;padding:12px 16px;background:rgba(184,124,76,0.07);border-radius:6px;font-size:13px;color:var(--copper-light);line-height:1.6;}
+.coaching-note::before{content:'COACHING NOTE  ';font-weight:800;letter-spacing:2px;font-size:10px;display:block;margin-bottom:3px;opacity:.7;}
+
+/* DIVIDER */
+.divider-label{display:flex;align-items:center;gap:16px;color:var(--grey);font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin:56px 0 30px;}
+.divider-label::before,.divider-label::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* STUDY BANNER */
+.study-complete-banner{background:var(--copper-dim);border:1px solid rgba(184,124,76,0.3);border-radius:12px;padding:28px;text-align:center;margin:36px 0;display:none;}
+.study-complete-banner h3{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;color:var(--copper);margin-bottom:6px;}
+.study-complete-banner p{color:var(--dim);font-size:14px;margin-bottom:18px;}
+
+/* QUIZ */
+.quiz-section{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-top:36px;}
+.quiz-locked{padding:56px 40px;text-align:center;}
+.quiz-locked-icon{font-size:36px;margin-bottom:14px;opacity:.3;}
+.quiz-locked h3{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;text-transform:uppercase;color:var(--grey);margin-bottom:6px;}
+.quiz-locked p{color:var(--grey);font-size:14px;}
+.quiz-active{padding:38px;}
+.q-progress-wrap{height:3px;background:var(--border);border-radius:2px;margin-bottom:28px;overflow:hidden;}
+.q-progress-bar{height:100%;background:var(--grad);width:0%;transition:.4s;}
+.q-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;}
+.q-counter{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--copper);letter-spacing:2px;text-transform:uppercase;}
+.q-topic{font-size:11px;color:var(--grey);}
+.q-text{font-size:20px;font-weight:700;color:var(--white);margin-bottom:26px;line-height:1.4;}
+.q-options{display:flex;flex-direction:column;gap:9px;}
+.q-opt{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:15px 18px;color:var(--dim);font-size:15px;text-align:left;cursor:pointer;transition:.2s;font-family:'Barlow',sans-serif;}
+.q-opt:hover{border-color:var(--copper);color:var(--white);background:var(--copper-glow);}
+.name-panel{padding:38px;}
+.name-panel h3{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;color:var(--white);margin-bottom:5px;}
+.name-panel p{color:var(--dim);font-size:14px;margin-bottom:22px;}
+.cf-input{background:var(--bg);border:1px solid var(--border);color:var(--white);padding:13px 16px;width:100%;border-radius:8px;font-family:'Barlow',sans-serif;font-size:16px;margin-bottom:14px;outline:none;transition:.2s;}
+.cf-input:focus{border-color:var(--copper);}
+.cf-btn{background:var(--grad);border:none;padding:15px 28px;color:white;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;letter-spacing:2px;text-transform:uppercase;border-radius:8px;cursor:pointer;width:100%;transition:.2s;}
+.cf-btn:hover{opacity:.9;transform:translateY(-1px);}
+.results-panel{padding:38px;display:none;}
+.result-score{font-family:'Barlow Condensed',sans-serif;font-size:70px;font-weight:900;line-height:1;margin-bottom:6px;}
+.result-pass{color:var(--copper);}
+.result-fail{color:var(--red);}
+.result-label{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--grey);margin-bottom:22px;}
+.missed-label{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--dim);letter-spacing:3px;text-transform:uppercase;margin-bottom:10px;margin-top:22px;}
+.missed-item{background:rgba(192,57,43,0.07);border-left:3px solid var(--red);border-radius:0 6px 6px 0;padding:13px 15px;margin-bottom:7px;}
+.missed-q{font-size:14px;color:var(--dim);margin-bottom:5px;}
+.missed-a{font-size:14px;color:var(--tan);font-weight:600;}
+
+.module-footer{text-align:center;padding:50px 40px;border-top:1px solid var(--border);}
+.module-footer p{color:var(--grey);font-size:11px;letter-spacing:3px;text-transform:uppercase;}
+
+@media(max-width:700px){
+  .hero{padding:80px 24px 50px;}
+  .module-wrap{padding:0 20px 80px;}
+  .haccl-card{grid-template-columns:1fr;}
+  .mistakes-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar"><div class="top-bar-fill" id="topFill"></div></div>
+
+<section class="hero">
+  <div class="hero-eyebrow">City Fitness Training · Deep Module Series</div>
+  <h1 class="hero-title">The<br><em>H.A.C.C.L.</em><br>Bridge.</h1>
+  <div class="hero-acronym">
+    <div class="acr-pill"><span class="acr-letter">H</span><span class="acr-word">Hours</span></div>
+    <div class="acr-pill"><span class="acr-letter">A</span><span class="acr-word">Amenities</span></div>
+    <div class="acr-pill"><span class="acr-letter">C</span><span class="acr-word">Convenience</span></div>
+    <div class="acr-pill"><span class="acr-letter">C</span><span class="acr-word">Commitment</span></div>
+    <div class="acr-pill"><span class="acr-letter">L</span><span class="acr-word">Like</span></div>
+  </div>
+  <p class="hero-desc">HACCL is your pre-close. It happens immediately after the tour and before the price card ever comes out. Five targeted questions. Five yes answers. One final question that isolates cost as the only remaining barrier. This module teaches you to build the "Yes" chain that makes the close a formality.</p>
+  <div class="hero-stats">
+    <div class="stat"><span class="stat-num">7</span><span class="stat-label">Core Lessons</span></div>
+    <div class="stat"><span class="stat-num">4</span><span class="stat-label">Full Scripts</span></div>
+    <div class="stat"><span class="stat-num">4</span><span class="stat-label">Role-Play Scenarios</span></div>
+    <div class="stat"><span class="stat-num">15</span><span class="stat-label">Quiz Questions</span></div>
+  </div>
+  <button class="hero-btn" onclick="document.getElementById('lessons').scrollIntoView({behavior:'smooth'})">Begin Training ↓</button>
+</section>
+
+<div class="module-wrap">
+
+  <div class="section-header" style="padding-top:50px;">
+    <div class="s-eyebrow">The Objective</div>
+    <h2 class="s-title">Five Yes Answers<br>Before the Price.</h2>
+    <p class="s-sub">The price card is not where resistance starts — it is where it surfaces. HACCL's job is to address every non-price objection before pricing is presented, so that when cost comes up, it is the only thing left to navigate. Five questions. Five confirmations. One clear path to the close.</p>
+  </div>
+
+  <div class="callout callout-rule">
+    <div class="callout-label">The Core Purpose</div>
+    HACCL builds psychological momentum. Every "yes" a guest gives makes the next "yes" easier — and the final commitment feel like a natural continuation rather than a leap. By the time you ask "Is there anything other than cost keeping you from joining today?" the answer is almost always no.
+  </div>
+
+  <div class="section-header" id="lessons">
+    <div class="s-eyebrow">Core Lessons</div>
+    <h2 class="s-title">7 Lessons to<br>Master the Bridge</h2>
+    <p class="s-sub">Open all 7 lessons in order. The certification quiz unlocks when you finish.</p>
+  </div>
+
+  <div class="lesson-grid" id="lessonGrid">
+
+    <!-- L1 -->
+    <div class="lesson-card" data-lesson="1">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">01</span>
+        <span class="lesson-title-text">Why HACCL Exists — The Pre-Close Logic</span>
+        <span class="lesson-tag">Foundation</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>Most consultants present the price card and then react to objections. HACCL flips that sequence. It proactively surfaces and resolves every non-price objection before pricing is ever discussed — so that when you sit down with the price sheet, cost is genuinely the only variable left.</p>
+        <p>Think about the objections that typically follow a price presentation: "The hours don't really work for my schedule." "I'm not sure you have everything I need." "It's a little far from my office." "I'm not sure I'm ready to commit." These are not price objections — they are fit objections. And they should be resolved before the price card comes out, not after.</p>
+        <div class="callout callout-gold">
+          <div class="callout-label">The Pre-Close Logic</div>
+          If a guest says "yes" to hours, amenities, convenience, commitment, and liking the club — and then says "I need to think about it" after the price — you know with certainty that cost is the real issue. That clarity makes your objection handling infinitely more focused and effective.
+        </div>
+        <p>HACCL also does something equally important: it builds a chain of agreement. Each "yes" answer creates a small psychological commitment. People are internally wired toward consistency — once someone has agreed to five things, saying no to a sixth feels inconsistent with everything they just said. The chain of yes answers makes the final commitment the path of least resistance.</p>
+        <div class="callout callout-rule">
+          <div class="callout-label">When HACCL Happens</div>
+          Immediately after the tour and the B+F recap — before the price card is touched. This is a non-negotiable sequence. Tour → B+F review → HACCL → Price. Every step in order, every time.
+        </div>
+      </div>
+    </div>
+
+    <!-- L2 -->
+    <div class="lesson-card" data-lesson="2">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">02</span>
+        <span class="lesson-title-text">The Transition Into HACCL — Setting the Stage</span>
+        <span class="lesson-tag">The Setup</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>As you walk back to the desk from the tour, the transition into HACCL should feel seamless — not like a shift into a new phase. The guest should experience it as a natural continuation of the conversation, not a sudden pivot toward closing.</p>
+        <div class="callout callout-script">
+          <div class="callout-label">The HACCL Setup Script</div>
+          "Before we look at memberships, I want to make sure we've covered everything that matters for you. There are five things that make for a perfect member-club pairing — let me just run through them quickly."
+        </div>
+        <p>This framing is deliberate and important. "Five things that make for a perfect pairing" positions HACCL as a service to the guest — a final quality check to make sure City Fitness is genuinely the right fit — rather than as a closing technique. The guest agrees to the process before it begins, and the questions that follow feel natural rather than scripted.</p>
+        <div class="callout callout-tip">
+          <div class="callout-label">Tone and Pace</div>
+          HACCL should be conversational and warm — not rapid-fire. You are confirming things you discussed during the tour, not running through a checklist. Slow down slightly. Make eye contact. Let each answer breathe before moving to the next question. Rushing communicates that you are executing a script. Calm confidence communicates that you genuinely care about getting this right.
+        </div>
+        <div class="callout callout-warn">
+          <div class="callout-label">Do Not Announce It</div>
+          Never say "I'm going to do HACCL now" or "let me ask you these five questions." The technique is invisible to the guest. It is simply a thoughtful, natural conversation about whether City Fitness checks all the boxes — which it will, because you spent the last 45 minutes making sure it does.
+        </div>
+      </div>
+    </div>
+
+    <!-- L3 -->
+    <div class="lesson-card" data-lesson="3">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">03</span>
+        <span class="lesson-title-text">H — Hours: Does the Schedule Work?</span>
+        <span class="lesson-tag">Letter H</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>Hours is the first confirmation because it is the most practical. If the club's operating hours do not work with the guest's schedule, nothing else matters. You almost certainly mentioned hours somewhere during the tour — HACCL is where you confirm it landed.</p>
+        <div class="haccl-card" style="margin:18px 0;">
+          <div class="haccl-letter-wrap">
+            <div class="haccl-letter">H</div>
+            <div class="haccl-word">Hours</div>
+          </div>
+          <div class="haccl-content">
+            <div class="haccl-question">"We talked about hours earlier — do our hours work for your schedule?"</div>
+            <div class="haccl-why">Confirms schedule compatibility before price is discussed. If hours are genuinely an issue, address it now — not after they have said no to the price card.</div>
+            <div class="haccl-example"><strong>If they hesitate:</strong> "You mentioned you typically work out in the evening — we're open until 11 PM every night. That covers you, right?"</div>
+          </div>
+        </div>
+        <div class="callout callout-tip">
+          <div class="callout-label">Personalize the Question</div>
+          Reference what they told you in discovery. If they mentioned early morning workouts: "You said you're a 6 AM person — we're open from 5 AM weekdays. That works for you?" A personalized hours question lands as confirmation; a generic one feels like a form.
+        </div>
+      </div>
+    </div>
+
+    <!-- L4 -->
+    <div class="lesson-card" data-lesson="4">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">04</span>
+        <span class="lesson-title-text">A, C, C — Amenities, Convenience, Commitment</span>
+        <span class="lesson-tag">Letters A, C, C</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>The middle three letters of HACCL address three distinct potential barriers: does the club have what they need, is the location practical, and are they ready to commit. Each question is a targeted objection prevention — and each should be grounded in what they told you on the tour.</p>
+
+        <div class="haccl-grid">
+          <div class="haccl-card">
+            <div class="haccl-letter-wrap">
+              <div class="haccl-letter">A</div>
+              <div class="haccl-word">Amenities</div>
+            </div>
+            <div class="haccl-content">
+              <div class="haccl-question">"Based on everything you saw today — does it look like we have everything you need to accomplish your goals?"</div>
+              <div class="haccl-why">This is a direct confirmation that City Fitness covers their fitness needs. After a full tour and B+F review, this should be an easy yes — but it is still worth asking explicitly. A hesitation here tells you something important before the price card appears.</div>
+              <div class="haccl-example"><strong>Be specific:</strong> "You mentioned wanting Revive access and group classes — you saw both today. Does it look like we've got you covered?" Specific = more powerful than generic.</div>
+            </div>
+          </div>
+          <div class="haccl-card">
+            <div class="haccl-letter-wrap">
+              <div class="haccl-letter">C</div>
+              <div class="haccl-word">Convenience</div>
+            </div>
+            <div class="haccl-content">
+              <div class="haccl-question">"Is our location convenient for you? Whether it's from home, work, or your regular routine?"</div>
+              <div class="haccl-why">Location friction is a silent membership killer. People join gyms they cannot get to consistently — and they quit just as quietly. Addressing convenience now identifies and resolves this before it becomes a reason they walk away or cancel later.</div>
+              <div class="haccl-example"><strong>Multi-club angle:</strong> "And remember — with Performance+ you have all 8 locations. So if you work in Center City on Tuesdays, there's a club right there too." Location objections disappear with multi-club access framing.</div>
+            </div>
+          </div>
+          <div class="haccl-card">
+            <div class="haccl-letter-wrap">
+              <div class="haccl-letter">C</div>
+              <div class="haccl-word">Commitment</div>
+            </div>
+            <div class="haccl-content">
+              <div class="haccl-question">"You mentioned coming [X] days a week. Are you ready to commit to that?"</div>
+              <div class="haccl-why">This question reinforces their own stated intention and creates an internal commitment before price is discussed. When they say "yes" here, they are not just answering your question — they are making a promise to themselves. That promise carries weight in the close.</div>
+              <div class="haccl-example"><strong>Use their number:</strong> If they said 4 days a week in discovery, say "4 days a week — are you ready to commit to that?" Reflecting their specific number back makes the commitment feel real, not hypothetical.</div>
+            </div>
+          </div>
+        </div>
+        <div class="callout callout-rule">
+          <div class="callout-label">The Key to A, C, C</div>
+          Every question should reference something they specifically told you — not generic versions of the question. "Does it look like we have everything you need?" is okay. "You mentioned wanting a pool and Revive — did you see both of those today?" is powerful. Specificity is the difference.
+        </div>
+      </div>
+    </div>
+
+    <!-- L5 -->
+    <div class="lesson-card" data-lesson="5">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">05</span>
+        <span class="lesson-title-text">L — Like: The Emotional Confirmation</span>
+        <span class="lesson-tag">Letter L</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>The final letter — Like — is the most emotionally direct question in the sequence. After five minutes of confirming practical logistics, this question cuts straight to the gut: <em>do you actually like this place?</em></p>
+        <div class="haccl-card" style="margin:18px 0;">
+          <div class="haccl-letter-wrap">
+            <div class="haccl-letter">L</div>
+            <div class="haccl-word">Like</div>
+          </div>
+          <div class="haccl-content">
+            <div class="haccl-question">"Most importantly — do you like the club?"</div>
+            <div class="haccl-why">This question matters for two reasons. First, it gives the guest explicit permission to express their emotional response — which is often the real driver behind the decision. Second, a "yes" here is the most powerful agreement in the sequence. Liking a place is personal, visceral, and hard to argue away from later.</div>
+            <div class="haccl-example"><strong>What a strong "yes" sounds like:</strong> "Yeah, I really do. It feels different in here." That answer is worth more than any brochure. Acknowledge it: "I'm glad. That feeling is real — it's what our members tell us too."</div>
+          </div>
+        </div>
+        <div class="callout callout-gold">
+          <div class="callout-label">Why "Like" Comes Last</div>
+          The emotional question lands harder after five practical confirmations. By the time you ask "do you like it?" the guest has already said yes to hours, amenities, convenience, and commitment. The emotional confirmation is the capstone — and it creates the strongest possible foundation for the final HACCL question that follows.
+        </div>
+      </div>
+    </div>
+
+    <!-- L6 -->
+    <div class="lesson-card" data-lesson="6">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">06</span>
+        <span class="lesson-title-text">The Final Question — Isolating Cost</span>
+        <span class="lesson-tag">The Bridge</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>After five yes answers, you ask one more question. This is the most important question in the entire HACCL sequence — and possibly in the entire sales process. It is not a closing question. It is a diagnostic one.</p>
+        <div class="callout callout-script">
+          <div class="callout-label">The Final HACCL Question</div>
+          "Is there anything other than cost keeping you from becoming a member today?"
+        </div>
+        <p>This question does something no other question in the process does: it separates price objections from fit objections. If the answer is no — there is nothing else — then you know with absolute certainty that cost is the only barrier. You flip the price card and handle cost directly.</p>
+        <p>If the answer is yes — there is something else — you have just discovered a hidden objection that would have ambushed you after the price presentation. Now you can address it before price enters the conversation, which is far less complicated than handling two objections simultaneously.</p>
+
+        <div class="yes-stack">
+          <div class="yes-row"><span class="yes-check">✓</span><span class="yes-q">"Do our hours work for you?"</span><span class="yes-answer">Yes</span></div>
+          <div class="yes-row"><span class="yes-check">✓</span><span class="yes-q">"Do we have everything you need to accomplish your goals?"</span><span class="yes-answer">Yes</span></div>
+          <div class="yes-row"><span class="yes-check">✓</span><span class="yes-q">"Is our location convenient for your routine?"</span><span class="yes-answer">Yes</span></div>
+          <div class="yes-row"><span class="yes-check">✓</span><span class="yes-q">"Are you ready to commit to [X] days a week?"</span><span class="yes-answer">Yes</span></div>
+          <div class="yes-row"><span class="yes-check">✓</span><span class="yes-q">"Do you like the club?"</span><span class="yes-answer">Yes</span></div>
+          <div class="yes-final-row"><span class="yes-check" style="color:var(--copper);">→</span><span class="yes-final-q">"Is there anything other than cost keeping you from becoming a member today?"</span><span class="yes-final-answer">No</span></div>
+        </div>
+
+        <div class="callout callout-rule">
+          <div class="callout-label">What "No" Means</div>
+          When they say no — there is nothing else — you have created a clean, isolated price conversation. Everything else is resolved. The only question now is whether the value justifies the cost. And you have already built that case with B+F Logic. Now you flip the price card.
+        </div>
+        <div class="callout callout-warn">
+          <div class="callout-label">What If They Say "Yes, There Is Something Else"?</div>
+          That is valuable intelligence. Ask: "What is it?" Address it directly and fully before moving to price. Common hidden objections: partner needs to see it, not sure about commitment length, concerns about a health issue. Handle each with LIGO principles. Then re-ask the final question before presenting price.
+        </div>
+      </div>
+    </div>
+
+    <!-- L7 -->
+    <div class="lesson-card" data-lesson="7">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">07</span>
+        <span class="lesson-title-text">The Complete HACCL — Full Sequence in Flow</span>
+        <span class="lesson-tag">Full Execution</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>Here is a complete HACCL sequence executed from start to finish — showing the transition, all five letters, the final question, and the bridge into the price presentation. The guest is someone who came in for the first time, toured fully, and expressed strong interest throughout.</p>
+        <div class="dialogue-block">
+          <div class="dialogue-title">Complete H.A.C.C.L. — Full Dialogue</div>
+          <div class="line"><span class="speaker action">TRANSITION</span><span class="line-text action-text">Walking back from the floor to the desk after the tour and B+F review.</span></div>
+          <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"Before we look at memberships, I just want to make sure we've covered everything that matters for you. There are five things that make for a perfect member-club pairing — give me one minute."</em></span></div>
+          <div class="line"><span class="speaker prospect">Guest</span><span class="line-text">"Sure."</span></div>
+          <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"Hours — you mentioned you work out in the evenings, usually after 6. We're open until 11 PM seven days a week. That works for you?"</em></span></div>
+          <div class="line"><span class="speaker prospect">Guest</span><span class="line-text">"Yeah, definitely."</span></div>
+          <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"Amenities — you said you wanted access to recovery, classes, and the pool. You saw all three today. Does it look like we've got everything you need to accomplish your goals?"</em></span></div>
+          <div class="line"><span class="speaker prospect">Guest</span><span class="line-text">"Yeah, honestly more than I expected."</span></div>
+          <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"Convenience — you're about 10 minutes from here, and you work downtown near our Broad Street location. Between those two spots, does access feel convenient for your routine?"</em></span></div>
+          <div class="line"><span class="speaker prospect">Guest</span><span class="line-text">"Yeah, that's actually perfect."</span></div>
+          <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"Commitment — you mentioned 4 days a week was your goal. Are you ready to commit to that?"</em></span></div>
+          <div class="line"><span class="speaker prospect">Guest</span><span class="line-text">"I think so. I need to this time."</span></div>
+          <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"I hear that — and we're going to hold you to it."</em> [Warm smile.] <em>"Last one — most importantly — do you like the club?"</em></span></div>
+          <div class="line"><span class="speaker prospect">Guest</span><span class="line-text">"I really do. It feels different from other gyms I've toured."</span></div>
+          <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"That means a lot — and it's real, not just the tour glow. Our members say the same thing six months in."</em> [Pause.] <em>"So — is there anything other than cost keeping you from becoming a member today?"</em></span></div>
+          <div class="line"><span class="speaker prospect">Guest</span><span class="line-text">"No, I don't think so."</span></div>
+          <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"Perfect. Then let's look at memberships."</em> [Reaches for the price sheet.]</span></div>
+        </div>
+        <p>From the transition to the first flip of the price card — under 3 minutes. Every objection resolved. Every answer a yes. The close begins with the cleanest possible foundation.</p>
+      </div>
+    </div>
+
+  </div><!-- end lesson grid -->
+
+  <div class="study-complete-banner" id="studyBanner">
+    <h3>All 7 Lessons Complete</h3>
+    <p>You've got the full HACCL sequence. Certification quiz is now unlocked.</p>
+    <button class="cf-btn" onclick="unlockQuiz()" style="max-width:300px;margin:0 auto;">Unlock Certification ↓</button>
+  </div>
+
+  <!-- MISTAKES -->
+  <div class="divider-label">Common Mistakes</div>
+  <div class="section-header" style="padding-top:0;">
+    <div class="s-eyebrow">What Breaks the Bridge</div>
+    <h2 class="s-title">6 HACCL Mistakes<br>& How to Fix Them</h2>
+  </div>
+  <div class="mistakes-grid">
+    <div class="mistake-card">
+      <div class="mistake-label bad">✗ The Mistake</div>
+      <div class="mistake-text">Skipping HACCL entirely and going straight from the tour to the price card. <strong>You hit a price objection that is actually a convenience or schedule issue — and you have no foundation to work from.</strong></div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label good">✓ The Fix</div>
+      <div class="mistake-text"><strong>Tour → B+F → HACCL → Price. Every time.</strong> The sequence is non-negotiable. HACCL takes under 3 minutes and prevents objections that would take 10 minutes to handle reactively.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label bad">✗ The Mistake</div>
+      <div class="mistake-text">Asking generic HACCL questions with no personalization: <strong>"Do we have what you need?" instead of "You said you wanted Revive and the pool — did you see both today?"</strong></div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label good">✓ The Fix</div>
+      <div class="mistake-text"><strong>Every question references something they specifically told you.</strong> Generic HACCL feels like a checklist. Personalized HACCL feels like genuine confirmation. The difference is your notes from discovery.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label bad">✗ The Mistake</div>
+      <div class="mistake-text">Rushing through all five questions like a rapid-fire checklist. <strong>The guest feels like they are being processed, not consulted.</strong></div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label good">✓ The Fix</div>
+      <div class="mistake-text"><strong>Conversational pace. Let each answer breathe.</strong> Acknowledge a strong yes with a brief response before moving on. The warmth between questions is what makes it feel like a dialogue, not a script.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label bad">✗ The Mistake</div>
+      <div class="mistake-text">Skipping the final question — "Is there anything other than cost?" — and going straight to price after the five letters. <strong>You leave hidden objections buried under the price conversation.</strong></div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label good">✓ The Fix</div>
+      <div class="mistake-text"><strong>Always ask the final question.</strong> It is the most diagnostically powerful question in the process. A "yes, there is something else" before the price card is a gift — not a setback.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label bad">✗ The Mistake</div>
+      <div class="mistake-text">When they reveal a hidden objection to the final question, panicking and going to price anyway. <strong>Now you are managing two problems at once.</strong></div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label good">✓ The Fix</div>
+      <div class="mistake-text"><strong>Stop. Address the hidden objection fully using LIGO.</strong> Resolve it completely, then re-ask the final question. Only when the answer is "no, nothing else" do you proceed to price.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label bad">✗ The Mistake</div>
+      <div class="mistake-text">Treating the commitment question as hypothetical: <strong>"Do you think you'd come 4 times a week?"</strong> Hedged language invites hedged answers.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label good">✓ The Fix</div>
+      <div class="mistake-text"><strong>"You said 4 days a week — are you ready to commit to that?"</strong> Direct language creates a real commitment. Use their number. Ask if they are ready. The word "commit" matters — use it.</div>
+    </div>
+  </div>
+
+  <!-- ROLE PLAY -->
+  <div class="divider-label">Role-Play Scenarios</div>
+  <div class="section-header" style="padding-top:0;">
+    <div class="s-eyebrow">Practice</div>
+    <h2 class="s-title">4 HACCL Scenarios<br>to Train On</h2>
+  </div>
+
+  <div class="roleplay-card">
+    <div class="roleplay-header">
+      <span class="roleplay-scenario">Scenario 01 — Clean Run, All Yes Answers</span>
+      <span class="roleplay-type">Standard</span>
+    </div>
+    <div class="roleplay-body">
+      <div class="roleplay-setup">Guest had a great tour, loved the club, showed strong interest throughout. You expect five clean yes answers and a smooth bridge to the price card.</div>
+      <div class="roleplay-objective"><strong>Your objective:</strong> Execute the full HACCL sequence with warmth and confidence. Personalize every question using their discovery answers. Do not rush — even with a highly engaged guest, let each yes land before moving on. Practice the transition from the final question directly into the price presentation without any awkward pause or bridging language. "Perfect. Then let's look at memberships." Clean. Confident. Done.</div>
+      <div class="coaching-note">The clean run is where you build the muscle memory. Practice it until the transition from HACCL to price card feels completely natural. The goal is that the guest experiences the whole sequence as one continuous, comfortable conversation — not a sales process with identifiable phases.</div>
+    </div>
+  </div>
+
+  <div class="roleplay-card">
+    <div class="roleplay-header">
+      <span class="roleplay-scenario">Scenario 02 — Hesitation on Commitment</span>
+      <span class="roleplay-type">Objection Surfacing</span>
+    </div>
+    <div class="roleplay-body">
+      <div class="roleplay-setup">Everything is going smoothly until the commitment question: "You mentioned 3–4 days a week — are you ready to commit to that?" The guest pauses: "I want to, but I've said that before and it hasn't worked out."</div>
+      <div class="roleplay-objective"><strong>Your objective:</strong> Do not skip past this hesitation. This is a Start & Stopper speaking honestly about their pattern — and it is important. Acknowledge it genuinely: "I really appreciate you being honest about that. Let me ask you — what made the difference the other times you've tried? What would make this time different?" Use their answer to reinforce how City Fitness specifically addresses that gap (community, accountability, Thrive coaching). Re-ask commitment after the conversation, then continue HACCL.</div>
+      <div class="coaching-note">A hesitation on commitment during HACCL is one of the most valuable moments in the entire interaction. The guest is telling you exactly what they need to hear. Your job is to listen, address it with specifics, and help them see that the barriers that stopped them before do not exist here in the same way.</div>
+    </div>
+  </div>
+
+  <div class="roleplay-card">
+    <div class="roleplay-header">
+      <span class="roleplay-scenario">Scenario 03 — Hidden Objection Surfaces</span>
+      <span class="roleplay-type">Final Question Response</span>
+    </div>
+    <div class="roleplay-body">
+      <div class="roleplay-setup">Five yes answers — clean. You ask the final question: "Is there anything other than cost keeping you from becoming a member today?" They pause and say: "I'd really like my wife to see it before I commit to anything."</div>
+      <div class="roleplay-objective"><strong>Your objective:</strong> Do not go to the price card. This is a real objection that needs handling before pricing. Apply LIGO: Listen fully. Identify (it's about inclusion, not permission). Give permission ("I completely understand — major decisions are better made together"). Offer alternative (the partner LIGO script — "If your wife were here today and heard everything you just told me you loved about this place... what do you think she'd say?"). Work through it fully. Re-ask the final question only when genuinely resolved.</div>
+      <div class="coaching-note">This is exactly why the final HACCL question exists. Without it, this objection arrives at the worst possible moment — after the price card is on the table. Discovered before pricing, it is a solvable conversation. Discovered after, it is a much harder close. HACCL earns its keep in moments exactly like this one.</div>
+    </div>
+  </div>
+
+  <div class="roleplay-card">
+    <div class="roleplay-header">
+      <span class="roleplay-scenario">Scenario 04 — Convenience Hesitation</span>
+      <span class="roleplay-type">Location Objection</span>
+    </div>
+    <div class="roleplay-body">
+      <div class="roleplay-setup">During the convenience question, the guest says: "It's a little farther than I was hoping. I was really looking for something walkable from my apartment."</div>
+      <div class="roleplay-objective"><strong>Your objective:</strong> Address this before it becomes a reason to leave. First, confirm how far they actually are — often guests overestimate distance. Second, apply the multi-club argument: "With Performance+, you have access to all 8 City Fitness locations — are any of those closer to your apartment?" If yes, pivot the conversation to that location as their home club. If no location is closer, reframe: "For a lot of members, the commute becomes part of the routine — 10 minutes each way is 20 minutes less mindless scrolling." Resolve it, confirm convenience, and continue.</div>
+      <div class="coaching-note">Location objections surface during HACCL or after pricing — and they are almost always solvable. Multi-club access is your strongest tool. Most guests are unaware of all 8 locations or where they are. A map pulled up on your phone showing the closest location to their home or office has closed this objection more times than any verbal argument.</div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="divider-label">Certification</div>
+  <div class="section-header" style="padding-top:0;">
+    <div class="s-eyebrow">Knowledge Check</div>
+    <h2 class="s-title">H.A.C.C.L. Certification</h2>
+    <p class="s-sub">15 questions. 80% or higher to pass. Complete all 7 lessons above to unlock.</p>
+  </div>
+
+  <div class="quiz-section" id="quizSection">
+    <div class="quiz-locked" id="quizLocked">
+      <div class="quiz-locked-icon">🔒</div>
+      <h3>Complete All Lessons to Unlock</h3>
+      <p>Open all 7 lessons above. The quiz unlocks automatically when you finish.</p>
+    </div>
+    <div class="name-panel" id="namePanel" style="display:none;">
+      <h3>Certification Registry</h3>
+      <p>Enter your full name as it should appear on your certification record.</p>
+      <input type="text" class="cf-input" id="empNameInput" placeholder="Full Name"/>
+      <button class="cf-btn" onclick="startQuiz()">Begin Official Test →</button>
+    </div>
+    <div class="quiz-active" id="quizActive" style="display:none;">
+      <div class="q-progress-wrap"><div class="q-progress-bar" id="qBar"></div></div>
+      <div class="q-meta">
+        <span class="q-counter" id="qCounter"></span>
+        <span class="q-topic">Module 07 · H.A.C.C.L.</span>
+      </div>
+      <div class="q-text" id="qText"></div>
+      <div class="q-options" id="qOptions"></div>
+    </div>
+    <div class="results-panel" id="resultsPanel">
+      <div class="result-score" id="resultScore"></div>
+      <div class="result-label" id="resultLabel"></div>
+      <div id="missedSection"></div>
+      <button class="cf-btn" onclick="resetModule()" style="margin-top:22px;">Return to Module</button>
+    </div>
+  </div>
+
+</div><!-- end module-wrap -->
+
+<div class="module-footer">
+  <p>City Fitness Philadelphia &nbsp;·&nbsp; Deep Training Module 07 &nbsp;·&nbsp; 2026</p>
+</div>
+
+<iframe name="cf_hidden" id="cf_hidden" style="display:none;"></iframe>
+<form id="certForm" target="cf_hidden" method="GET" action="https://script.google.com/a/macros/cityfitness.com/s/AKfycbzZokf4OQGpHYEkb_9mcVdJ-t9jop9RWIpclIcLSjTWRcBQfeDJ751bl0qO8k7VrZwe/exec">
+  <input type="hidden" name="employee" id="formEmployee"/>
+  <input type="hidden" name="topic" id="formTopic"/>
+  <input type="hidden" name="result" id="formResult"/>
+</form>
+
+<script>
+window.addEventListener('scroll',()=>{
+  const el=document.documentElement;
+  const pct=(el.scrollTop/(el.scrollHeight-el.clientHeight))*100;
+  document.getElementById('topFill').style.width=pct+'%';
+});
+
+let openedLessons=new Set();
+const totalLessons=7;
+
+function toggleLesson(header){
+  const card=header.parentElement;
+  const isOpen=card.classList.contains('open');
+  card.classList.toggle('open',!isOpen);
+  if(!isOpen){
+    openedLessons.add(parseInt(card.dataset.lesson));
+    checkStudyComplete();
+  }
+}
+
+function checkStudyComplete(){
+  if(openedLessons.size>=totalLessons){
+    const banner=document.getElementById('studyBanner');
+    banner.style.display='block';
+    banner.scrollIntoView({behavior:'smooth',block:'center'});
+  }
+}
+
+function unlockQuiz(){
+  document.getElementById('quizLocked').style.display='none';
+  document.getElementById('namePanel').style.display='block';
+  document.getElementById('quizSection').scrollIntoView({behavior:'smooth'});
+}
+
+const questions=[
+  {q:"What does H.A.C.C.L. stand for?",a:["Hours, Amenities, Cost, Commitment, Location","Hours, Amenities, Convenience, Commitment, Like","Help, Assess, Connect, Close, Leave","Hours, Access, Convenience, Contract, Like"],c:1},
+  {q:"When does HACCL occur in the sales sequence?",a:["Before the tour begins","During the tour at each major stop","Immediately after the tour and B+F recap — before the price card","After the price card has been presented"],c:2},
+  {q:"What is the primary purpose of HACCL?",a:["To present all three membership tiers","To address every non-price objection before pricing is discussed, so cost is the only variable left","To qualify whether the guest can afford a membership","To introduce the guest to the management team"],c:1},
+  {q:"Why does building a chain of 'yes' answers matter psychologically?",a:["It makes the consultant feel more confident","People are wired toward consistency — once someone has agreed to five things, saying no to a sixth feels inconsistent","It shortens the sales process significantly","It is required before the price card can legally be shown"],c:1},
+  {q:"How should you introduce HACCL to the guest?",a:["'I'm going to ask you five closing questions now'","'Before we look at memberships, let me run through the five things that make for a perfect member-club pairing'","'Let me do HACCL with you quickly'","'Are you ready to talk about memberships?'"],c:1},
+  {q:"What makes the Hours question most effective?",a:["Asking it generically: 'Do our hours work for you?'","Referencing their specific schedule from discovery: 'You mentioned evenings — we're open until 11 PM. That covers you?'","Listing all operating hours in full","Asking it only if they mentioned schedule concerns"],c:1},
+  {q:"What is the purpose of the Amenities question in HACCL?",a:["To introduce new amenities they did not see on the tour","To confirm that City Fitness has what they need to achieve their specific goals — based on what they told you","To present the membership features for the first time","To ask if they enjoyed the tour"],c:1},
+  {q:"How does the multi-club access argument apply to the Convenience question?",a:["It does not — convenience is only about the home club location","It eliminates location objections by showing that multiple locations likely cover their home, work, and routine","It is only relevant for Performance+ members","It is used only after a convenience objection has been raised"],c:1},
+  {q:"What is the correct wording of the Commitment question?",a:["'Do you think you'd come a few times a week?'","'How often are you hoping to work out?'","'You mentioned [X] days a week — are you ready to commit to that?'","'Would you say you are a committed person in general?'"],c:2},
+  {q:"Why does the Like question come last in the HACCL sequence?",a:["It is the least important question","The emotional confirmation lands harder after five practical agreements have already been made","It is easier to ask after the price has been discussed","It is optional and only asked if rapport is strong"],c:1},
+  {q:"What is the exact wording of the final HACCL question?",a:["'Are you ready to join today?'","'What would it take for you to become a member?'","'Is there anything other than cost keeping you from becoming a member today?'","'Do you have any remaining concerns about the club?'"],c:2},
+  {q:"When the guest answers 'yes' to the final HACCL question — meaning there IS something else — what is the correct response?",a:["Proceed to the price card anyway and handle it there","Panic and offer a discount","Stop, ask what it is, handle it fully with LIGO, then re-ask the final question before presenting price","Thank them and end the interaction"],c:1},
+  {q:"What hidden objection most commonly surfaces at the final HACCL question?",a:["They do not like the color scheme of the club","They want their partner to see it before committing","They are unsure about the equipment brands","They want a longer tour"],c:1},
+  {q:"Skipping HACCL and going straight from the tour to the price card risks:",a:["Making the interaction too short","Presenting price before non-price objections have been resolved, creating a multi-layered close","Offending the guest by moving too quickly","Losing the B+F data you gathered"],c:1},
+  {q:"What is the single most important thing HACCL accomplishes before the price card is presented?",a:["It gives the guest time to process the tour","It isolates cost as the only remaining barrier — so the close becomes a focused, single-variable conversation","It confirms the membership tier the guest wants","It builds enough rapport to skip the objection handling phase"],c:1}
+];
+
+let empName='',qIndex=0,score=0,missed=[];
+
+function startQuiz(){
+  empName=document.getElementById('empNameInput').value.trim();
+  if(!empName){alert('Please enter your full name.');return;}
+  document.getElementById('namePanel').style.display='none';
+  document.getElementById('quizActive').style.display='block';
+  qIndex=0;score=0;missed=[];
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const q=questions[qIndex];
+  document.getElementById('qBar').style.width=((qIndex/questions.length)*100)+'%';
+  document.getElementById('qCounter').textContent=`Question ${qIndex+1} of ${questions.length}`;
+  document.getElementById('qText').textContent=q.q;
+  const opts=document.getElementById('qOptions');
+  opts.innerHTML='';
+  q.a.forEach((opt,i)=>{
+    const btn=document.createElement('button');
+    btn.className='q-opt';
+    btn.textContent=opt;
+    btn.onclick=()=>handleAnswer(i);
+    opts.appendChild(btn);
+  });
+}
+
+function handleAnswer(idx){
+  const q=questions[qIndex];
+  if(idx===q.c){score++;}
+  else{missed.push({q:q.q,a:q.a[q.c]});}
+  qIndex++;
+  if(qIndex<questions.length){renderQuestion();}
+  else{showResults();}
+}
+
+function showResults(){
+  const pct=Math.round((score/questions.length)*100);
+  document.getElementById('quizActive').style.display='none';
+  const rp=document.getElementById('resultsPanel');
+  rp.style.display='block';
+  const scoreEl=document.getElementById('resultScore');
+  scoreEl.textContent=pct+'%';
+  scoreEl.className='result-score '+(pct>=80?'result-pass':'result-fail');
+  document.getElementById('resultLabel').textContent=pct>=80?'Certification Passed — Module 07: H.A.C.C.L.':'Retake Required — Review Missed Questions Below';
+  let missedHtml='';
+  if(missed.length){
+    missedHtml='<div class="missed-label">Knowledge Gaps — Review These</div>';
+    missed.forEach(m=>{
+      missedHtml+=`<div class="missed-item"><div class="missed-q">${m.q}</div><div class="missed-a">Correct Answer: ${m.a}</div></div>`;
+    });
+  }
+  document.getElementById('missedSection').innerHTML=missedHtml;
+  document.getElementById('formEmployee').value=empName;
+  document.getElementById('formTopic').value='Module 07 - H.A.C.C.L.';
+  document.getElementById('formResult').value=pct;
+  document.getElementById('certForm').submit();
+}
+
+function resetModule(){
+  document.getElementById('resultsPanel').style.display='none';
+  document.getElementById('namePanel').style.display='block';
+  document.getElementById('empNameInput').value='';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
