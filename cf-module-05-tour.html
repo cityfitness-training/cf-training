@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>CF Training | Module 05: The Tour</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:ital,wght@0,400;0,500;0,600;1,400;1,600&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg: #0f1214;
+  --surface: #151819;
+  --card: #1a1e20;
+  --border: #252b2e;
+  --border-light: #303840;
+  --copper: #B87C4C;
+  --copper-light: #C9A07A;
+  --copper-dim: rgba(184,124,76,0.12);
+  --copper-glow: rgba(184,124,76,0.05);
+  --tan: #BF9B6F;
+  --white: #EDF0EE;
+  --grey: #6a7275;
+  --dim: #8a9095;
+  --red: #c0392b;
+  --green: #4a9a60;
+  --green-dim: rgba(74,154,96,0.1);
+  --teal: #3a8a8a;
+  --teal-dim: rgba(58,138,138,0.1);
+  --grad: linear-gradient(135deg, #B87C4C 0%, #C9A07A 100%);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--white);font-family:'Barlow',sans-serif;line-height:1.65;overflow-x:hidden;}
+
+.top-bar{position:fixed;top:0;left:0;right:0;height:3px;background:var(--border);z-index:9999;}
+.top-bar-fill{height:100%;background:var(--grad);width:0%;transition:width .3s ease;}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:flex-end;padding:80px 60px;position:relative;overflow:hidden;}
+.hero-bg{position:absolute;inset:0;display:flex;align-items:center;justify-content:flex-end;pointer-events:none;}
+.hero-bg-text{font-family:'Barlow Condensed',sans-serif;font-size:clamp(160px,22vw,320px);font-weight:900;color:transparent;-webkit-text-stroke:1px rgba(184,124,76,0.05);text-transform:uppercase;line-height:1;user-select:none;padding-right:40px;}
+.hero-content{position:relative;z-index:1;max-width:720px;}
+.hero-eyebrow{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--copper);letter-spacing:4px;text-transform:uppercase;margin-bottom:18px;display:flex;align-items:center;gap:12px;}
+.hero-eyebrow::before{content:'';display:block;width:32px;height:2px;background:var(--copper);}
+.hero-title{font-family:'Barlow Condensed',sans-serif;font-size:clamp(56px,9vw,108px);font-weight:900;line-height:.88;text-transform:uppercase;letter-spacing:-2px;margin-bottom:22px;}
+.hero-title em{font-style:normal;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.hero-desc{font-size:17px;color:var(--dim);line-height:1.75;margin-bottom:36px;}
+.hero-stats{display:flex;gap:40px;margin-bottom:44px;}
+.stat{display:flex;flex-direction:column;}
+.stat-num{font-family:'Barlow Condensed',sans-serif;font-size:34px;font-weight:900;color:var(--copper);line-height:1;}
+.stat-label{font-size:11px;color:var(--grey);text-transform:uppercase;letter-spacing:2px;margin-top:3px;}
+.hero-btn{display:inline-flex;align-items:center;gap:10px;background:var(--grad);border:none;padding:16px 32px;color:white;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;letter-spacing:2px;text-transform:uppercase;border-radius:4px;cursor:pointer;transition:.2s;}
+.hero-btn:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(184,124,76,0.3);}
+
+/* LAYOUT */
+.module-wrap{max-width:900px;margin:0 auto;padding:0 40px 120px;}
+.section-header{padding:70px 0 36px;}
+.s-eyebrow{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--copper);letter-spacing:4px;text-transform:uppercase;display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+.s-eyebrow::after{content:'';width:48px;height:1px;background:var(--copper);opacity:.4;}
+.s-title{font-family:'Barlow Condensed',sans-serif;font-size:clamp(30px,5vw,46px);font-weight:900;text-transform:uppercase;letter-spacing:-.5px;line-height:1.05;margin-bottom:10px;}
+.s-sub{font-size:16px;color:var(--dim);max-width:680px;line-height:1.6;}
+
+/* LESSONS */
+.lesson-grid{display:flex;flex-direction:column;gap:2px;}
+.lesson-card{background:var(--surface);border:1px solid var(--border);overflow:hidden;transition:.15s;}
+.lesson-card:first-child{border-radius:10px 10px 0 0;}
+.lesson-card:last-child{border-radius:0 0 10px 10px;}
+.lesson-header{display:flex;align-items:center;gap:20px;padding:20px 26px;cursor:pointer;user-select:none;transition:.15s;}
+.lesson-header:hover{background:var(--copper-glow);}
+.lesson-num{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--copper);letter-spacing:2px;min-width:34px;}
+.lesson-title-text{font-size:16px;font-weight:700;flex:1;}
+.lesson-tag{font-size:10px;font-weight:700;color:var(--copper);background:var(--copper-dim);padding:4px 10px;border-radius:20px;text-transform:uppercase;letter-spacing:1px;white-space:nowrap;}
+.lesson-arrow{color:var(--grey);font-size:11px;transition:.3s;font-style:normal;}
+.lesson-card.open .lesson-arrow{transform:rotate(180deg);color:var(--copper);}
+.lesson-card.open .lesson-header{border-bottom:1px solid var(--border);}
+.lesson-body{display:none;padding:28px 26px 26px;}
+.lesson-card.open .lesson-body{display:block;}
+.lesson-body p{color:var(--dim);font-size:15px;line-height:1.75;margin-bottom:14px;}
+.lesson-body p:last-child{margin-bottom:0;}
+.lesson-body strong{color:var(--white);font-weight:700;}
+.lesson-body em{color:var(--tan);font-style:italic;}
+
+/* CALLOUTS */
+.callout{border-radius:8px;padding:18px 22px;margin:18px 0;font-size:15px;line-height:1.65;}
+.callout-rule{border-left:3px solid var(--copper);background:var(--copper-dim);color:var(--copper-light);}
+.callout-script{border-left:3px solid var(--tan);background:rgba(191,155,111,0.07);color:var(--tan);font-style:italic;}
+.callout-warn{border-left:3px solid var(--red);background:rgba(192,57,43,0.08);color:#d97060;}
+.callout-tip{border-left:3px solid var(--green);background:var(--green-dim);color:#7ac08a;}
+.callout-teal{border-left:3px solid var(--teal);background:var(--teal-dim);color:#6ababa;}
+.callout-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:3px;text-transform:uppercase;margin-bottom:7px;opacity:.7;display:block;}
+
+/* DIALOGUE */
+.dialogue-block{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:22px;margin:18px 0;}
+.dialogue-title{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--copper);letter-spacing:3px;text-transform:uppercase;margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+.line{display:flex;gap:14px;margin-bottom:14px;align-items:flex-start;}
+.line:last-child{margin-bottom:0;}
+.speaker{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;min-width:90px;padding-top:3px;}
+.speaker.prospect{color:var(--grey);}
+.speaker.consultant{color:var(--copper);}
+.speaker.action{color:var(--teal);}
+.line-text{font-size:15px;color:var(--dim);line-height:1.65;}
+.line-text em{color:var(--white);font-style:normal;font-weight:600;}
+.line-text.action-text{font-style:italic;color:rgba(106,186,186,0.7);font-size:13px;}
+
+/* FAB FRAMEWORK */
+.fab-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px;border-radius:10px;overflow:hidden;margin:16px 0;}
+.fab-card{padding:20px;display:flex;flex-direction:column;gap:8px;}
+.fab-card.f{background:rgba(184,124,76,0.08);border:1px solid rgba(184,124,76,0.15);}
+.fab-card.a{background:rgba(58,138,138,0.08);border:1px solid rgba(58,138,138,0.15);}
+.fab-card.b{background:rgba(74,154,96,0.08);border:1px solid rgba(74,154,96,0.15);}
+.fab-letter{font-family:'Barlow Condensed',sans-serif;font-size:42px;font-weight:900;line-height:1;}
+.fab-letter.f{color:rgba(184,124,76,0.4);}
+.fab-letter.a{color:rgba(58,138,138,0.4);}
+.fab-letter.b{color:rgba(74,154,96,0.4);}
+.fab-word{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase;}
+.fab-word.f{color:var(--copper);}
+.fab-word.a{color:var(--teal);}
+.fab-word.b{color:var(--green);}
+.fab-desc{font-size:13px;line-height:1.55;color:var(--dim);}
+.fab-example{font-size:13px;font-style:italic;line-height:1.5;margin-top:4px;}
+.fab-example.f{color:var(--copper-light);}
+.fab-example.a{color:rgba(106,186,186,0.8);}
+.fab-example.b{color:rgba(122,192,138,0.8);}
+
+/* STOP GRID */
+.stop-grid{display:flex;flex-direction:column;gap:10px;margin:16px 0;}
+.stop-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:18px 20px;display:grid;grid-template-columns:120px 1fr;gap:16px;align-items:start;}
+.stop-name{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--copper);}
+.stop-what{font-size:14px;color:var(--dim);line-height:1.6;}
+.stop-what strong{color:var(--white);}
+.stop-script{font-size:13px;color:var(--tan);font-style:italic;margin-top:6px;line-height:1.5;}
+
+/* MISTAKES */
+.mistakes-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px;}
+.mistake-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:18px;}
+.mistake-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:3px;text-transform:uppercase;margin-bottom:8px;}
+.mistake-label.bad{color:var(--red);}
+.mistake-label.good{color:var(--green);}
+.mistake-text{font-size:14px;line-height:1.6;color:var(--dim);}
+.mistake-text strong{color:var(--white);}
+
+/* ROLEPLAY */
+.roleplay-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:14px;}
+.roleplay-header{padding:18px 22px;background:var(--copper-dim);display:flex;justify-content:space-between;align-items:center;}
+.roleplay-scenario{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--copper);}
+.roleplay-type{font-size:11px;color:var(--grey);}
+.roleplay-body{padding:22px;}
+.roleplay-setup{font-size:15px;font-style:italic;color:var(--tan);margin-bottom:14px;padding:12px 16px;background:rgba(191,155,111,0.06);border-radius:6px;line-height:1.6;}
+.roleplay-objective{font-size:14px;color:var(--dim);line-height:1.6;}
+.roleplay-objective strong{color:var(--white);}
+.coaching-note{margin-top:12px;padding:12px 16px;background:rgba(184,124,76,0.07);border-radius:6px;font-size:13px;color:var(--copper-light);line-height:1.6;}
+.coaching-note::before{content:'COACHING NOTE  ';font-weight:800;letter-spacing:2px;font-size:10px;display:block;margin-bottom:3px;opacity:.7;}
+
+/* DIVIDER */
+.divider-label{display:flex;align-items:center;gap:16px;color:var(--grey);font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin:56px 0 30px;}
+.divider-label::before,.divider-label::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* STUDY BANNER */
+.study-complete-banner{background:var(--copper-dim);border:1px solid rgba(184,124,76,0.3);border-radius:12px;padding:28px;text-align:center;margin:36px 0;display:none;}
+.study-complete-banner h3{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;color:var(--copper);margin-bottom:6px;}
+.study-complete-banner p{color:var(--dim);font-size:14px;margin-bottom:18px;}
+
+/* QUIZ */
+.quiz-section{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-top:36px;}
+.quiz-locked{padding:56px 40px;text-align:center;}
+.quiz-locked-icon{font-size:36px;margin-bottom:14px;opacity:.3;}
+.quiz-locked h3{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;text-transform:uppercase;color:var(--grey);margin-bottom:6px;}
+.quiz-locked p{color:var(--grey);font-size:14px;}
+.quiz-active{padding:38px;}
+.q-progress-wrap{height:3px;background:var(--border);border-radius:2px;margin-bottom:28px;overflow:hidden;}
+.q-progress-bar{height:100%;background:var(--grad);width:0%;transition:.4s;}
+.q-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;}
+.q-counter{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--copper);letter-spacing:2px;text-transform:uppercase;}
+.q-topic{font-size:11px;color:var(--grey);}
+.q-text{font-size:20px;font-weight:700;color:var(--white);margin-bottom:26px;line-height:1.4;}
+.q-options{display:flex;flex-direction:column;gap:9px;}
+.q-opt{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:15px 18px;color:var(--dim);font-size:15px;text-align:left;cursor:pointer;transition:.2s;font-family:'Barlow',sans-serif;}
+.q-opt:hover{border-color:var(--copper);color:var(--white);background:var(--copper-glow);}
+.name-panel{padding:38px;}
+.name-panel h3{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;color:var(--white);margin-bottom:5px;}
+.name-panel p{color:var(--dim);font-size:14px;margin-bottom:22px;}
+.cf-input{background:var(--bg);border:1px solid var(--border);color:var(--white);padding:13px 16px;width:100%;border-radius:8px;font-family:'Barlow',sans-serif;font-size:16px;margin-bottom:14px;outline:none;transition:.2s;}
+.cf-input:focus{border-color:var(--copper);}
+.cf-btn{background:var(--grad);border:none;padding:15px 28px;color:white;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;letter-spacing:2px;text-transform:uppercase;border-radius:8px;cursor:pointer;width:100%;transition:.2s;}
+.cf-btn:hover{opacity:.9;transform:translateY(-1px);}
+.results-panel{padding:38px;display:none;}
+.result-score{font-family:'Barlow Condensed',sans-serif;font-size:70px;font-weight:900;line-height:1;margin-bottom:6px;}
+.result-pass{color:var(--copper);}
+.result-fail{color:var(--red);}
+.result-label{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--grey);margin-bottom:22px;}
+.missed-label{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--dim);letter-spacing:3px;text-transform:uppercase;margin-bottom:10px;margin-top:22px;}
+.missed-item{background:rgba(192,57,43,0.07);border-left:3px solid var(--red);border-radius:0 6px 6px 0;padding:13px 15px;margin-bottom:7px;}
+.missed-q{font-size:14px;color:var(--dim);margin-bottom:5px;}
+.missed-a{font-size:14px;color:var(--tan);font-weight:600;}
+
+.module-footer{text-align:center;padding:50px 40px;border-top:1px solid var(--border);}
+.module-footer p{color:var(--grey);font-size:11px;letter-spacing:3px;text-transform:uppercase;}
+
+@media(max-width:700px){
+  .hero{padding:80px 24px 50px;}
+  .module-wrap{padding:0 20px 80px;}
+  .fab-grid{grid-template-columns:1fr;}
+  .stop-card{grid-template-columns:1fr;}
+  .mistakes-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar"><div class="top-bar-fill" id="topFill"></div></div>
+
+<section class="hero">
+  <div class="hero-bg"><div class="hero-bg-text">Tour.</div></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">City Fitness Training · Deep Module Series</div>
+    <h1 class="hero-title">The<br><em>Tour.</em></h1>
+    <p class="hero-desc">This is not a museum walkthrough. Every stop has a purpose. Every feature connects to a goal. Every moment builds the case for why City Fitness is the answer to everything they shared with you in discovery. This module teaches you to give a tour that closes itself.</p>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-num">9</span><span class="stat-label">Core Lessons</span></div>
+      <div class="stat"><span class="stat-num">5</span><span class="stat-label">Full Scripts</span></div>
+      <div class="stat"><span class="stat-num">4</span><span class="stat-label">Role-Play Scenarios</span></div>
+      <div class="stat"><span class="stat-num">16</span><span class="stat-label">Quiz Questions</span></div>
+    </div>
+    <button class="hero-btn" onclick="document.getElementById('lessons').scrollIntoView({behavior:'smooth'})">Begin Training ↓</button>
+  </div>
+</section>
+
+<div class="module-wrap">
+
+  <div class="section-header" style="padding-top:50px;">
+    <div class="s-eyebrow">The Objective</div>
+    <h2 class="s-title">Show Them Their Life Here.</h2>
+    <p class="s-sub">The purpose of the tour is not to show them the equipment. It is to help them visualize themselves as a City Fitness member — already living the outcome they described in the pre-tour. Every feature you show should answer one unspoken question: <strong style="color:var(--white);">how does this help me specifically?</strong></p>
+  </div>
+
+  <div class="callout callout-rule">
+    <div class="callout-label">The Core Standard</div>
+    A great tour is a personalized story — not a property tour. The guest should leave thinking "they built this place for me," not "that was a nice gym." That distinction is the difference between a close and a walkaway.
+  </div>
+
+  <div class="section-header" id="lessons">
+    <div class="s-eyebrow">Core Lessons</div>
+    <h2 class="s-title">9 Tour Skills That<br>Close the Sale</h2>
+    <p class="s-sub">Work through all 9 lessons in order. The certification unlocks when you finish.</p>
+  </div>
+
+  <div class="lesson-grid" id="lessonGrid">
+
+    <!-- L1 -->
+    <div class="lesson-card" data-lesson="1">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">01</span>
+        <span class="lesson-title-text">Feature → Advantage → Benefit — The F.A.B. Framework</span>
+        <span class="lesson-tag">Foundation</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>Every stop on the tour should follow the same three-step framework. Feature alone tells them what something is. Advantage tells them what it does. Benefit tells them what it means for their life specifically. Most consultants stop at Feature. The close lives in Benefit.</p>
+        <div class="fab-grid">
+          <div class="fab-card f">
+            <div class="fab-letter f">F</div>
+            <div class="fab-word f">Feature</div>
+            <div class="fab-desc">What it is. The factual description of the amenity or equipment.</div>
+            <div class="fab-example f">"This is our Infrared Sauna."</div>
+          </div>
+          <div class="fab-card a">
+            <div class="fab-letter a">A</div>
+            <div class="fab-word a">Advantage</div>
+            <div class="fab-desc">What it does. The general benefit of this feature for anyone.</div>
+            <div class="fab-example a">"It penetrates deep into muscle tissue to accelerate recovery and reduce inflammation."</div>
+          </div>
+          <div class="fab-card b">
+            <div class="fab-letter b">B</div>
+            <div class="fab-word b">Benefit</div>
+            <div class="fab-desc">What it means for THIS person based on what they told you.</div>
+            <div class="fab-example b">"You mentioned your back has been giving you trouble — members use this specifically for that. It's like having a recovery spa available every single day."</div>
+          </div>
+        </div>
+        <div class="callout callout-rule">
+          <div class="callout-label">The Standard</div>
+          Never present a Feature without landing on the Benefit. And the Benefit must always connect back to something they told you in the pre-tour. If you cannot connect a feature to their goals, keep moving and come back to it later — or skip it.
+        </div>
+        <p>The F.A.B. framework is your tour engine. Every stop. Every amenity. Feature → Advantage → Benefit, personalized to their X-Factor. Practice it until it feels like natural conversation, not a script.</p>
+      </div>
+    </div>
+
+    <!-- L2 -->
+    <div class="lesson-card" data-lesson="2">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">02</span>
+        <span class="lesson-title-text">Walk Alongside — The Positioning Rule</span>
+        <span class="lesson-tag">Body Language</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>Where you walk in relation to the guest tells them everything about the dynamic you are creating. Walk too far ahead and you are a tour guide — they are a tourist following someone around a place that is not theirs. Walk alongside and you are an equal, a partner, a collaborator showing them something you are genuinely excited about.</p>
+        <div class="callout callout-rule">
+          <div class="callout-label">The Rule</div>
+          Never more than one step ahead. Alongside or slightly angled toward them at every stop. This is non-negotiable throughout the entire tour.
+        </div>
+        <p>Walking alongside also has practical benefits that directly serve your sales process:</p>
+        <p><strong>It enables real conversation.</strong> When you are side by side, conversation flows naturally. When you are leading from the front, they are talking to the back of your head.</p>
+        <p><strong>It lets you read body language.</strong> When you are next to them, you can see when their eyes light up at a piece of equipment or when they glance away with disinterest. These signals are your real-time feedback — they tell you when to slow down and when to keep moving.</p>
+        <p><strong>It creates physical parity.</strong> People trust people who treat them as equals. Walking ahead is a power move — even subconsciously. Walking alongside says "we are in this together."</p>
+        <div class="callout callout-tip">
+          <div class="callout-label">At Each Stop</div>
+          Turn toward them when you speak — not toward the equipment. You are talking to a person, not narrating a display case. Eye contact during F.A.B. delivery seals the connection between the feature and their personal benefit.
+        </div>
+      </div>
+    </div>
+
+    <!-- L3 -->
+    <div class="lesson-card" data-lesson="3">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">03</span>
+        <span class="lesson-title-text">Connect Every Stop to Their X-Factor</span>
+        <span class="lesson-tag">Personalization</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>Your notes from the pre-tour are your tour script. Everything the guest told you — their X-Factor, their goals, their past struggles, their emotional language — is the raw material you are going to use to make every stop feel personally relevant. This is what separates a great tour from a good one.</p>
+        <p>At each major stop, ask yourself one question before you speak: <em>"How does this connect to what they told me?"</em> If you can answer that, you have your transition. If you cannot, either skip the stop or save it for overall value.</p>
+        <div class="dialogue-block">
+          <div class="dialogue-title">X-Factor Callbacks — Examples in Action</div>
+          <div class="line"><span class="speaker action">SETUP</span><span class="line-text action-text">Guest said in pre-tour: "I want to feel like a better dad. I get winded playing with my kids."</span></div>
+          <div class="line"><span class="speaker consultant">At Cardio</span><span class="line-text"><em>"You mentioned getting winded with your kids — this is exactly where that changes. Our members who work on Zone 2 cardio here — three or four times a week — see noticeable improvements in their day-to-day energy within the first month."</em></span></div>
+          <div class="line"><span class="speaker consultant">At Revive</span><span class="line-text"><em>"You mentioned you have a demanding schedule — this area is what makes consistency sustainable. Recovery is the thing most people skip, and it's why they burn out. Having this available daily means you come back fresher every time."</em></span></div>
+          <div class="line"><span class="speaker consultant">At Studio</span><span class="line-text"><em>"These classes run early morning and evening — so your schedule isn't an excuse anymore. And a lot of dads come to these with their partners, which makes the accountability part automatic."</em></span></div>
+        </div>
+        <div class="callout callout-tip">
+          <div class="callout-label">Use Their Exact Words</div>
+          If they said "I want to feel like myself again" — use that phrase back to them: "This is the area where our members tell us they start feeling like themselves again." Hearing their own words reflected back creates an immediate emotional connection that generic language never achieves.
+        </div>
+      </div>
+    </div>
+
+    <!-- L4 -->
+    <div class="lesson-card" data-lesson="4">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">04</span>
+        <span class="lesson-title-text">Show the Entire Club — Never Assume, Always Show</span>
+        <span class="lesson-tag">Full Value</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>One of the most common tour mistakes is editing the experience based on what the guest said they are interested in. They mentioned cardio — so you skip the WE/FIT floor. They said they are not a class person — so you walk past the studio. This is a costly error.</p>
+        <p>People do not always know what they want until they see it. The guest who said they "just want to use the treadmill" might stop dead in their tracks when they see the WE/FIT space lit up and full of energy. That moment of unexpected excitement is something you cannot manufacture — but you can create the conditions for it by showing everything.</p>
+        <div class="callout callout-rule">
+          <div class="callout-label">The Rule</div>
+          Show the entire club on every tour. Every area. No exceptions based on assumed interest. Frame everything as part of the access they get — even if they never use it, it contributes to the perceived value of the membership.
+        </div>
+        <div class="callout callout-script">
+          <div class="callout-label">Framing an Area They Did Not Mention</div>
+          "Even if this isn't something you'd use right away, it's part of everything you have access to — and a lot of members surprise themselves once they try it. We have members who came in saying they'd never take a group class and now it's the main reason they come."
+        </div>
+        <p>The studio and WE/FIT spaces in particular are high-visual-impact areas. The energy, the lighting, the setup — they create an emotional response even in someone who is skeptical about classes. Always walk through. Let the space do the selling.</p>
+      </div>
+    </div>
+
+    <!-- L5 -->
+    <div class="lesson-card" data-lesson="5">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">05</span>
+        <span class="lesson-title-text">Tie-Down Questions — Building the "Yes" Chain</span>
+        <span class="lesson-tag">Micro-Closes</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>A tie-down question is a subtle agreement-gathering technique used throughout the tour. Its purpose is to accumulate a chain of small "yes" answers that makes the final "yes" at the close feel like a natural continuation — not a sudden leap.</p>
+        <p>Every time a guest says "yes" to a tie-down question during the tour, they are mentally moving closer to membership. By the time you sit down to present pricing, you have a guest who has already agreed with you a dozen times. Saying no becomes the inconsistency — not saying yes.</p>
+        <div class="callout callout-script">
+          <div class="callout-label">Tie-Down Question Bank</div>
+          "Wouldn't you agree this could help you target those goals directly?" — "Could you see yourself using this a couple times a week?" — "Does this look like the kind of environment you'd feel comfortable training in?" — "If you had access to this every day, would you take advantage of it?" — "Can you see how this connects to what you're trying to accomplish?"
+        </div>
+        <p>Notice what all of these have in common: they are all questions the guest can only honestly answer "yes" to if you have done a good job connecting the feature to their goals. A tie-down question that the guest struggles to answer yes to is a signal — you did not connect the feature to their benefit effectively enough. Go back and rebuild the F.A.B.</p>
+        <div class="callout callout-warn">
+          <div class="callout-label">Do Not Overuse</div>
+          Two to three tie-down questions per tour stop maximum. If every sentence ends with a question, it starts to feel like a pattern and the guest becomes aware of the technique. Use them at moments of genuine enthusiasm or impact — not mechanically.
+        </div>
+      </div>
+    </div>
+
+    <!-- L6 -->
+    <div class="lesson-card" data-lesson="6">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">06</span>
+        <span class="lesson-title-text">Offer Demonstrations — Eliminate Intimidation</span>
+        <span class="lesson-tag">Engagement</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>When a guest slows down near a piece of equipment, asks about it, or hesitates — that hesitation is almost always one of two things: curiosity or intimidation. Both are invitations for the same response: get them involved.</p>
+        <p>A brief, confident demonstration transforms a piece of equipment from something foreign and potentially scary into something familiar and accessible. The moment a guest's hands are on something — or they see it working — their relationship with it changes.</p>
+        <div class="callout callout-script">
+          <div class="callout-label">The Demo Invitation</div>
+          "Want me to show you how this works real quick? It's one of those things that looks more complicated than it is." [Demonstrate — 30 seconds max. Then:] "See? Super intuitive. And if you ever want a refresher, every machine has a QR code right here — scan it and it pulls up a full instructional video. So you're never left guessing."
+        </div>
+        <p>The QR code detail is important. It tells the guest two things: the club has invested in helping them learn, and they do not have to feel embarrassed about asking for help because the help is already built in. For Never Fitness guests especially, this removes a major anxiety about looking lost or out of place.</p>
+        <div class="callout callout-tip">
+          <div class="callout-label">The Hands-On Rule</div>
+          If a guest touches or tries something during the tour, their likelihood of joining increases significantly. Get them involved wherever possible — adjust a seat, try a grip, scan a QR code. Physical interaction builds ownership. Ownership drives commitment.
+        </div>
+      </div>
+    </div>
+
+    <!-- L7 -->
+    <div class="lesson-card" data-lesson="7">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">07</span>
+        <span class="lesson-title-text">Showcase Cleanliness — A Core Value in Action</span>
+        <span class="lesson-tag">Differentiation</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>Cleanliness is not a nice-to-have at City Fitness. It is a Core Value — one of the three pillars we stand on alongside Smile and Cutting Edge. That means it should be actively showcased during the tour, not just assumed or hoped that the guest notices.</p>
+        <p>Most people have had a bad gym experience. Dirty equipment, sticky floors, locker rooms that smell like a middle school. City Fitness is the antidote to that experience — but they will not feel it unless you point it out with intention and pride.</p>
+        <div class="callout callout-script">
+          <div class="callout-label">Cleanliness Callout Script</div>
+          "One thing I always want to make sure people notice — and this is something we take really seriously here — is how clean this facility is. We have a dedicated Clean Team working throughout every operating hour. Not just opening and closing. All day. It's one of our three core values and you'll feel the difference."
+        </div>
+        <p>If a member of the Clean Team is nearby and is approachable, introduce them. This is a powerful moment. It demonstrates that City Fitness values every role on the team — and it shows genuine pride in the facility that most gyms cannot replicate.</p>
+        <div class="callout callout-teal">
+          <div class="callout-label">Why This Matters to the Close</div>
+          Cleanliness addresses an unspoken objection almost every guest carries from past gym experiences. By proactively calling it out, you eliminate a reason to leave — before they even think to bring it up. It is objection prevention built into the tour.
+        </div>
+      </div>
+    </div>
+
+    <!-- L8 -->
+    <div class="lesson-card" data-lesson="8">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">08</span>
+        <span class="lesson-title-text">Plant the Referral Seed — The Buddy System Moment</span>
+        <span class="lesson-tag">Referral Setup</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>The referral ask at the end of the sale is far more effective when the seed has been planted during the tour. The tour gives you a natural, organic moment to introduce the idea of bringing someone — and it frames it as a member benefit rather than a sales tactic.</p>
+        <p>The moment: when you pass two members working out together. This is your cue.</p>
+        <div class="callout callout-script">
+          <div class="callout-label">The Referral Seed Script</div>
+          "See those two over there? This is actually something we see a lot here — members who come with a friend or partner. Research shows that workout partners increase consistency by 30%, and honestly you can just see it — they push each other harder and they're having more fun doing it. We have a really generous guest pass policy, so when you join, bringing your people is easy. We'll revisit that at the end."
+        </div>
+        <p>That last line — <em>"we'll revisit that at the end"</em> — is important. It sets up the referral ask as something they already agreed to hear more about. When you get to it after the close, it does not feel like a new request — it is a follow-through on something you mentioned on the tour.</p>
+        <div class="callout callout-rule">
+          <div class="callout-label">The Four Reasons Partners Matter</div>
+          1. Members with workout buddies train more consistently. &nbsp; 2. They stay committed longer. &nbsp; 3. They train harder with someone to push them. &nbsp; 4. They enjoy it more and that enjoyment keeps them coming back.
+        </div>
+      </div>
+    </div>
+
+    <!-- L9 -->
+    <div class="lesson-card" data-lesson="9">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">09</span>
+        <span class="lesson-title-text">The Complete Tour — All Elements in Flow</span>
+        <span class="lesson-tag">Full Execution</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>Here is a compressed version of a complete tour — showing how F.A.B., X-Factor callbacks, tie-downs, cleanliness, and the referral seed all weave together naturally. The guest is a Start & Stopper who told us in discovery that she wants more energy, has a bad knee from an old injury, and "just wants to feel like herself again."</p>
+        <div class="dialogue-block">
+          <div class="dialogue-title">Complete Tour Flow — Condensed Example</div>
+          <div class="line"><span class="speaker action">ACTION</span><span class="line-text action-text">Walking from desk toward the main floor — alongside the guest, not ahead.</span></div>
+          <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"So I want to build this tour around everything you shared with me — especially that knee and the energy piece. Cool?"</em></span></div>
+          <div class="line"><span class="speaker action">AT CARDIO</span><span class="line-text action-text">Stops near the low-impact cardio section.</span></div>
+          <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"These bikes and ellipticals — especially this line right here — are zero-impact. They're actually what we recommend for anyone managing a knee issue because you get all the cardiovascular benefit with none of the joint stress. Could you see yourself starting here a few mornings a week?"</em></span></div>
+          <div class="line"><span class="speaker prospect">Guest</span><span class="line-text">"Yeah, definitely. That's what I've been scared of — hurting it worse."</span></div>
+          <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"That's exactly why I wanted to show you this first. You won't be guessing here."</em> [Writes a note.] <em>"Let me show you something else that's going to be relevant for the knee."</em></span></div>
+          <div class="line"><span class="speaker action">AT REVIVE</span><span class="line-text action-text">Moving into the Revive recovery area.</span></div>
+          <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"This is our Revive recovery suite. Infrared sauna, red light beds, cryo chamber, compression — the whole setup. But for your knee specifically, the infrared and compression are going to be game-changers. Infrared penetrates deep into the tissue and reduces inflammation. Normatec compression clears metabolic waste and accelerates healing. If you had access to this every single day, how often do you think you'd use it?"</em></span></div>
+          <div class="line"><span class="speaker prospect">Guest</span><span class="line-text">"Honestly, probably every time I worked out."</span></div>
+          <div class="line"><span class="speaker action">AT STUDIO</span><span class="line-text action-text">Walking through the studio — classes are on the schedule board.</span></div>
+          <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"Our studio runs morning and evening. Even if classes aren't what you picture right now — I want you to see this space because a lot of members who felt exactly like you at the start end up in here three times a week. The community in these classes is really what makes the difference for consistency."</em></span></div>
+          <div class="line"><span class="speaker action">PASSING MEMBERS</span><span class="line-text action-text">Two members working out together nearby.</span></div>
+          <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"See those two? That's what accountability looks like in practice. We have a great guest pass program — when you're a member, bringing someone is easy and we'll talk about that at the end."</em></span></div>
+          <div class="line"><span class="speaker action">CLEAN TEAM</span><span class="line-text action-text">Passes a Clean Team member wiping down equipment.</span></div>
+          <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"And I always want to make sure people notice this — that's part of our dedicated Clean Team. They're working all day, every day. Cleanliness is one of our three core values and you can feel it in here. Big difference from most gyms."</em></span></div>
+          <div class="line"><span class="speaker prospect">Guest</span><span class="line-text">"It does feel different. Really clean."</span></div>
+          <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"That's intentional. Okay — I think we've seen everything that matters for you. Let's head back and I want to recap what we covered before we look at memberships."</em></span></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end lesson grid -->
+
+  <div class="study-complete-banner" id="studyBanner">
+    <h3>All 9 Lessons Complete</h3>
+    <p>You've got the full tour framework. Unlock your certification quiz below.</p>
+    <button class="cf-btn" onclick="unlockQuiz()" style="max-width:300px;margin:0 auto;">Unlock Certification ↓</button>
+  </div>
+
+  <!-- KEY STOPS -->
+  <div class="divider-label">Tour Stop Reference</div>
+  <div class="section-header" style="padding-top:0;">
+    <div class="s-eyebrow">The Playbook</div>
+    <h2 class="s-title">Key Tour Stops &<br>What to Do at Each</h2>
+  </div>
+  <div class="stop-grid">
+    <div class="stop-card">
+      <div class="stop-name">Main Floor</div>
+      <div>
+        <div class="stop-what"><strong>Do:</strong> Orient them to the layout. Point out equipment relevant to their goals. Offer a demo if they slow down near anything. Use a tie-down on at least one piece of equipment.</div>
+        <div class="stop-script">"This is the heart of the club — let me show you the areas that are going to matter most for what you told me."</div>
+      </div>
+    </div>
+    <div class="stop-card">
+      <div class="stop-name">Revive</div>
+      <div>
+        <div class="stop-what"><strong>Do:</strong> Explain bio-stacking simply. Connect each modality to something they mentioned (injury, stress, sleep, recovery). Ask the frequency question: "If you had access to this daily, how often would you use it?"</div>
+        <div class="stop-script">"Recovery is the thing most people skip — and it's exactly why they burn out and quit."</div>
+      </div>
+    </div>
+    <div class="stop-card">
+      <div class="stop-name">Studio / WE•FIT</div>
+      <div>
+        <div class="stop-what"><strong>Do:</strong> Show it even if they said they are not a class person. Let the visual impact do the work. Mention schedule flexibility (morning and evening). Reference the community and consistency data.</div>
+        <div class="stop-script">"A lot of people who said exactly what you said end up in here — it's that good."</div>
+      </div>
+    </div>
+    <div class="stop-card">
+      <div class="stop-name">Thrive Area</div>
+      <div>
+        <div class="stop-what"><strong>Do:</strong> Introduce the concept of personalized programming. Plant the Thrive seed — assessment, program prescription, professional guidance. Introduce a coach or manager if present. Frame it as the difference between guessing and knowing.</div>
+        <div class="stop-script">"If you are not assessing, you are guessing. This is where that stops."</div>
+      </div>
+    </div>
+    <div class="stop-card">
+      <div class="stop-name">Locker Rooms</div>
+      <div>
+        <div class="stop-what"><strong>Do:</strong> Point out cleanliness explicitly. Mention amenities (towel service if available, quality of facilities). For Never Fitness guests especially — this matters. Clean, high-quality locker rooms reduce intimidation significantly.</div>
+        <div class="stop-script">"Honestly this is one of the things people comment on most. It doesn't feel like a gym locker room."</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MISTAKES -->
+  <div class="divider-label">Common Mistakes</div>
+  <div class="section-header" style="padding-top:0;">
+    <div class="s-eyebrow">What Kills the Tour</div>
+    <h2 class="s-title">6 Tour Mistakes<br>& How to Fix Them</h2>
+  </div>
+  <div class="mistakes-grid">
+    <div class="mistake-card">
+      <div class="mistake-label bad">✗ The Mistake</div>
+      <div class="mistake-text">The museum tour — walking through and naming things: <strong>"This is the cardio area. This is the weight room. This is the sauna."</strong> No benefit. No personalization. No connection.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label good">✓ The Fix</div>
+      <div class="mistake-text"><strong>Every stop needs a Benefit that connects to their pre-tour.</strong> Feature → Advantage → Benefit. If you cannot name the Benefit for this specific person, you are not ready to present that stop.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label bad">✗ The Mistake</div>
+      <div class="mistake-text">Walking ahead of the guest. You are giving a property tour, not a shared exploration. <strong>They feel like they are being led, not included.</strong></div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label good">✓ The Fix</div>
+      <div class="mistake-text"><strong>Alongside. Always.</strong> If you catch yourself more than one step ahead, slow down. Turn toward them. Re-engage. The physical positioning is the rapport.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label bad">✗ The Mistake</div>
+      <div class="mistake-text">Skipping areas because they "won't be interested." <strong>You are making an assumption that costs you perceived value and potential excitement you cannot get back.</strong></div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label good">✓ The Fix</div>
+      <div class="mistake-text"><strong>Show everything.</strong> Frame every area as part of their access. "Even if you never use this, it's yours." Unexpected excitement at any stop can change the entire energy of the close.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label bad">✗ The Mistake</div>
+      <div class="mistake-text">No tie-downs. The guest nods politely through the whole tour and you have no idea where they stand. <strong>You get to the price card with zero momentum built.</strong></div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label good">✓ The Fix</div>
+      <div class="mistake-text"><strong>2–3 tie-down questions per major stop.</strong> "Could you see yourself using this?" "Wouldn't you agree this addresses what you mentioned?" Small agreements compound. By the desk, they have already said yes a dozen times.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label bad">✗ The Mistake</div>
+      <div class="mistake-text">Talking about equipment without connecting it to their goals. <strong>"This is a Concept2 rower — great machine."</strong> Great. So what? Why does it matter to them?</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label good">✓ The Fix</div>
+      <div class="mistake-text"><strong>Every feature needs a "for you" statement.</strong> "This is a Concept2 rower — it's full body, zero impact on the joints, which given what you mentioned about your knee is actually an ideal starting point for cardio."</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label bad">✗ The Mistake</div>
+      <div class="mistake-text">Forgetting to plant the referral seed. <strong>The referral ask at the end lands cold if no groundwork was laid during the tour.</strong></div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label good">✓ The Fix</div>
+      <div class="mistake-text"><strong>Use the buddy moment on the floor.</strong> Point it out naturally when you pass members together. Set up the "we'll revisit this at the end" so the referral ask feels like a follow-through, not a surprise.</div>
+    </div>
+  </div>
+
+  <!-- ROLE PLAY -->
+  <div class="divider-label">Role-Play Scenarios</div>
+  <div class="section-header" style="padding-top:0;">
+    <div class="s-eyebrow">Practice</div>
+    <h2 class="s-title">4 Tour Scenarios<br>to Train On</h2>
+  </div>
+
+  <div class="roleplay-card">
+    <div class="roleplay-header">
+      <span class="roleplay-scenario">Scenario 01 — The Avid Exerciser Tour</span>
+      <span class="roleplay-type">Bucket 1</span>
+    </div>
+    <div class="roleplay-body">
+      <div class="roleplay-setup">Guest is a seasoned athlete — trains six days a week, knows their way around a gym, has specific performance goals. They are evaluating City Fitness against other premium options they have toured.</div>
+      <div class="roleplay-objective"><strong>Your objective:</strong> Match their expertise level — do not over-explain basics. Focus on advanced equipment, cutting-edge features (Revive, specific strength tools), and differentiation they will not find elsewhere. Ask about plateaus: "What's the one thing you've been trying to crack that your current setup hasn't solved?" Make them feel like they are talking to a peer, not a salesperson. Skip introductory framing and spend more time in the areas that genuinely excite them.</div>
+      <div class="coaching-note">The Avid Exerciser will test your knowledge. If they ask about something you do not know — say so honestly: "That's outside my expertise but we have a Thrive coach I'd love to introduce you to who lives in that world." Authenticity over false confidence every time.</div>
+    </div>
+  </div>
+
+  <div class="roleplay-card">
+    <div class="roleplay-header">
+      <span class="roleplay-scenario">Scenario 02 — The Never Fitness Tour</span>
+      <span class="roleplay-type">Bucket 3</span>
+    </div>
+    <div class="roleplay-body">
+      <div class="roleplay-setup">Guest has never had a gym membership. They are visibly nervous, using phrases like "I don't really know where to start" and "I don't want to look like I don't know what I'm doing." Every unfamiliar machine creates a small wave of anxiety.</div>
+      <div class="roleplay-objective"><strong>Your objective:</strong> Slow down. Simplify your language — no jargon. At every machine that creates hesitation, offer a quick demo and show the QR code. Introduce staff members warmly. Emphasize that nobody knows how to do everything on day one and that City Fitness is set up specifically to support people at the beginning. Focus the tour on the most approachable areas first and build confidence before moving to more complex spaces.</div>
+      <div class="coaching-note">The Never Fitness guest is deciding whether they belong here — not whether the equipment is good. Your job is to make them feel like they absolutely do. Every introduction, every demo, every laugh you share on the tour is answering that question. Build belonging before you build the case for membership.</div>
+    </div>
+  </div>
+
+  <div class="roleplay-card">
+    <div class="roleplay-header">
+      <span class="roleplay-scenario">Scenario 03 — The Distracted Guest</span>
+      <span class="roleplay-type">Engagement Challenge</span>
+    </div>
+    <div class="roleplay-body">
+      <div class="roleplay-setup">Halfway through the tour the guest starts checking their phone, giving one-word responses, and drifting ahead of you to look at things independently. Their energy has dropped and you are losing them.</div>
+      <div class="roleplay-objective"><strong>Your objective:</strong> Re-engage without desperation. Stop and ask directly: "Is there a specific area you want to spend more time in? I want to make sure we're covering what matters most to you." Let them lead for a moment — follow their curiosity. Re-anchor to their X-Factor: "Before we keep going — you mentioned wanting to feel like yourself again. Let me make sure I show you the one thing I think is going to resonate most with that." Regain the thread by returning to what they care about.</div>
+      <div class="coaching-note">A distracted guest is usually a guest whose curiosity has not been activated yet. Go back to their X-Factor — that is the thing that lights people up. The phone goes away when something in front of them becomes more interesting than what is on the screen.</div>
+    </div>
+  </div>
+
+  <div class="roleplay-card">
+    <div class="roleplay-header">
+      <span class="roleplay-scenario">Scenario 04 — The Question Firehose</span>
+      <span class="roleplay-type">High-Engagement Guest</span>
+    </div>
+    <div class="roleplay-body">
+      <div class="roleplay-setup">The guest asks a question at every single stop. Class schedules, equipment brands, staff certifications, guest policy details, parking — they want to know everything. The tour is running long and you have not gotten to Revive yet.</div>
+      <div class="roleplay-objective"><strong>Your objective:</strong> Answer enthusiastically — this guest's questions are buying signals, not obstacles. But manage the pace: "Great question — let me answer that and then there's something else I really want to show you before we circle back to the desk." Triage: answer questions that connect to their goals fully, park others for the desk: "I'll have all the class schedule details at the desk and I can walk you through everything there." Do not rush them — channel their energy, do not fight it.</div>
+      <div class="coaching-note">The question firehose guest is the highest-intent guest in the building. Every question is an expression of interest. The consultant who gets frustrated by too many questions is leaving a sale on the table. Lean in, stay warm, keep moving.</div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="divider-label">Certification</div>
+  <div class="section-header" style="padding-top:0;">
+    <div class="s-eyebrow">Knowledge Check</div>
+    <h2 class="s-title">Tour Certification</h2>
+    <p class="s-sub">16 questions. 80% or higher to pass. Complete all 9 lessons above to unlock.</p>
+  </div>
+
+  <div class="quiz-section" id="quizSection">
+    <div class="quiz-locked" id="quizLocked">
+      <div class="quiz-locked-icon">🔒</div>
+      <h3>Complete All Lessons to Unlock</h3>
+      <p>Open all 9 lessons above. The quiz unlocks automatically when you finish.</p>
+    </div>
+    <div class="name-panel" id="namePanel" style="display:none;">
+      <h3>Certification Registry</h3>
+      <p>Enter your full name as it should appear on your certification record.</p>
+      <input type="text" class="cf-input" id="empNameInput" placeholder="Full Name"/>
+      <button class="cf-btn" onclick="startQuiz()">Begin Official Test →</button>
+    </div>
+    <div class="quiz-active" id="quizActive" style="display:none;">
+      <div class="q-progress-wrap"><div class="q-progress-bar" id="qBar"></div></div>
+      <div class="q-meta">
+        <span class="q-counter" id="qCounter"></span>
+        <span class="q-topic">Module 05 · The Tour</span>
+      </div>
+      <div class="q-text" id="qText"></div>
+      <div class="q-options" id="qOptions"></div>
+    </div>
+    <div class="results-panel" id="resultsPanel">
+      <div class="result-score" id="resultScore"></div>
+      <div class="result-label" id="resultLabel"></div>
+      <div id="missedSection"></div>
+      <button class="cf-btn" onclick="resetModule()" style="margin-top:22px;">Return to Module</button>
+    </div>
+  </div>
+
+</div><!-- end module-wrap -->
+
+<div class="module-footer">
+  <p>City Fitness Philadelphia &nbsp;·&nbsp; Deep Training Module 05 &nbsp;·&nbsp; 2026</p>
+</div>
+
+<iframe name="cf_hidden" id="cf_hidden" style="display:none;"></iframe>
+<form id="certForm" target="cf_hidden" method="GET" action="https://script.google.com/a/macros/cityfitness.com/s/AKfycbzZokf4OQGpHYEkb_9mcVdJ-t9jop9RWIpclIcLSjTWRcBQfeDJ751bl0qO8k7VrZwe/exec">
+  <input type="hidden" name="employee" id="formEmployee"/>
+  <input type="hidden" name="topic" id="formTopic"/>
+  <input type="hidden" name="result" id="formResult"/>
+</form>
+
+<script>
+window.addEventListener('scroll',()=>{
+  const el=document.documentElement;
+  const pct=(el.scrollTop/(el.scrollHeight-el.clientHeight))*100;
+  document.getElementById('topFill').style.width=pct+'%';
+});
+
+let openedLessons=new Set();
+const totalLessons=9;
+
+function toggleLesson(header){
+  const card=header.parentElement;
+  const isOpen=card.classList.contains('open');
+  card.classList.toggle('open',!isOpen);
+  if(!isOpen){
+    openedLessons.add(parseInt(card.dataset.lesson));
+    checkStudyComplete();
+  }
+}
+
+function checkStudyComplete(){
+  if(openedLessons.size>=totalLessons){
+    const banner=document.getElementById('studyBanner');
+    banner.style.display='block';
+    banner.scrollIntoView({behavior:'smooth',block:'center'});
+  }
+}
+
+function unlockQuiz(){
+  document.getElementById('quizLocked').style.display='none';
+  document.getElementById('namePanel').style.display='block';
+  document.getElementById('quizSection').scrollIntoView({behavior:'smooth'});
+}
+
+const questions=[
+  {q:"What does F.A.B. stand for in the tour framework?",a:["Friendly, Attentive, Bold","Feature, Advantage, Benefit","Fast, Accurate, Brief","Facility, Amenity, Budget"],c:1},
+  {q:"What is the critical difference between Advantage and Benefit in the F.A.B. framework?",a:["Advantage is longer and more detailed","Benefit is the same as Advantage but said differently","Advantage is general — what it does for anyone. Benefit is personal — what it means for THIS guest based on their goals","Advantage comes after Benefit in the sequence"],c:2},
+  {q:"What is the positioning rule during the tour?",a:["Stay 3–5 feet ahead so the guest can see where they are going","Walk behind the guest so they feel in control","Never more than one step ahead — alongside or slightly angled toward them at all times","Positioning does not matter as long as you are talking"],c:2},
+  {q:"Should you show areas of the club the guest did not mention they were interested in?",a:["No — it wastes time and overwhelms them","Only if the manager says to","Yes — always show the entire club. Unexpected excitement at any stop can change the close","Only for Avid Exercisers — not for Never Fitness guests"],c:2},
+  {q:"What is a tie-down question?",a:["A question that locks in their pricing preference","A subtle agreement-gathering question used throughout the tour to build a 'yes' chain","A question asked at the very end to close the sale","A question about how often they will use the club"],c:1},
+  {q:"What is the maximum number of tie-down questions recommended per tour stop?",a:["One — any more feels scripted","2–3 — used at moments of genuine enthusiasm, not mechanically","5 or more — the more agreements the better","None — tie-downs should only happen at the desk"],c:1},
+  {q:"When a guest shows hesitation near a piece of equipment, what is the correct response?",a:["Skip it and keep moving","Explain it verbally from a distance","Offer a quick demo and show them the QR code for instructional videos","Tell them not to worry about it yet"],c:2},
+  {q:"Why does physical interaction with equipment during the tour matter?",a:["It passes time during slow parts of the tour","It builds ownership — guests who touch things are more likely to commit","It is required by City Fitness policy","It helps the guest decide which specific machine they want to use"],c:1},
+  {q:"Cleanliness at City Fitness is described as:",a:["A nice-to-have that guests appreciate","A legal requirement","One of the three Core Values and must be actively showcased, not just hoped that guests notice","The responsibility of the Clean Team only — not the consultant"],c:2},
+  {q:"What is the correct moment to plant the referral seed during the tour?",a:["At the very beginning before the tour starts","During the pricing conversation at the desk","When you pass two members working out together on the floor","Only after they have agreed to join"],c:2},
+  {q:"When planting the referral seed on the tour, you should end with:",a:["'So who would you want to bring?'","'We'll revisit that at the end' — setting it up as a follow-through, not a future surprise","'You should bring your partner next time'","Nothing — just let it land naturally"],c:1},
+  {q:"For a Never Fitness guest, which approach is most important during the tour?",a:["Move quickly so they are not overwhelmed by too much information","Focus only on the cardio area since that is where beginners start","Slow down, simplify language, offer demos, introduce staff, and build belonging before building the membership case","Treat them identically to an Avid Exerciser to avoid making assumptions"],c:2},
+  {q:"What should you do if a guest becomes distracted and disengaged mid-tour?",a:["Keep going and hope they re-engage","Speed up to get to the close faster","Stop, ask what area they want to see most, and re-anchor to their X-Factor","End the tour early and go back to the desk"],c:2},
+  {q:"When an Avid Exerciser asks about a training methodology you are unfamiliar with, you should:",a:["Make up a plausible-sounding answer","Say 'I'm not the expert on that but I have someone I'd love to introduce you to who lives in that world'","Skip the question and change the subject","Pretend you know and look it up later"],c:1},
+  {q:"A guest asking many questions throughout the tour is best understood as:",a:["A difficult guest who is wasting your time","A sign they are not really interested — just curious","A high-intent guest expressing genuine interest — every question is a buying signal","An objection to be handled before the price presentation"],c:2},
+  {q:"What is the single most important thing the tour should accomplish?",a:["Show every piece of equipment and explain what it does","Help the guest visualize themselves as a City Fitness member already living the outcome they described in the pre-tour","Present the pricing tiers in context","Get through all areas of the club as efficiently as possible"],c:1}
+];
+
+let empName='',qIndex=0,score=0,missed=[];
+
+function startQuiz(){
+  empName=document.getElementById('empNameInput').value.trim();
+  if(!empName){alert('Please enter your full name.');return;}
+  document.getElementById('namePanel').style.display='none';
+  document.getElementById('quizActive').style.display='block';
+  qIndex=0;score=0;missed=[];
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const q=questions[qIndex];
+  document.getElementById('qBar').style.width=((qIndex/questions.length)*100)+'%';
+  document.getElementById('qCounter').textContent=`Question ${qIndex+1} of ${questions.length}`;
+  document.getElementById('qText').textContent=q.q;
+  const opts=document.getElementById('qOptions');
+  opts.innerHTML='';
+  q.a.forEach((opt,i)=>{
+    const btn=document.createElement('button');
+    btn.className='q-opt';
+    btn.textContent=opt;
+    btn.onclick=()=>handleAnswer(i);
+    opts.appendChild(btn);
+  });
+}
+
+function handleAnswer(idx){
+  const q=questions[qIndex];
+  if(idx===q.c){score++;}
+  else{missed.push({q:q.q,a:q.a[q.c]});}
+  qIndex++;
+  if(qIndex<questions.length){renderQuestion();}
+  else{showResults();}
+}
+
+function showResults(){
+  const pct=Math.round((score/questions.length)*100);
+  document.getElementById('quizActive').style.display='none';
+  const rp=document.getElementById('resultsPanel');
+  rp.style.display='block';
+  const scoreEl=document.getElementById('resultScore');
+  scoreEl.textContent=pct+'%';
+  scoreEl.className='result-score '+(pct>=80?'result-pass':'result-fail');
+  document.getElementById('resultLabel').textContent=pct>=80?'Certification Passed — Module 05: The Tour':'Retake Required — Review Missed Questions Below';
+  let missedHtml='';
+  if(missed.length){
+    missedHtml='<div class="missed-label">Knowledge Gaps — Review These</div>';
+    missed.forEach(m=>{
+      missedHtml+=`<div class="missed-item"><div class="missed-q">${m.q}</div><div class="missed-a">Correct Answer: ${m.a}</div></div>`;
+    });
+  }
+  document.getElementById('missedSection').innerHTML=missedHtml;
+  document.getElementById('formEmployee').value=empName;
+  document.getElementById('formTopic').value='Module 05 - The Tour';
+  document.getElementById('formResult').value=pct;
+  document.getElementById('certForm').submit();
+}
+
+function resetModule(){
+  document.getElementById('resultsPanel').style.display='none';
+  document.getElementById('namePanel').style.display='block';
+  document.getElementById('empNameInput').value='';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
