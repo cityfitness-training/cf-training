@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>CF Training | Module 10: The T.O.</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:ital,wght@0,400;0,500;0,600;1,400;1,600&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg: #111210;
+  --surface: #181714;
+  --card: #1e1c18;
+  --border: #2a2724;
+  --border-light: #363330;
+  --copper: #B87C4C;
+  --copper-light: #C9A07A;
+  --copper-dim: rgba(184,124,76,0.12);
+  --copper-glow: rgba(184,124,76,0.05);
+  --tan: #BF9B6F;
+  --white: #F0EDE8;
+  --grey: #6e7068;
+  --dim: #909288;
+  --red: #c0392b;
+  --red-dim: rgba(192,57,43,0.08);
+  --green: #4a9a60;
+  --green-dim: rgba(74,154,96,0.1);
+  --gold: #c4a44a;
+  --gold-dim: rgba(196,164,74,0.1);
+  --grad: linear-gradient(135deg, #B87C4C 0%, #C9A07A 100%);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--white);font-family:'Barlow',sans-serif;line-height:1.65;overflow-x:hidden;}
+
+.top-bar{position:fixed;top:0;left:0;right:0;height:3px;background:var(--border);z-index:9999;}
+.top-bar-fill{height:100%;background:var(--grad);width:0%;transition:width .3s ease;}
+
+/* HERO */
+.hero{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;align-items:center;padding:80px 60px;gap:60px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 80% 50%,rgba(184,124,76,0.05) 0%,transparent 70%);}
+.hero-left{position:relative;z-index:1;}
+.hero-eyebrow{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--copper);letter-spacing:4px;text-transform:uppercase;margin-bottom:18px;display:flex;align-items:center;gap:12px;}
+.hero-eyebrow::before{content:'';display:block;width:32px;height:2px;background:var(--copper);}
+.hero-title{font-family:'Barlow Condensed',sans-serif;font-size:clamp(52px,8vw,100px);font-weight:900;line-height:.88;text-transform:uppercase;letter-spacing:-2px;margin-bottom:22px;}
+.hero-title em{font-style:normal;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.hero-desc{font-size:16px;color:var(--dim);line-height:1.75;margin-bottom:36px;max-width:480px;}
+.hero-stats{display:flex;gap:36px;margin-bottom:44px;}
+.stat{display:flex;flex-direction:column;}
+.stat-num{font-family:'Barlow Condensed',sans-serif;font-size:34px;font-weight:900;color:var(--copper);line-height:1;}
+.stat-label{font-size:11px;color:var(--grey);text-transform:uppercase;letter-spacing:2px;margin-top:3px;}
+.hero-btn{display:inline-flex;align-items:center;gap:10px;background:var(--grad);border:none;padding:16px 32px;color:white;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;letter-spacing:2px;text-transform:uppercase;border-radius:4px;cursor:pointer;transition:.2s;}
+.hero-btn:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(184,124,76,0.3);}
+
+/* HERO RIGHT — visual */
+.hero-right{position:relative;z-index:1;}
+.to-flow{display:flex;flex-direction:column;gap:3px;}
+.to-step{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px 18px;display:flex;gap:14px;align-items:flex-start;}
+.to-step.highlight{border-color:var(--copper);background:var(--copper-dim);}
+.to-step-num{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--copper);letter-spacing:1px;min-width:28px;padding-top:2px;}
+.to-step-text{font-size:14px;color:var(--dim);line-height:1.5;}
+.to-step-text strong{color:var(--white);}
+.to-step-text.highlight-text{color:var(--copper-light);}
+.to-arrow{text-align:center;color:var(--border-light);font-size:18px;padding:2px 0;}
+
+/* LAYOUT */
+.module-wrap{max-width:900px;margin:0 auto;padding:0 40px 120px;}
+.section-header{padding:70px 0 36px;}
+.s-eyebrow{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--copper);letter-spacing:4px;text-transform:uppercase;display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+.s-eyebrow::after{content:'';width:48px;height:1px;background:var(--copper);opacity:.4;}
+.s-title{font-family:'Barlow Condensed',sans-serif;font-size:clamp(30px,5vw,46px);font-weight:900;text-transform:uppercase;letter-spacing:-.5px;line-height:1.05;margin-bottom:10px;}
+.s-sub{font-size:16px;color:var(--dim);max-width:680px;line-height:1.6;}
+
+/* LESSONS */
+.lesson-grid{display:flex;flex-direction:column;gap:2px;}
+.lesson-card{background:var(--surface);border:1px solid var(--border);overflow:hidden;}
+.lesson-card:first-child{border-radius:10px 10px 0 0;}
+.lesson-card:last-child{border-radius:0 0 10px 10px;}
+.lesson-header{display:flex;align-items:center;gap:20px;padding:20px 26px;cursor:pointer;user-select:none;transition:.15s;}
+.lesson-header:hover{background:var(--copper-glow);}
+.lesson-num{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--copper);letter-spacing:2px;min-width:34px;}
+.lesson-title-text{font-size:16px;font-weight:700;flex:1;}
+.lesson-tag{font-size:10px;font-weight:700;color:var(--copper);background:var(--copper-dim);padding:4px 10px;border-radius:20px;text-transform:uppercase;letter-spacing:1px;white-space:nowrap;}
+.lesson-arrow{color:var(--grey);font-size:11px;transition:.3s;font-style:normal;}
+.lesson-card.open .lesson-arrow{transform:rotate(180deg);color:var(--copper);}
+.lesson-card.open .lesson-header{border-bottom:1px solid var(--border);}
+.lesson-body{display:none;padding:28px 26px 26px;}
+.lesson-card.open .lesson-body{display:block;}
+.lesson-body p{color:var(--dim);font-size:15px;line-height:1.75;margin-bottom:14px;}
+.lesson-body p:last-child{margin-bottom:0;}
+.lesson-body strong{color:var(--white);font-weight:700;}
+.lesson-body em{color:var(--tan);font-style:italic;}
+
+/* CALLOUTS */
+.callout{border-radius:8px;padding:18px 22px;margin:18px 0;font-size:15px;line-height:1.65;}
+.callout-rule{border-left:3px solid var(--copper);background:var(--copper-dim);color:var(--copper-light);}
+.callout-script{border-left:3px solid var(--tan);background:rgba(191,155,111,0.07);color:var(--tan);font-style:italic;}
+.callout-warn{border-left:3px solid var(--red);background:var(--red-dim);color:#d97060;}
+.callout-tip{border-left:3px solid var(--green);background:var(--green-dim);color:#7ac09a;}
+.callout-gold{border-left:3px solid var(--gold);background:var(--gold-dim);color:#d4b870;}
+.callout-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:3px;text-transform:uppercase;margin-bottom:7px;opacity:.7;display:block;}
+
+/* WHY IT WORKS */
+.why-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:18px 0;}
+.why-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:18px;}
+.why-num{font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:900;color:var(--copper);opacity:.4;line-height:1;margin-bottom:8px;}
+.why-title{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--white);margin-bottom:8px;}
+.why-text{font-size:13px;color:var(--dim);line-height:1.55;}
+
+/* DIALOGUE */
+.dialogue-block{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:22px;margin:18px 0;}
+.dialogue-title{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--copper);letter-spacing:3px;text-transform:uppercase;margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+.line{display:flex;gap:14px;margin-bottom:14px;align-items:flex-start;}
+.line:last-child{margin-bottom:0;}
+.speaker{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;min-width:90px;padding-top:3px;}
+.speaker.prospect{color:var(--grey);}
+.speaker.consultant{color:var(--copper);}
+.speaker.manager{color:var(--gold);}
+.speaker.action{color:rgba(191,155,111,0.5);}
+.line-text{font-size:15px;color:var(--dim);line-height:1.65;}
+.line-text em{color:var(--white);font-style:normal;font-weight:600;}
+.line-text.action-text{color:rgba(191,155,111,0.45);font-size:13px;font-style:italic;}
+
+/* SILENCE RULES */
+.silence-rules{display:flex;flex-direction:column;gap:8px;margin:18px 0;}
+.sr-row{display:flex;gap:14px;align-items:flex-start;padding:14px 18px;background:var(--card);border:1px solid var(--border);border-radius:8px;}
+.sr-icon{font-size:16px;min-width:22px;}
+.sr-text{font-size:14px;color:var(--dim);line-height:1.55;}
+.sr-text strong{color:var(--white);}
+.sr-text.do{color:#7ac09a;}
+.sr-text.dont{color:#d97060;}
+
+/* MISTAKES */
+.mistakes-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px;}
+.mistake-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:18px;}
+.mistake-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:3px;text-transform:uppercase;margin-bottom:8px;}
+.mistake-label.bad{color:var(--red);}
+.mistake-label.good{color:var(--green);}
+.mistake-text{font-size:14px;line-height:1.6;color:var(--dim);}
+.mistake-text strong{color:var(--white);}
+
+/* ROLEPLAY */
+.roleplay-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:14px;}
+.roleplay-header{padding:18px 22px;background:var(--copper-dim);display:flex;justify-content:space-between;align-items:center;}
+.roleplay-scenario{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--copper);}
+.roleplay-type{font-size:11px;color:var(--grey);}
+.roleplay-body{padding:22px;}
+.roleplay-setup{font-size:15px;font-style:italic;color:var(--tan);margin-bottom:14px;padding:12px 16px;background:rgba(191,155,111,0.06);border-radius:6px;line-height:1.6;}
+.roleplay-objective{font-size:14px;color:var(--dim);line-height:1.6;}
+.roleplay-objective strong{color:var(--white);}
+.coaching-note{margin-top:12px;padding:12px 16px;background:rgba(184,124,76,0.07);border-radius:6px;font-size:13px;color:var(--copper-light);line-height:1.6;}
+.coaching-note::before{content:'COACHING NOTE  ';font-weight:800;letter-spacing:2px;font-size:10px;display:block;margin-bottom:3px;opacity:.7;}
+
+/* DIVIDER */
+.divider-label{display:flex;align-items:center;gap:16px;color:var(--grey);font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin:56px 0 30px;}
+.divider-label::before,.divider-label::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* STUDY BANNER */
+.study-complete-banner{background:var(--copper-dim);border:1px solid rgba(184,124,76,0.3);border-radius:12px;padding:28px;text-align:center;margin:36px 0;display:none;}
+.study-complete-banner h3{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;color:var(--copper);margin-bottom:6px;}
+.study-complete-banner p{color:var(--dim);font-size:14px;margin-bottom:18px;}
+
+/* QUIZ */
+.quiz-section{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-top:36px;}
+.quiz-locked{padding:56px 40px;text-align:center;}
+.quiz-locked-icon{font-size:36px;margin-bottom:14px;opacity:.3;}
+.quiz-locked h3{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;text-transform:uppercase;color:var(--grey);margin-bottom:6px;}
+.quiz-locked p{color:var(--grey);font-size:14px;}
+.quiz-active{padding:38px;}
+.q-progress-wrap{height:3px;background:var(--border);border-radius:2px;margin-bottom:28px;overflow:hidden;}
+.q-progress-bar{height:100%;background:var(--grad);width:0%;transition:.4s;}
+.q-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;}
+.q-counter{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--copper);letter-spacing:2px;text-transform:uppercase;}
+.q-topic{font-size:11px;color:var(--grey);}
+.q-text{font-size:20px;font-weight:700;color:var(--white);margin-bottom:26px;line-height:1.4;}
+.q-options{display:flex;flex-direction:column;gap:9px;}
+.q-opt{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:15px 18px;color:var(--dim);font-size:15px;text-align:left;cursor:pointer;transition:.2s;font-family:'Barlow',sans-serif;}
+.q-opt:hover{border-color:var(--copper);color:var(--white);background:var(--copper-glow);}
+.name-panel{padding:38px;}
+.name-panel h3{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;color:var(--white);margin-bottom:5px;}
+.name-panel p{color:var(--dim);font-size:14px;margin-bottom:22px;}
+.cf-input{background:var(--bg);border:1px solid var(--border);color:var(--white);padding:13px 16px;width:100%;border-radius:8px;font-family:'Barlow',sans-serif;font-size:16px;margin-bottom:14px;outline:none;transition:.2s;}
+.cf-input:focus{border-color:var(--copper);}
+.cf-btn{background:var(--grad);border:none;padding:15px 28px;color:white;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;letter-spacing:2px;text-transform:uppercase;border-radius:8px;cursor:pointer;width:100%;transition:.2s;}
+.cf-btn:hover{opacity:.9;transform:translateY(-1px);}
+.results-panel{padding:38px;display:none;}
+.result-score{font-family:'Barlow Condensed',sans-serif;font-size:70px;font-weight:900;line-height:1;margin-bottom:6px;}
+.result-pass{color:var(--copper);}
+.result-fail{color:var(--red);}
+.result-label{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--grey);margin-bottom:22px;}
+.missed-label{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--dim);letter-spacing:3px;text-transform:uppercase;margin-bottom:10px;margin-top:22px;}
+.missed-item{background:rgba(192,57,43,0.07);border-left:3px solid var(--red);border-radius:0 6px 6px 0;padding:13px 15px;margin-bottom:7px;}
+.missed-q{font-size:14px;color:var(--dim);margin-bottom:5px;}
+.missed-a{font-size:14px;color:var(--tan);font-weight:600;}
+
+.module-footer{text-align:center;padding:50px 40px;border-top:1px solid var(--border);}
+.module-footer p{color:var(--grey);font-size:11px;letter-spacing:3px;text-transform:uppercase;}
+
+@media(max-width:800px){
+  .hero{grid-template-columns:1fr;min-height:auto;padding:80px 24px 40px;}
+  .hero-right{display:none;}
+  .module-wrap{padding:0 20px 80px;}
+  .why-grid{grid-template-columns:1fr;}
+  .mistakes-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar"><div class="top-bar-fill" id="topFill"></div></div>
+
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow">City Fitness Training · Deep Module Series</div>
+    <h1 class="hero-title">The Art of<br>the <em>T.O.</em></h1>
+    <p class="hero-desc">The Turn Over is not a failure. It is the highest-leverage move available to a consultant when a sale has stalled. A fresh voice, a higher authority, and a new angle — deployed at exactly the right moment — closes deals that nothing else can. This module teaches you to execute the T.O. with strategy, timing, and total discipline.</p>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-num">6</span><span class="stat-label">Core Lessons</span></div>
+      <div class="stat"><span class="stat-num">4</span><span class="stat-label">Full Scripts</span></div>
+      <div class="stat"><span class="stat-num">4</span><span class="stat-label">Role-Play Scenarios</span></div>
+      <div class="stat"><span class="stat-num">14</span><span class="stat-label">Quiz Questions</span></div>
+    </div>
+    <button class="hero-btn" onclick="document.getElementById('lessons').scrollIntoView({behavior:'smooth'})">Begin Training ↓</button>
+  </div>
+  <div class="hero-right">
+    <div class="to-flow">
+      <div class="to-step"><span class="to-step-num">01</span><div class="to-step-text"><strong>Tour complete.</strong> B+F recap done. HACCL — five yes answers.</div></div>
+      <div class="to-arrow">↓</div>
+      <div class="to-step"><span class="to-step-num">02</span><div class="to-step-text"><strong>Price presented.</strong> Close question asked. Silence held.</div></div>
+      <div class="to-arrow">↓</div>
+      <div class="to-step"><span class="to-step-num">03</span><div class="to-step-text"><strong>Objection surfaces.</strong> LIGO applied. Sale re-asked.</div></div>
+      <div class="to-arrow">↓</div>
+      <div class="to-step"><span class="to-step-num">04</span><div class="to-step-text"><strong>Second LIGO.</strong> Sale re-asked again. Guest still hesitant.</div></div>
+      <div class="to-arrow">↓</div>
+      <div class="to-step highlight"><span class="to-step-num" style="color:var(--copper);">T.O.</span><div class="to-step-text highlight-text"><strong>The Turn Over.</strong> Fresh voice. Higher authority. The third and final ask.</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="module-wrap">
+
+  <div class="section-header" style="padding-top:50px;">
+    <div class="s-eyebrow">The Reframe</div>
+    <h2 class="s-title">Not a Failure.<br>A Strategy.</h2>
+    <p class="s-sub">The moment you frame the T.O. as something that happens when you failed, you have already lost its power. The T.O. is a deliberate, high-leverage play that brings a fresh dynamic into a stalled situation. It is the third ask — and it works when nothing else can because it changes everything: the voice, the authority, and the angle.</p>
+  </div>
+
+  <div class="callout callout-rule">
+    <div class="callout-label">The Standard</div>
+    A T.O. is initiated after the consultant has given a full tour, presented price, asked for the sale, applied LIGO twice, and asked for the sale a third time — and the guest is still hesitant. At that point, the T.O. is not optional. It is the play.
+  </div>
+
+  <div class="section-header" id="lessons">
+    <div class="s-eyebrow">Core Lessons</div>
+    <h2 class="s-title">6 Lessons to Master<br>the Turn Over</h2>
+    <p class="s-sub">Open all 6 lessons in order. Certification unlocks when you finish.</p>
+  </div>
+
+  <div class="lesson-grid" id="lessonGrid">
+
+    <!-- L1 -->
+    <div class="lesson-card" data-lesson="1">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">01</span>
+        <span class="lesson-title-text">What Is the T.O. and Why Does It Work?</span>
+        <span class="lesson-tag">Foundation</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>A Turn Over (T.O.) is the strategic introduction of a manager into a stalled sales interaction. It is invoked after the consultant has fully executed the sales process — tour, B+F, HACCL, price, LIGO, re-close — and the guest remains hesitant. The T.O. gives the sale a final, powerful attempt through a new dynamic that the consultant alone cannot create.</p>
+        <div class="why-grid">
+          <div class="why-card">
+            <div class="why-num">01</div>
+            <div class="why-title">Fresh Voice</div>
+            <div class="why-text">A new voice breaks the pattern. The guest has been in conversation with one person for 45+ minutes. A fresh perspective can shift the dynamic and re-engage someone who has mentally checked out of the existing conversation.</div>
+          </div>
+          <div class="why-card">
+            <div class="why-num">02</div>
+            <div class="why-title">Authority Bridge</div>
+            <div class="why-text">The guest perceives the manager as having higher authority — which means their words carry more weight. A concern that felt unresolvable with the consultant often dissolves when a manager addresses it directly.</div>
+          </div>
+          <div class="why-card">
+            <div class="why-num">03</div>
+            <div class="why-title">Tailored Options</div>
+            <div class="why-text">The manager has authority to offer tailored promotions, addendums, or a final compelling offer that a consultant may not have access to. This is often the difference between a stalled sale and a closed one.</div>
+          </div>
+        </div>
+        <div class="callout callout-gold">
+          <div class="callout-label">The Mindset Shift</div>
+          Consultants who view the T.O. as a personal failure avoid it — and lose sales that were winnable. Consultants who view it as the highest-leverage play available execute it confidently — and close more. Your ego has no place in the T.O. decision. The guest's membership does.
+        </div>
+      </div>
+    </div>
+
+    <!-- L2 -->
+    <div class="lesson-card" data-lesson="2">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">02</span>
+        <span class="lesson-title-text">Introduce the Manager Early — Before You Need Them</span>
+        <span class="lesson-tag">The Setup</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>This is the most underutilized T.O. principle — and the one that makes the biggest difference in how the T.O. lands. The ideal time to introduce the manager is not when the sale is stalled. It is during the greeting or the pre-tour, when receptivity is at its highest and the interaction is still warm.</p>
+        <p>When the manager is introduced early — casually, naturally, as part of the welcoming process — they have already built their own small amount of rapport with the guest before any sales pressure exists. That rapport becomes the foundation for an effective T.O. later if one is needed.</p>
+        <div class="callout callout-script">
+          <div class="callout-label">Early Manager Introduction — During Greeting</div>
+          [Manager walks by naturally during the greeting or pre-tour.] Consultant: "Hey [Manager's Name] — I want you to meet [Guest's Name]. They're in today checking us out." Manager: "Great to meet you, [Guest's Name]! [Name] is going to take great care of you — let me know if you need anything." [Manager moves on naturally. No pressure. Just a warm, human moment.]
+        </div>
+        <div class="callout callout-warn">
+          <div class="callout-label">The Ambush Problem</div>
+          Introducing the manager for the first time when the price sheet is on the table and the guest has just said no is an ambush. The guest feels cornered. Two people are now applying pressure where one was failing. This triggers a flight response — not a close. The early introduction prevents this entirely.
+        </div>
+        <div class="callout callout-rule">
+          <div class="callout-label">The Goal of the Early Introduction</div>
+          When the T.O. happens later, the guest should feel like they are talking to someone they already know slightly — not a stranger being deployed to close them. That familiarity is the difference between a warm T.O. and a cold one. Warm T.O.s close. Cold T.O.s create resistance.
+        </div>
+      </div>
+    </div>
+
+    <!-- L3 -->
+    <div class="lesson-card" data-lesson="3">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">03</span>
+        <span class="lesson-title-text">When to Call the T.O. — Exact Timing</span>
+        <span class="lesson-tag">Timing</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>The T.O. has a specific trigger point. It is not a general "call the manager in when things get hard." It is a precise moment in the sales sequence that, when reached, activates the play.</p>
+        <div class="callout callout-rule">
+          <div class="callout-label">The T.O. Trigger Point</div>
+          The consultant has: (1) delivered a full tour, (2) executed B+F and HACCL, (3) presented the price, (4) asked for the sale, (5) applied LIGO, (6) asked for the sale a second time, (7) applied LIGO a second time, (8) asked for the sale a third time — and the guest is still hesitant. That is the moment. Not before.
+        </div>
+        <p>Calling the T.O. too early — before LIGO has been genuinely applied — robs the consultant of the opportunity to close it themselves. Calling it too late — after the guest has already emotionally disengaged or committed to leaving — makes the T.O. feel desperate rather than strategic.</p>
+        <div class="callout callout-tip">
+          <div class="callout-label">Reading the Room</div>
+          Sometimes a guest's energy signals that a T.O. is needed before the third ask. If the guest has become visibly disengaged, is physically preparing to leave, or has said "I really do need to go" twice — do not wait for the third cycle. Invoke the T.O. now. The trigger point is a guideline, not a rigid rule. Trust your read of the room.
+        </div>
+        <div class="callout callout-warn">
+          <div class="callout-label">The Crutch Problem</div>
+          Some consultants use the T.O. as a crutch — calling the manager in after the first objection to avoid having to handle it themselves. This is not a T.O. strategy. It is avoidance. The manager should be a final resource, not a substitute for learning LIGO. Reserve the T.O. for when it is genuinely needed.
+        </div>
+      </div>
+    </div>
+
+    <!-- L4 -->
+    <div class="lesson-card" data-lesson="4">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">04</span>
+        <span class="lesson-title-text">How to Frame the T.O. — Always a Benefit, Never a Tactic</span>
+        <span class="lesson-tag">The Setup</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>How you introduce the T.O. to the guest determines whether they receive it as a resource or a pressure tactic. The framing is everything. The reason you give them for involving the manager must always feel like it is in their best interest — because it genuinely is.</p>
+        <p>There are two common T.O. situations, each with a different framing:</p>
+
+        <div class="dialogue-block">
+          <div class="dialogue-title">T.O. Script 01 — Experience/Commitment Concern</div>
+          <div class="line"><span class="speaker action">SCENARIO</span><span class="line-text action-text">Guest is hesitant and mentioned wanting to try it first before fully committing.</span></div>
+          <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"My ultimate goal is for you to leave today feeling genuinely excited and fully committed to coming back. So here's what I'd love to do — let me set up a complimentary access to one of our studio classes or a Thrive workout session so you can actually experience it firsthand. Does that sound like something that would help?"</em></span></div>
+          <div class="line"><span class="speaker prospect">Guest</span><span class="line-text">"Yeah, that sounds good actually."</span></div>
+          <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"Perfect. You met [Manager's Name] earlier — let me grab them for a second, they're the best person to get that set up for you right now."</em></span></div>
+        </div>
+
+        <div class="dialogue-block">
+          <div class="dialogue-title">T.O. Script 02 — Price Concern</div>
+          <div class="line"><span class="speaker action">SCENARIO</span><span class="line-text action-text">Guest has a lingering concern about the price even after B+F math was presented.</span></div>
+          <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"I hear you — and I want to make sure we can make this work. Pricing is something I want to make sure you feel completely right about. I'd love to run this by [Manager's Name] real quick — they may be able to look at some options that help make this the right fit for you today. Give me just one second."</em></span></div>
+        </div>
+
+        <div class="callout callout-rule">
+          <div class="callout-label">The Golden Framing Rule</div>
+          The T.O. must never sound like "I couldn't close you so I'm bringing someone who can." It must always sound like "I'm going the extra mile to find a solution that works specifically for you." The guest should feel taken care of — not tag-teamed.
+        </div>
+      </div>
+    </div>
+
+    <!-- L5 -->
+    <div class="lesson-card" data-lesson="5">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">05</span>
+        <span class="lesson-title-text">The Consultant Brief — Setting the Manager Up to Win</span>
+        <span class="lesson-tag">The Handoff</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>Before the manager steps in with the guest, the consultant needs to brief them — quickly, efficiently, and with the right information. A manager who walks in cold is at a disadvantage. A manager who walks in armed with the guest's X-Factor, their objection, and the tier being discussed closes at a dramatically higher rate.</p>
+        <div class="callout callout-rule">
+          <div class="callout-label">The 30-Second Brief — What to Cover</div>
+          1. Guest's name. &nbsp; 2. Their X-Factor (the emotional why you uncovered in discovery). &nbsp; 3. The membership you recommended and why. &nbsp; 4. The specific objection that triggered the T.O. &nbsp; 5. What was tried (LIGO, B+F math). &nbsp; That is it. 30 seconds. Clear and specific.
+        </div>
+        <div class="callout callout-script">
+          <div class="callout-label">Example Brief to Manager</div>
+          "[Guest's Name] — she really connected with Revive and the pool. X-Factor is wanting to feel like herself again after a rough year — she has two young kids. We're on Performance+. She's hesitating on price, says it's more than she planned. I walked through the B+F math and she got it but still paused. Two rounds of LIGO. She's not a no — she just needs a fresh voice."
+        </div>
+        <p>The manager can now walk in knowing exactly who they are talking to, what moves them, and what has already been tried. They do not waste time re-covering ground the consultant already covered. They walk in with precision and close the gap.</p>
+        <div class="callout callout-tip">
+          <div class="callout-label">Brief Out of Earshot</div>
+          Always step away from the guest to brief the manager. Never brief within earshot — it is awkward, it reveals your strategy, and it makes the guest feel like they are being discussed rather than helped.
+        </div>
+      </div>
+    </div>
+
+    <!-- L6 -->
+    <div class="lesson-card" data-lesson="6">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">06</span>
+        <span class="lesson-title-text">The Consultant's Role During T.O. — Total Silence</span>
+        <span class="lesson-tag">The Non-Negotiable</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>Once the T.O. has been initiated and the manager has taken over, the consultant has exactly one job: be completely, totally, absolutely silent. Not mostly silent. Not silent except when addressed. Silent.</p>
+        <p>This is the rule most consultants break — and breaking it is one of the most damaging things that can happen to a T.O. Here is why silence is non-negotiable:</p>
+
+        <div class="silence-rules">
+          <div class="sr-row">
+            <span class="sr-icon">🚫</span>
+            <div class="sr-text dont"><strong>Two voices create overwhelm.</strong> When both the consultant and the manager speak, the guest feels surrounded and pressured. Even well-intentioned contributions from the consultant amplify the "two against one" dynamic that triggers the flight response.</div>
+          </div>
+          <div class="sr-row">
+            <span class="sr-icon">🚫</span>
+            <div class="sr-text dont"><strong>Two voices create confusion.</strong> If the consultant adds information after the manager has started their approach, it can undercut the manager's angle or introduce conflicting information. The guest does not know who to focus on or whose version to trust.</div>
+          </div>
+          <div class="sr-row">
+            <span class="sr-icon">🚫</span>
+            <div class="sr-text dont"><strong>Silence empowers the manager.</strong> When the consultant is visibly quiet, it communicates to the guest that the manager is the authority. That authority is the entire reason the T.O. works. The moment the consultant speaks, it diminishes that authority signal.</div>
+          </div>
+          <div class="sr-row">
+            <span class="sr-icon">✓</span>
+            <div class="sr-text do"><strong>The one exception.</strong> If the manager asks the consultant a direct question — specifically something only the consultant can answer, like "And she said she'd use the pool about 4 times a month, right?" — the consultant answers briefly and directly, then returns to silence immediately. This is the only acceptable break from the silence rule.</div>
+          </div>
+        </div>
+
+        <div class="callout callout-warn">
+          <div class="callout-label">The Consultant's Body Language During T.O.</div>
+          Stay present but neutral. Do not cross your arms. Do not look anxious. Do not make facial expressions that telegraph your own concern about whether the T.O. is working. Relaxed, calm, confident — as if you are completely certain the manager is going to handle this. Because they are.
+        </div>
+
+        <div class="dialogue-block">
+          <div class="dialogue-title">T.O. in Action — Complete Flow with Manager Taking Over</div>
+          <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"[Guest's Name], I appreciate you sharing that with me. I want to make sure we can make this work — I'd love to bring [Manager's Name] over for a second. They may be able to look at some options I'm not able to offer. Give me just a moment."</em></span></div>
+          <div class="line"><span class="speaker action">ACTION</span><span class="line-text action-text">Consultant steps away. Briefs manager in 30 seconds. Returns to the table with manager. Sits back slightly. Does not speak.</span></div>
+          <div class="line"><span class="speaker manager">Manager</span><span class="line-text"><em>"[Guest's Name], it's great to see you again — [Consultant's Name] told me a little about what you're looking for. I just want to take a second to understand where you're at, because I want to make sure we find the right fit."</em> [Manager continues. Consultant is silent throughout.]</span></div>
+          <div class="line"><span class="speaker prospect">Guest</span><span class="line-text">"I really love it here, I just wasn't planning on spending quite this much today."</span></div>
+          <div class="line"><span class="speaker manager">Manager</span><span class="line-text"><em>"I hear you — and I really appreciate you being honest with me. Let me ask you something: based on everything [Name] showed you today, is this the kind of place you could see yourself actually using consistently?"</em></span></div>
+          <div class="line"><span class="speaker prospect">Guest</span><span class="line-text">"Yeah, absolutely."</span></div>
+          <div class="line"><span class="speaker manager">Manager</span><span class="line-text"><em>"Then let's figure out how to make this happen. Here's what I can do for you today..."</em> [Manager applies tailored offer or final option. Asks for the sale.]</span></div>
+          <div class="line"><span class="speaker action">NOTE</span><span class="line-text action-text">Consultant remains silent throughout the entire manager interaction — even when the guest looks at them for a reaction. Neutral, calm expression. Let the manager work.</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end lesson grid -->
+
+  <div class="study-complete-banner" id="studyBanner">
+    <h3>All 6 Lessons Complete</h3>
+    <p>The T.O. is your highest-leverage play. Certification quiz is now unlocked.</p>
+    <button class="cf-btn" onclick="unlockQuiz()" style="max-width:300px;margin:0 auto;">Unlock Certification ↓</button>
+  </div>
+
+  <!-- MISTAKES -->
+  <div class="divider-label">Common Mistakes</div>
+  <div class="section-header" style="padding-top:0;">
+    <div class="s-eyebrow">What Kills the T.O.</div>
+    <h2 class="s-title">6 T.O. Mistakes<br>& How to Fix Them</h2>
+  </div>
+  <div class="mistakes-grid">
+    <div class="mistake-card">
+      <div class="mistake-label bad">✗ The Mistake</div>
+      <div class="mistake-text">Treating the T.O. as an admission of failure. <strong>The consultant hesitates to call it, misses the window, and the guest leaves.</strong></div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label good">✓ The Fix</div>
+      <div class="mistake-text"><strong>Reframe it as strategy, not defeat.</strong> The T.O. is the third ask — the highest-leverage play available. A confident consultant executes it without hesitation when the trigger point is reached.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label bad">✗ The Mistake</div>
+      <div class="mistake-text">Introducing the manager for the first time at the price card when the sale is stuck. <strong>It feels like an ambush. The guest shuts down.</strong></div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label good">✓ The Fix</div>
+      <div class="mistake-text"><strong>Always introduce the manager early — during the greeting or pre-tour.</strong> When the T.O. happens, the guest is talking to someone they already have a small connection with. That changes everything.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label bad">✗ The Mistake</div>
+      <div class="mistake-text">Framing the T.O. as: "Let me get my manager — maybe they can help since I can't." <strong>You just told the guest you failed. They lose confidence in both of you.</strong></div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label good">✓ The Fix</div>
+      <div class="mistake-text"><strong>Always frame as a benefit to the guest.</strong> "I want to see if there's anything we can do to make this the right fit for you today — let me bring [Name] in for a moment." Service framing. Not failure framing.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label bad">✗ The Mistake</div>
+      <div class="mistake-text">Not briefing the manager before they step in. <strong>The manager walks in cold, re-covers ground already covered, and the guest feels their time is being wasted.</strong></div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label good">✓ The Fix</div>
+      <div class="mistake-text"><strong>Always brief out of earshot — 30 seconds, five specific points:</strong> name, X-Factor, recommended tier, specific objection, what was already tried. The manager closes the gap — not re-opens the conversation.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label bad">✗ The Mistake</div>
+      <div class="mistake-text">Speaking during the T.O. to add context or correct the manager. <strong>Two voices create overwhelm and undermine the manager's authority — the only thing that makes the T.O. work.</strong></div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label good">✓ The Fix</div>
+      <div class="mistake-text"><strong>Total silence once the manager takes over.</strong> The one exception: if the manager asks you a direct question only you can answer. Otherwise — nothing. Not a word. Let the manager work.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label bad">✗ The Mistake</div>
+      <div class="mistake-text">Using the T.O. as a crutch — calling the manager in after the first objection instead of handling it with LIGO. <strong>This makes you dependent and stunts your growth as a closer.</strong></div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label good">✓ The Fix</div>
+      <div class="mistake-text"><strong>The T.O. is the final play — not the first response.</strong> Apply LIGO twice and ask for the sale three times yourself before involving the manager. The T.O. is earned by exhausting your own options first.</div>
+    </div>
+  </div>
+
+  <!-- ROLE PLAY -->
+  <div class="divider-label">Role-Play Scenarios</div>
+  <div class="section-header" style="padding-top:0;">
+    <div class="s-eyebrow">Practice</div>
+    <h2 class="s-title">4 T.O. Scenarios<br>to Train On</h2>
+  </div>
+
+  <div class="roleplay-card">
+    <div class="roleplay-header">
+      <span class="roleplay-scenario">Scenario 01 — Price Concern T.O.</span>
+      <span class="roleplay-type">Most Common</span>
+    </div>
+    <div class="roleplay-body">
+      <div class="roleplay-setup">Two full rounds of LIGO on a price concern. B+F math presented twice. Third ask made. Guest says: "I genuinely appreciate everything, but I'm just not ready to do this financially today."</div>
+      <div class="roleplay-objective"><strong>Your objective:</strong> Frame the T.O. as a resource for options: "I hear you — and I don't want price to be the thing that stands between you and a decision you've told me you want to make. Let me bring [Manager's Name] in — they may have some options I'm not able to offer. One second." Brief the manager with: name, X-Factor, Performance+, price hesitation, B+F math already applied twice. Then sit back and be completely silent while the manager works.</div>
+      <div class="coaching-note">Practice the physical discipline of silence here. During the role-play, the "manager" (played by a peer) should occasionally look at you or address you indirectly. Practice maintaining a neutral, confident expression without breaking the silence or making supportive facial expressions that undercut the manager's authority.</div>
+    </div>
+  </div>
+
+  <div class="roleplay-card">
+    <div class="roleplay-header">
+      <span class="roleplay-scenario">Scenario 02 — Experience/Commitment T.O.</span>
+      <span class="roleplay-type">Try-First Hesitation</span>
+    </div>
+    <div class="roleplay-body">
+      <div class="roleplay-setup">Guest has been enthusiastic throughout but keeps circling back to: "I just want to try it first before I commit. Can I do a free trial?" Two LIGO rounds have not resolved it — they are stuck on wanting to experience before committing.</div>
+      <div class="roleplay-objective"><strong>Your objective:</strong> Use the experience-framing T.O.: "My goal is for you to leave today feeling completely confident. So here's what I'd love to do — let me set up a complimentary access to a studio class or a Thrive session so you can experience it. The best person to arrange that is [Manager's Name], who you met earlier. Let me grab them." Brief the manager on the trial request and the guest's X-Factor. Stay silent while the manager handles the trial framing and closes.</div>
+      <div class="coaching-note">The experience T.O. is often the cleanest one because the framing is genuinely guest-centric. You are offering them something tangible. When the manager sets up the trial and then uses that positive momentum to close, the sequence feels natural and non-pressured.</div>
+    </div>
+  </div>
+
+  <div class="roleplay-card">
+    <div class="roleplay-header">
+      <span class="roleplay-scenario">Scenario 03 — The Early Introduction Practice</span>
+      <span class="roleplay-type">Setup Drill</span>
+    </div>
+    <div class="roleplay-body">
+      <div class="roleplay-setup">This is a practice drill for the early manager introduction — before any T.O. situation. You are in the greeting phase with a new guest. The manager is available and nearby.</div>
+      <div class="roleplay-objective"><strong>Your objective:</strong> Find the natural, organic moment during the greeting or early pre-tour to introduce the manager without it feeling scripted or forced. The introduction should last 10–15 seconds maximum — warm, brief, and casual. "Hey [Manager] — meet [Guest's Name]. They're checking us out today." Manager responds warmly and briefly, then exits. Practice this until it feels like a genuine, spontaneous moment rather than a choreographed one.</div>
+      <div class="coaching-note">The quality of every future T.O. you execute depends on how well you execute this early introduction. Practice it hundreds of times until it is completely natural. The goal: the guest should feel like they met a friendly person on the floor — not that they were introduced to the closing manager who will be brought in later.</div>
+    </div>
+  </div>
+
+  <div class="roleplay-card">
+    <div class="roleplay-header">
+      <span class="roleplay-scenario">Scenario 04 — Breaking the Silence (What Not to Do)</span>
+      <span class="roleplay-type">Discipline Drill</span>
+    </div>
+    <div class="roleplay-body">
+      <div class="roleplay-setup">The T.O. has been initiated. The manager is working with the guest. Midway through, the guest looks at you and says: "What do you think — is this a good deal?" The manager has not addressed you or asked you a question.</div>
+      <div class="roleplay-objective"><strong>Your objective:</strong> Do not answer. Smile warmly, gesture slightly toward the manager, and say nothing — or at most: "I think [Manager's Name] has you covered." Then stop. Do not elaborate. Do not validate the manager's offer or add your opinion. Practice this moment specifically — it is the exact moment most consultants break the silence and undercut the T.O. The guest looking at you is not permission to speak. Only the manager asking you a direct question is.</div>
+      <div class="coaching-note">This scenario exposes the hardest part of the T.O. — the silence when directly addressed. It feels rude not to answer. It is not. The manager is in control. Your answer, no matter how well-intentioned, dilutes their authority. Practice this moment until the redirect feels completely natural and not at all awkward.</div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="divider-label">Certification</div>
+  <div class="section-header" style="padding-top:0;">
+    <div class="s-eyebrow">Knowledge Check</div>
+    <h2 class="s-title">T.O. Certification</h2>
+    <p class="s-sub">14 questions. 80% or higher to pass. Complete all 6 lessons above to unlock.</p>
+  </div>
+
+  <div class="quiz-section" id="quizSection">
+    <div class="quiz-locked" id="quizLocked">
+      <div class="quiz-locked-icon">🔒</div>
+      <h3>Complete All Lessons to Unlock</h3>
+      <p>Open all 6 lessons above. The quiz unlocks automatically when you finish.</p>
+    </div>
+    <div class="name-panel" id="namePanel" style="display:none;">
+      <h3>Certification Registry</h3>
+      <p>Enter your full name as it should appear on your certification record.</p>
+      <input type="text" class="cf-input" id="empNameInput" placeholder="Full Name"/>
+      <button class="cf-btn" onclick="startQuiz()">Begin Official Test →</button>
+    </div>
+    <div class="quiz-active" id="quizActive" style="display:none;">
+      <div class="q-progress-wrap"><div class="q-progress-bar" id="qBar"></div></div>
+      <div class="q-meta">
+        <span class="q-counter" id="qCounter"></span>
+        <span class="q-topic">Module 10 · The T.O.</span>
+      </div>
+      <div class="q-text" id="qText"></div>
+      <div class="q-options" id="qOptions"></div>
+    </div>
+    <div class="results-panel" id="resultsPanel">
+      <div class="result-score" id="resultScore"></div>
+      <div class="result-label" id="resultLabel"></div>
+      <div id="missedSection"></div>
+      <button class="cf-btn" onclick="resetModule()" style="margin-top:22px;">Return to Module</button>
+    </div>
+  </div>
+
+</div><!-- end module-wrap -->
+
+<div class="module-footer">
+  <p>City Fitness Philadelphia &nbsp;·&nbsp; Deep Training Module 10 &nbsp;·&nbsp; 2026</p>
+</div>
+
+<iframe name="cf_hidden" id="cf_hidden" style="display:none;"></iframe>
+<form id="certForm" target="cf_hidden" method="GET" action="https://script.google.com/a/macros/cityfitness.com/s/AKfycbzZokf4OQGpHYEkb_9mcVdJ-t9jop9RWIpclIcLSjTWRcBQfeDJ751bl0qO8k7VrZwe/exec">
+  <input type="hidden" name="employee" id="formEmployee"/>
+  <input type="hidden" name="topic" id="formTopic"/>
+  <input type="hidden" name="result" id="formResult"/>
+</form>
+
+<script>
+window.addEventListener('scroll',()=>{
+  const el=document.documentElement;
+  const pct=(el.scrollTop/(el.scrollHeight-el.clientHeight))*100;
+  document.getElementById('topFill').style.width=pct+'%';
+});
+
+let openedLessons=new Set();
+const totalLessons=6;
+
+function toggleLesson(header){
+  const card=header.parentElement;
+  const isOpen=card.classList.contains('open');
+  card.classList.toggle('open',!isOpen);
+  if(!isOpen){
+    openedLessons.add(parseInt(card.dataset.lesson));
+    checkStudyComplete();
+  }
+}
+
+function checkStudyComplete(){
+  if(openedLessons.size>=totalLessons){
+    const banner=document.getElementById('studyBanner');
+    banner.style.display='block';
+    banner.scrollIntoView({behavior:'smooth',block:'center'});
+  }
+}
+
+function unlockQuiz(){
+  document.getElementById('quizLocked').style.display='none';
+  document.getElementById('namePanel').style.display='block';
+  document.getElementById('quizSection').scrollIntoView({behavior:'smooth'});
+}
+
+const questions=[
+  {q:"What is a Turn Over (T.O.)?",a:["A discount offered by the manager to close a reluctant guest","The strategic introduction of a manager into a stalled sales interaction as the final, high-leverage closing play","A procedure for transferring a guest to another consultant","A refund or cancellation process"],c:1},
+  {q:"What are the three reasons a T.O. works?",a:["Price, availability, and location","Time, repetition, and urgency","Fresh voice, authority bridge, and the manager's ability to offer tailored options","Rapport, empathy, and persistence"],c:2},
+  {q:"At what exact point in the sales sequence should the T.O. be triggered?",a:["After the first objection is raised","After the tour, before HACCL","After the consultant has toured, B+F'd, HACCL'd, presented price, applied LIGO twice, and asked for the sale three times — and the guest is still hesitant","As soon as the guest hesitates at the price card"],c:2},
+  {q:"What is the 'Ambush Problem' in T.O. execution?",a:["Bringing the manager in before the tour is complete","Introducing the manager for the first time when the price sheet is on the table and the sale is stuck — which feels like a two-on-one pressure situation","The manager speaking before the consultant has finished their LIGO","Calling the T.O. before the guest has seen all the amenities"],c:1},
+  {q:"What is the ideal time to introduce the manager?",a:["Never — the consultant should close every sale alone","During the price presentation when the guest is most focused","During the greeting or pre-tour when receptivity is highest and no sales pressure exists","Only when the guest specifically asks to speak with a manager"],c:2},
+  {q:"How should the T.O. always be framed for the guest?",a:["As something the consultant does when they have failed","As bringing in someone who will convince them to join","As going the extra mile to find a solution that is genuinely in the guest's best interest","As a standard part of every sales interaction"],c:2},
+  {q:"What must happen before the manager steps in with the guest?",a:["The consultant must hand over all their discovery notes","The consultant must apologize to the guest for not being able to close","A 30-second brief covering guest's name, X-Factor, recommended tier, specific objection, and what was already tried","The manager must review the price sheet independently"],c:2},
+  {q:"Where should the consultant brief the manager?",a:["At the desk in front of the guest — transparency builds trust","In a whispered conversation next to the guest","Out of earshot — never within the guest's hearing","Via text message while the guest waits"],c:2},
+  {q:"Once the manager takes over during a T.O., the consultant must:",a:["Stand behind the manager and nod supportively","Continue adding information when relevant to help the manager","Be completely silent — no speaking unless directly asked a specific question by the manager","Leave the area entirely so the manager has privacy"],c:2},
+  {q:"Why is two-voice selling during a T.O. damaging?",a:["It makes the interaction last too long","It creates overwhelm, confusion, and an 'us vs. them' dynamic that triggers the flight response","It is against City Fitness policy","It means both the consultant and manager miss their commission"],c:1},
+  {q:"When can the consultant break the silence rule during a T.O.?",a:["Whenever the guest looks at them for a reaction","When the manager is struggling to close","Only when the manager asks them a direct question that only the consultant can answer","Never — absolute silence at all times"],c:2},
+  {q:"What is the 'crutch problem' in T.O. usage?",a:["Relying on the price sheet instead of LIGO","Using the T.O. after the first objection to avoid having to handle it with LIGO — making it a substitute for developing closing skills","Calling the T.O. too late in the process","Forgetting to brief the manager properly"],c:1},
+  {q:"What should a consultant say if a guest directly asks them a question while the manager is running the T.O.?",a:["Answer fully and helpfully to support the manager","Give a brief redirect: 'I think [Manager's Name] has you covered' — then return to silence","Leave the room to avoid the awkward situation","Signal to the manager with eye contact to handle it"],c:1},
+  {q:"What is the key difference between a 'warm' T.O. and a 'cold' T.O.?",a:["A warm T.O. involves a discount; a cold T.O. does not","A warm T.O. uses LIGO first; a cold T.O. skips directly to the manager","A warm T.O. happens when the manager was introduced early and has slight rapport with the guest; a cold T.O. is an introduction at the stall point with no prior relationship","Warm T.O.s happen for price objections; cold T.O.s for commitment objections"],c:2}
+];
+
+let empName='',qIndex=0,score=0,missed=[];
+
+function startQuiz(){
+  empName=document.getElementById('empNameInput').value.trim();
+  if(!empName){alert('Please enter your full name.');return;}
+  document.getElementById('namePanel').style.display='none';
+  document.getElementById('quizActive').style.display='block';
+  qIndex=0;score=0;missed=[];
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const q=questions[qIndex];
+  document.getElementById('qBar').style.width=((qIndex/questions.length)*100)+'%';
+  document.getElementById('qCounter').textContent=`Question ${qIndex+1} of ${questions.length}`;
+  document.getElementById('qText').textContent=q.q;
+  const opts=document.getElementById('qOptions');
+  opts.innerHTML='';
+  q.a.forEach((opt,i)=>{
+    const btn=document.createElement('button');
+    btn.className='q-opt';
+    btn.textContent=opt;
+    btn.onclick=()=>handleAnswer(i);
+    opts.appendChild(btn);
+  });
+}
+
+function handleAnswer(idx){
+  const q=questions[qIndex];
+  if(idx===q.c){score++;}
+  else{missed.push({q:q.q,a:q.a[q.c]});}
+  qIndex++;
+  if(qIndex<questions.length){renderQuestion();}
+  else{showResults();}
+}
+
+function showResults(){
+  const pct=Math.round((score/questions.length)*100);
+  document.getElementById('quizActive').style.display='none';
+  const rp=document.getElementById('resultsPanel');
+  rp.style.display='block';
+  const scoreEl=document.getElementById('resultScore');
+  scoreEl.textContent=pct+'%';
+  scoreEl.className='result-score '+(pct>=80?'result-pass':'result-fail');
+  document.getElementById('resultLabel').textContent=pct>=80?'Certification Passed — Module 10: The T.O.':'Retake Required — Review Missed Questions Below';
+  let missedHtml='';
+  if(missed.length){
+    missedHtml='<div class="missed-label">Knowledge Gaps — Review These</div>';
+    missed.forEach(m=>{
+      missedHtml+=`<div class="missed-item"><div class="missed-q">${m.q}</div><div class="missed-a">Correct Answer: ${m.a}</div></div>`;
+    });
+  }
+  document.getElementById('missedSection').innerHTML=missedHtml;
+  document.getElementById('formEmployee').value=empName;
+  document.getElementById('formTopic').value='Module 10 - The T.O.';
+  document.getElementById('formResult').value=pct;
+  document.getElementById('certForm').submit();
+}
+
+function resetModule(){
+  document.getElementById('resultsPanel').style.display='none';
+  document.getElementById('namePanel').style.display='block';
+  document.getElementById('empNameInput').value='';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
