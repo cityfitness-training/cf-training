@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>CF Training | Module 11: The Referral Play</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:ital,wght@0,400;0,500;0,600;1,400;1,600&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg: #101210;
+  --surface: #161814;
+  --card: #1c1e18;
+  --border: #272a22;
+  --border-light: #34382c;
+  --copper: #B87C4C;
+  --copper-light: #C9A07A;
+  --copper-dim: rgba(184,124,76,0.12);
+  --copper-glow: rgba(184,124,76,0.05);
+  --tan: #BF9B6F;
+  --white: #EFF0E8;
+  --grey: #6a6e62;
+  --dim: #8a8e80;
+  --red: #c0392b;
+  --red-dim: rgba(192,57,43,0.08);
+  --green: #4a9a60;
+  --green-dim: rgba(74,154,96,0.1);
+  --gold: #c4a44a;
+  --gold-dim: rgba(196,164,74,0.1);
+  --grad: linear-gradient(135deg, #B87C4C 0%, #C9A07A 100%);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--white);font-family:'Barlow',sans-serif;line-height:1.65;overflow-x:hidden;}
+
+.top-bar{position:fixed;top:0;left:0;right:0;height:3px;background:var(--border);z-index:9999;}
+.top-bar-fill{height:100%;background:var(--grad);width:0%;transition:width .3s ease;}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:80px 60px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 60% at 30% 50%,rgba(184,124,76,0.06) 0%,transparent 70%);}
+.hero-bg-num{position:absolute;right:-30px;bottom:-60px;font-family:'Barlow Condensed',sans-serif;font-size:clamp(200px,30vw,420px);font-weight:900;color:transparent;-webkit-text-stroke:1px rgba(184,124,76,0.05);pointer-events:none;user-select:none;line-height:1;}
+.hero-eyebrow{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--copper);letter-spacing:4px;text-transform:uppercase;margin-bottom:18px;display:flex;align-items:center;gap:12px;position:relative;z-index:1;}
+.hero-eyebrow::before{content:'';display:block;width:32px;height:2px;background:var(--copper);}
+.hero-title{font-family:'Barlow Condensed',sans-serif;font-size:clamp(52px,8vw,100px);font-weight:900;line-height:.88;text-transform:uppercase;letter-spacing:-2px;margin-bottom:22px;max-width:700px;position:relative;z-index:1;}
+.hero-title em{font-style:normal;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.hero-tagline{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:3px;margin-bottom:22px;position:relative;z-index:1;}
+.hero-desc{font-size:16px;color:var(--dim);line-height:1.75;margin-bottom:36px;max-width:580px;position:relative;z-index:1;}
+.hero-stats{display:flex;gap:36px;margin-bottom:44px;position:relative;z-index:1;}
+.stat{display:flex;flex-direction:column;}
+.stat-num{font-family:'Barlow Condensed',sans-serif;font-size:34px;font-weight:900;color:var(--copper);line-height:1;}
+.stat-label{font-size:11px;color:var(--grey);text-transform:uppercase;letter-spacing:2px;margin-top:3px;}
+.hero-btn{display:inline-flex;align-items:center;gap:10px;background:var(--grad);border:none;padding:16px 32px;color:white;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;letter-spacing:2px;text-transform:uppercase;border-radius:4px;cursor:pointer;transition:.2s;position:relative;z-index:1;}
+.hero-btn:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(184,124,76,0.3);}
+
+/* LAYOUT */
+.module-wrap{max-width:900px;margin:0 auto;padding:0 40px 120px;}
+.section-header{padding:70px 0 36px;}
+.s-eyebrow{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--copper);letter-spacing:4px;text-transform:uppercase;display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+.s-eyebrow::after{content:'';width:48px;height:1px;background:var(--copper);opacity:.4;}
+.s-title{font-family:'Barlow Condensed',sans-serif;font-size:clamp(30px,5vw,46px);font-weight:900;text-transform:uppercase;letter-spacing:-.5px;line-height:1.05;margin-bottom:10px;}
+.s-sub{font-size:16px;color:var(--dim);max-width:680px;line-height:1.6;}
+
+/* LESSONS */
+.lesson-grid{display:flex;flex-direction:column;gap:2px;}
+.lesson-card{background:var(--surface);border:1px solid var(--border);overflow:hidden;}
+.lesson-card:first-child{border-radius:10px 10px 0 0;}
+.lesson-card:last-child{border-radius:0 0 10px 10px;}
+.lesson-header{display:flex;align-items:center;gap:20px;padding:20px 26px;cursor:pointer;user-select:none;transition:.15s;}
+.lesson-header:hover{background:var(--copper-glow);}
+.lesson-num{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--copper);letter-spacing:2px;min-width:34px;}
+.lesson-title-text{font-size:16px;font-weight:700;flex:1;}
+.lesson-tag{font-size:10px;font-weight:700;color:var(--copper);background:var(--copper-dim);padding:4px 10px;border-radius:20px;text-transform:uppercase;letter-spacing:1px;white-space:nowrap;}
+.lesson-arrow{color:var(--grey);font-size:11px;transition:.3s;font-style:normal;}
+.lesson-card.open .lesson-arrow{transform:rotate(180deg);color:var(--copper);}
+.lesson-card.open .lesson-header{border-bottom:1px solid var(--border);}
+.lesson-body{display:none;padding:28px 26px 26px;}
+.lesson-card.open .lesson-body{display:block;}
+.lesson-body p{color:var(--dim);font-size:15px;line-height:1.75;margin-bottom:14px;}
+.lesson-body p:last-child{margin-bottom:0;}
+.lesson-body strong{color:var(--white);font-weight:700;}
+.lesson-body em{color:var(--tan);font-style:italic;}
+
+/* CALLOUTS */
+.callout{border-radius:8px;padding:18px 22px;margin:18px 0;font-size:15px;line-height:1.65;}
+.callout-rule{border-left:3px solid var(--copper);background:var(--copper-dim);color:var(--copper-light);}
+.callout-script{border-left:3px solid var(--tan);background:rgba(191,155,111,0.07);color:var(--tan);font-style:italic;}
+.callout-warn{border-left:3px solid var(--red);background:var(--red-dim);color:#d97060;}
+.callout-tip{border-left:3px solid var(--green);background:var(--green-dim);color:#7ac09a;}
+.callout-gold{border-left:3px solid var(--gold);background:var(--gold-dim);color:#d4b870;}
+.callout-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:3px;text-transform:uppercase;margin-bottom:7px;opacity:.7;display:block;}
+
+/* PERKS GRID */
+.perks-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:18px 0;}
+.perk-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px;text-align:center;}
+.perk-card.featured{border-color:var(--copper);background:var(--copper-dim);}
+.perk-icon{font-size:28px;margin-bottom:10px;}
+.perk-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--copper);margin-bottom:8px;}
+.perk-value{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;color:var(--white);line-height:1.1;margin-bottom:6px;}
+.perk-desc{font-size:13px;color:var(--dim);line-height:1.5;}
+
+/* MOTIVATION GRID */
+.motivation-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0;}
+.mot-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:18px;}
+.mot-num{font-family:'Barlow Condensed',sans-serif;font-size:36px;font-weight:900;color:var(--copper);opacity:.35;line-height:1;margin-bottom:8px;}
+.mot-title{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--white);margin-bottom:6px;}
+.mot-text{font-size:13px;color:var(--dim);line-height:1.55;}
+
+/* BUDDY REASONS */
+.buddy-list{display:flex;flex-direction:column;gap:8px;margin:16px 0;}
+.buddy-row{display:flex;gap:14px;align-items:flex-start;padding:12px 16px;background:var(--surface);border:1px solid var(--border);border-radius:7px;}
+.buddy-num{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;color:var(--copper);min-width:24px;line-height:1.2;}
+.buddy-text{font-size:14px;color:var(--dim);line-height:1.55;}
+.buddy-text strong{color:var(--white);}
+
+/* PROCEDURE STEPS */
+.proc-steps{display:flex;flex-direction:column;gap:2px;margin:18px 0;}
+.proc-step{display:grid;grid-template-columns:44px 1fr;gap:16px;align-items:start;padding:16px 18px;background:var(--surface);border:1px solid var(--border);}
+.proc-step:first-child{border-radius:8px 8px 0 0;}
+.proc-step:last-child{border-radius:0 0 8px 8px;}
+.proc-num{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;color:var(--copper);line-height:1;padding-top:2px;}
+.proc-content{}
+.proc-title{font-size:15px;font-weight:700;color:var(--white);margin-bottom:4px;}
+.proc-desc{font-size:14px;color:var(--dim);line-height:1.55;}
+.proc-desc strong{color:var(--copper-light);}
+.proc-script{font-size:13px;color:var(--tan);font-style:italic;margin-top:6px;line-height:1.5;}
+
+/* DIALOGUE */
+.dialogue-block{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:22px;margin:18px 0;}
+.dialogue-title{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--copper);letter-spacing:3px;text-transform:uppercase;margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+.line{display:flex;gap:14px;margin-bottom:14px;align-items:flex-start;}
+.line:last-child{margin-bottom:0;}
+.speaker{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;min-width:90px;padding-top:3px;}
+.speaker.member{color:var(--grey);}
+.speaker.consultant{color:var(--copper);}
+.speaker.action{color:rgba(191,155,111,0.5);}
+.line-text{font-size:15px;color:var(--dim);line-height:1.65;}
+.line-text em{color:var(--white);font-style:normal;font-weight:600;}
+.line-text.action-text{color:rgba(191,155,111,0.45);font-size:13px;font-style:italic;}
+
+/* MISTAKES */
+.mistakes-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px;}
+.mistake-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:18px;}
+.mistake-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:3px;text-transform:uppercase;margin-bottom:8px;}
+.mistake-label.bad{color:var(--red);}
+.mistake-label.good{color:var(--green);}
+.mistake-text{font-size:14px;line-height:1.6;color:var(--dim);}
+.mistake-text strong{color:var(--white);}
+
+/* ROLEPLAY */
+.roleplay-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:14px;}
+.roleplay-header{padding:18px 22px;background:var(--copper-dim);display:flex;justify-content:space-between;align-items:center;}
+.roleplay-scenario{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--copper);}
+.roleplay-type{font-size:11px;color:var(--grey);}
+.roleplay-body{padding:22px;}
+.roleplay-setup{font-size:15px;font-style:italic;color:var(--tan);margin-bottom:14px;padding:12px 16px;background:rgba(191,155,111,0.06);border-radius:6px;line-height:1.6;}
+.roleplay-objective{font-size:14px;color:var(--dim);line-height:1.6;}
+.roleplay-objective strong{color:var(--white);}
+.coaching-note{margin-top:12px;padding:12px 16px;background:rgba(184,124,76,0.07);border-radius:6px;font-size:13px;color:var(--copper-light);line-height:1.6;}
+.coaching-note::before{content:'COACHING NOTE  ';font-weight:800;letter-spacing:2px;font-size:10px;display:block;margin-bottom:3px;opacity:.7;}
+
+/* DIVIDER */
+.divider-label{display:flex;align-items:center;gap:16px;color:var(--grey);font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin:56px 0 30px;}
+.divider-label::before,.divider-label::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* COMPLETION BANNER */
+.completion-banner{background:var(--copper-dim);border:1px solid rgba(184,124,76,0.3);border-radius:16px;padding:48px 40px;text-align:center;margin:60px 0 0;}
+.cb-eyebrow{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--copper);margin-bottom:14px;}
+.cb-title{font-family:'Barlow Condensed',sans-serif;font-size:clamp(36px,5vw,56px);font-weight:900;text-transform:uppercase;letter-spacing:-1px;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:16px;line-height:1;}
+.cb-text{font-size:16px;color:var(--dim);line-height:1.7;max-width:560px;margin:0 auto 24px;}
+.cb-values{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;letter-spacing:3px;color:var(--white);opacity:.5;}
+
+/* STUDY BANNER */
+.study-complete-banner{background:var(--copper-dim);border:1px solid rgba(184,124,76,0.3);border-radius:12px;padding:28px;text-align:center;margin:36px 0;display:none;}
+.study-complete-banner h3{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;color:var(--copper);margin-bottom:6px;}
+.study-complete-banner p{color:var(--dim);font-size:14px;margin-bottom:18px;}
+
+/* QUIZ */
+.quiz-section{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-top:36px;}
+.quiz-locked{padding:56px 40px;text-align:center;}
+.quiz-locked-icon{font-size:36px;margin-bottom:14px;opacity:.3;}
+.quiz-locked h3{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;text-transform:uppercase;color:var(--grey);margin-bottom:6px;}
+.quiz-locked p{color:var(--grey);font-size:14px;}
+.quiz-active{padding:38px;}
+.q-progress-wrap{height:3px;background:var(--border);border-radius:2px;margin-bottom:28px;overflow:hidden;}
+.q-progress-bar{height:100%;background:var(--grad);width:0%;transition:.4s;}
+.q-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;}
+.q-counter{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--copper);letter-spacing:2px;text-transform:uppercase;}
+.q-topic{font-size:11px;color:var(--grey);}
+.q-text{font-size:20px;font-weight:700;color:var(--white);margin-bottom:26px;line-height:1.4;}
+.q-options{display:flex;flex-direction:column;gap:9px;}
+.q-opt{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:15px 18px;color:var(--dim);font-size:15px;text-align:left;cursor:pointer;transition:.2s;font-family:'Barlow',sans-serif;}
+.q-opt:hover{border-color:var(--copper);color:var(--white);background:var(--copper-glow);}
+.name-panel{padding:38px;}
+.name-panel h3{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;color:var(--white);margin-bottom:5px;}
+.name-panel p{color:var(--dim);font-size:14px;margin-bottom:22px;}
+.cf-input{background:var(--bg);border:1px solid var(--border);color:var(--white);padding:13px 16px;width:100%;border-radius:8px;font-family:'Barlow',sans-serif;font-size:16px;margin-bottom:14px;outline:none;transition:.2s;}
+.cf-input:focus{border-color:var(--copper);}
+.cf-btn{background:var(--grad);border:none;padding:15px 28px;color:white;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;letter-spacing:2px;text-transform:uppercase;border-radius:8px;cursor:pointer;width:100%;transition:.2s;}
+.cf-btn:hover{opacity:.9;transform:translateY(-1px);}
+.results-panel{padding:38px;display:none;}
+.result-score{font-family:'Barlow Condensed',sans-serif;font-size:70px;font-weight:900;line-height:1;margin-bottom:6px;}
+.result-pass{color:var(--copper);}
+.result-fail{color:var(--red);}
+.result-label{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--grey);margin-bottom:22px;}
+.missed-label{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--dim);letter-spacing:3px;text-transform:uppercase;margin-bottom:10px;margin-top:22px;}
+.missed-item{background:rgba(192,57,43,0.07);border-left:3px solid var(--red);border-radius:0 6px 6px 0;padding:13px 15px;margin-bottom:7px;}
+.missed-q{font-size:14px;color:var(--dim);margin-bottom:5px;}
+.missed-a{font-size:14px;color:var(--tan);font-weight:600;}
+
+.module-footer{text-align:center;padding:50px 40px;border-top:1px solid var(--border);}
+.module-footer p{color:var(--grey);font-size:11px;letter-spacing:3px;text-transform:uppercase;}
+
+@media(max-width:700px){
+  .hero{padding:80px 24px 50px;}
+  .module-wrap{padding:0 20px 80px;}
+  .perks-grid{grid-template-columns:1fr;}
+  .motivation-grid{grid-template-columns:1fr;}
+  .mistakes-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar"><div class="top-bar-fill" id="topFill"></div></div>
+
+<section class="hero">
+  <div class="hero-bg-num">11</div>
+  <div class="hero-eyebrow">City Fitness Training · Deep Module Series · The Final Step</div>
+  <h1 class="hero-title">The Referral<br><em>Play.</em></h1>
+  <div class="hero-tagline">Strike While the Iron Is Hot.</div>
+  <p class="hero-desc">The new member just signed. Their enthusiasm is at its peak. They are emotionally connected to the decision they made and genuinely excited about what is ahead. This is the exact moment — and the only moment — when the referral ask delivers at its highest. This module teaches you to capture that moment with precision, warmth, and a clear system that turns one membership into a community.</p>
+  <div class="hero-stats">
+    <div class="stat"><span class="stat-num">7</span><span class="stat-label">Core Lessons</span></div>
+    <div class="stat"><span class="stat-num">3</span><span class="stat-label">Full Scripts</span></div>
+    <div class="stat"><span class="stat-num">4</span><span class="stat-label">Role-Play Scenarios</span></div>
+    <div class="stat"><span class="stat-num">14</span><span class="stat-label">Quiz Questions</span></div>
+  </div>
+  <button class="hero-btn" onclick="document.getElementById('lessons').scrollIntoView({behavior:'smooth'})">Begin Training ↓</button>
+</section>
+
+<div class="module-wrap">
+
+  <div class="section-header" style="padding-top:50px;">
+    <div class="s-eyebrow">The Objective</div>
+    <h2 class="s-title">One Membership.<br>A Community.</h2>
+    <p class="s-sub">The referral play is not a closing tactic — it is a community-building strategy that benefits the new member, their friends, and City Fitness simultaneously. When executed with genuine enthusiasm and the right framework, it does not feel like a sales ask. It feels like sharing something great with people who deserve it.</p>
+  </div>
+
+  <div class="callout callout-rule">
+    <div class="callout-label">The Core Principle</div>
+    Point of Sale referrals are the highest-converting asks in the entire sales process — not 30-day-later follow-ups, not emails, not reminders. Right now. Right here. When they are holding their new key tag and feeling the excitement of the decision they just made. That window closes fast. This module teaches you to use it.
+  </div>
+
+  <div class="section-header" id="lessons">
+    <div class="s-eyebrow">Core Lessons</div>
+    <h2 class="s-title">7 Lessons to Master<br>the Referral Play</h2>
+    <p class="s-sub">Open all 7 lessons in order. Certification unlocks when you finish — and when you do, you have completed the full City Fitness Sales Play.</p>
+  </div>
+
+  <div class="lesson-grid" id="lessonGrid">
+
+    <!-- L1 -->
+    <div class="lesson-card" data-lesson="1">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">01</span>
+        <span class="lesson-title-text">Why POS Timing Is Everything</span>
+        <span class="lesson-tag">The Window</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>The single most important principle of the referral play is timing. And there is only one right moment: immediately after they join, while they are still at the desk, while the enthusiasm and relief of the decision is alive in the room.</p>
+        <p>Here is what happens emotionally the moment someone makes a significant commitment: they feel a rush of excitement — and simultaneously, a flicker of doubt. <em>Did I make the right call? Is this worth it?</em> This is completely normal human psychology. What resolves that doubt fastest is sharing the decision — having someone validate it, ideally by joining too.</p>
+        <div class="callout callout-gold">
+          <div class="callout-label">The Psychology of POS Referrals</div>
+          New members refer at POS primarily for three reasons: they want to validate their own decision, they genuinely want to share something they are excited about, and the perks for themselves and their friends make the ask feel mutual. All three motivations are at their peak in the first five minutes after signing. Every minute that passes, they fade.
+        </div>
+        <p>This is why asking for referrals 30 days later dramatically underperforms POS. After 30 days, the initial enthusiasm has become routine. The decision no longer needs validation. The emotional energy that powers a referral ask has been replaced by habit. Strike at POS — every time, without exception.</p>
+        <div class="callout callout-rule">
+          <div class="callout-label">The Referral Stat</div>
+          Members who work out with a partner are 30% more consistent, stay committed longer, train harder, and enjoy the experience more. This is not a sales number — it is a genuine member success data point. Lead with it. It reframes the referral ask from "do me a favor" to "let me help you succeed."
+        </div>
+      </div>
+    </div>
+
+    <!-- L2 -->
+    <div class="lesson-card" data-lesson="2">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">02</span>
+        <span class="lesson-title-text">The "Why" Before the "What" — Explain Benefits First</span>
+        <span class="lesson-tag">The Setup</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>The single most common referral ask mistake is leading with the ask: <em>"Do you know anyone who might want to join?"</em> This is transactional, feels sudden, and puts the new member on the spot before they understand why they should say yes.</p>
+        <p>The correct sequence is always: explain why referrals matter first, then explain the perks for both parties, then address trust, then ask for names. By the time you ask, they have already agreed mentally — because they understand the value on both sides.</p>
+        <div class="callout callout-script">
+          <div class="callout-label">The Why Before the What — Setup Script</div>
+          "Now it's time for the most important thing we do for our new members. Research consistently shows that people who work out with a friend or partner are 30% more consistent, stay committed significantly longer, and honestly just have a better time. We want you to succeed here — and having someone with you is one of the best things you can do for your own results. So we have a program specifically designed to make that easy for you."
+        </div>
+        <p>Notice what this does: it frames the referral program as a member success tool — not a sales tool. You are not asking them to help City Fitness grow. You are telling them that inviting a friend is one of the most effective things they can do for themselves. That reframe changes everything about how the ask lands.</p>
+      </div>
+    </div>
+
+    <!-- L3 -->
+    <div class="lesson-card" data-lesson="3">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">03</span>
+        <span class="lesson-title-text">The Perks — What's In It for Everyone</span>
+        <span class="lesson-tag">The Benefits</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>The referral program works because it is genuinely a win-win-win. The new member wins. Their friends win. City Fitness wins. Understanding exactly what each party gets — and being able to communicate it clearly — is what makes the ask feel generous rather than transactional.</p>
+        <div class="perks-grid">
+          <div class="perk-card">
+            <div class="perk-icon">👤</div>
+            <div class="perk-label">For the Member</div>
+            <div class="perk-value">50 Points</div>
+            <div class="perk-desc">Per name provided — just for writing it down. Plus 500 points if their friend joins. Redeemable toward membership discounts and services.</div>
+          </div>
+          <div class="perk-card featured">
+            <div class="perk-icon">🎫</div>
+            <div class="perk-label">For Their Friend</div>
+            <div class="perk-value">7-Day VIP Access</div>
+            <div class="perk-desc">A full week of complete club access — a $75 value — exclusively available through member referral. Not available any other way.</div>
+          </div>
+          <div class="perk-card">
+            <div class="perk-icon">🤝</div>
+            <div class="perk-label">For Both</div>
+            <div class="perk-value">A Workout Buddy</div>
+            <div class="perk-desc">The accountability that drives 30% better consistency. The motivation that keeps them both coming back. The enjoyment that makes it sustainable.</div>
+          </div>
+        </div>
+        <div class="callout callout-tip">
+          <div class="callout-label">Key Point — The 7-Day Pass Is Exclusive</div>
+          Emphasize that the 7-Day VIP pass is only available through member referral. It cannot be purchased. It cannot be found online. Their friends can only access it through them. This exclusivity makes the invite feel like a genuine gift — not a gym promotion.
+        </div>
+        <div class="callout callout-rule">
+          <div class="callout-label">Three Member Motivations</div>
+          1. What's in it for them (points, buddy, validation). &nbsp; 2. What's in it for their friend (free week, exclusive access). &nbsp; 3. Can I trust you with my contacts (the 24-hour promise). Address all three — in that order.
+        </div>
+      </div>
+    </div>
+
+    <!-- L4 -->
+    <div class="lesson-card" data-lesson="4">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">04</span>
+        <span class="lesson-title-text">The 24-Hour Promise — Addressing the Trust Concern</span>
+        <span class="lesson-tag">Building Trust</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>The most common unspoken hesitation in the referral ask is not about the perks — it is about trust. The new member is thinking: <em>"If I give you my friends' numbers, are they going to get called and feel like I put them on a spam list?"</em> That concern, if not addressed proactively, is what makes people hand over one name instead of ten.</p>
+        <p>The 24-Hour Promise is how you eliminate that concern before it forms.</p>
+        <div class="callout callout-script">
+          <div class="callout-label">The 24-Hour Promise Script</div>
+          "And here's our promise to you: I won't contact anyone on this list for 24 hours. If you change your mind about anyone you've written down — just text or call me, and I will remove them before I reach out. You have complete control. Sound fair?"
+        </div>
+        <p>This one short commitment does something powerful: it shifts the dynamic from "giving up control of your contacts" to "staying in control of who gets contacted." The new member is no longer handing you names — they are choosing to share an opportunity with people they care about, with the safety net of being able to pull anyone back within 24 hours.</p>
+        <div class="callout callout-gold">
+          <div class="callout-label">Why the 24-Hour Window Works</div>
+          In practice, almost no one calls to remove a name. The 24-hour promise reduces the anxiety of providing the name in the first place — which means they provide more names. More names means more contacts. More contacts means more conversions. The promise costs you nothing and earns you trust worth everything.
+        </div>
+      </div>
+    </div>
+
+    <!-- L5 -->
+    <div class="lesson-card" data-lesson="5">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">05</span>
+        <span class="lesson-title-text">The Procedure — How to Execute the Ask</span>
+        <span class="lesson-tag">The System</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>The referral ask has a specific physical procedure that consistently produces better results than a casual, improvised ask. Every element of the procedure is intentional.</p>
+        <div class="proc-steps">
+          <div class="proc-step">
+            <div class="proc-num">1</div>
+            <div class="proc-content">
+              <div class="proc-title">The Transition Line</div>
+              <div class="proc-desc">Use a specific phrase to signal importance and create anticipation. <strong>Do not transition casually.</strong></div>
+              <div class="proc-script">"Now it's time for the most important thing we do for our new members."</div>
+            </div>
+          </div>
+          <div class="proc-step">
+            <div class="proc-num">2</div>
+            <div class="proc-content">
+              <div class="proc-title">Sit Down With Them</div>
+              <div class="proc-desc">Physically sit down alongside the new member — not across from them. This creates a <strong>collaborative, side-by-side energy</strong> rather than a desk transaction. It communicates that this is something you are doing together, not to them.</div>
+            </div>
+          </div>
+          <div class="proc-step">
+            <div class="proc-num">3</div>
+            <div class="proc-content">
+              <div class="proc-title">Present a Full Sheet of Paper</div>
+              <div class="proc-desc">Not a small card. A full sheet. This communicates that you are <strong>expecting real names</strong> — not one or two as an afterthought. The visual size of the sheet sets an expectation of volume.</div>
+              <div class="proc-script">"Just write down anyone who comes to mind — friends, family, coworkers. Don't overthink it."</div>
+            </div>
+          </div>
+          <div class="proc-step">
+            <div class="proc-num">4</div>
+            <div class="proc-content">
+              <div class="proc-title">Aim for 10 Names</div>
+              <div class="proc-desc">Ten is the target. Most members will give fewer — but anchoring high produces more names than anchoring low. <strong>"Who are the 10 people you'd want as your accountability group?"</strong> is a fundamentally different question than "Do you know anyone?"</div>
+            </div>
+          </div>
+          <div class="proc-step">
+            <div class="proc-num">5</div>
+            <div class="proc-content">
+              <div class="proc-title">Guide the Brainstorm</div>
+              <div class="proc-desc">If they stall after two or three names, <strong>prompt by category:</strong> "Anyone from work? Any neighbors you see regularly? Family members you've been meaning to motivate?" Categorized prompts unlock people they would not have thought of otherwise.</div>
+            </div>
+          </div>
+          <div class="proc-step">
+            <div class="proc-num">6</div>
+            <div class="proc-content">
+              <div class="proc-title">Deliver the 24-Hour Promise</div>
+              <div class="proc-desc">After they have written names, confirm the promise: <strong>"I won't contact anyone for 24 hours — if anyone on this list changes your mind, just let me know and I'll remove them."</strong></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- L6 -->
+    <div class="lesson-card" data-lesson="6">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">06</span>
+        <span class="lesson-title-text">Three Complete Referral Scripts</span>
+        <span class="lesson-tag">Full Scripts</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>The referral ask should feel natural and personalized — not formulaic. These three scripts represent different styles and approaches. Master all three and adapt based on the new member's personality and energy in the room.</p>
+
+        <div class="dialogue-block">
+          <div class="dialogue-title">Script 01 — The Welcome & VIP Approach</div>
+          <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"Okay [Name], congratulations again — officially a City Fitness member! We are so excited to have you. Now, it's time for the most important thing for new members like you."</em></span></div>
+          <div class="line"><span class="speaker member">Member</span><span class="line-text">"Oh yeah? What's that?"</span></div>
+          <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"It's about getting you set up with your VIP Guest Pass program. Here's the thing — research shows that people who work out with a friend are 30% more consistent and stay committed way longer. We want you to succeed here, and having someone to come with you is honestly one of the best things you can do for yourself. So this is for you."</em></span></div>
+          <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"Here's how it works: for any friend you refer, they get a 7-day VIP pass — full access, everything you just saw, completely free. That's a $75 value, and it's only available through you. And for you, 50 points just for writing down their name, and 500 more if they decide to join."</em></span></div>
+          <div class="line"><span class="speaker action">ACTION</span><span class="line-text action-text">Sits down alongside the member. Slides a full sheet of paper in front of them.</span></div>
+          <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"Just jot down names and numbers of anyone who comes to mind — friends, family, coworkers, neighbors. Don't overthink it. And I promise: I won't call anyone for 24 hours. If you change your mind about anyone on this list, just text me and I'll remove them. Sound good?"</em></span></div>
+        </div>
+
+        <div class="dialogue-block">
+          <div class="dialogue-title">Script 02 — The Partnership & Support Approach</div>
+          <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"Welcome to the City Fitness family, [Name] — it's fantastic to have you on board. Before we wrap up, I want to talk about something that genuinely helps new members stay consistent and get better results faster."</em></span></div>
+          <div class="line"><span class="speaker member">Member</span><span class="line-text">"What's that?"</span></div>
+          <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"A workout partner. We've seen it firsthand — members who have a friend or family member join with them are dramatically more likely to stick with their routine, get better results, and actually enjoy coming in. We want to make it as easy as possible for you to have that from day one."</em></span></div>
+          <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"So we have an exclusive 7-day VIP pass for your friends — something they can only get through you. It's their chance to try everything with no pressure. And for every name you share, you get 50 rewards points — 500 more if they join. It's our way of thanking you for helping build this community."</em></span></div>
+          <div class="line"><span class="speaker action">ACTION</span><span class="line-text action-text">Slides the paper across. Sits alongside.</span></div>
+          <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"Who comes to mind right away — someone you'd genuinely love to do this with? Go ahead and list anyone. And I promise to be completely respectful when I reach out. If for any reason, within the next 24 hours, you want someone removed — just let me know. Fair enough?"</em></span></div>
+        </div>
+
+        <div class="dialogue-block">
+          <div class="dialogue-title">Script 03 — The Direct & Benefit-Focused Approach</div>
+          <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"You're officially in, [Name]! Now let's get you set up to share the benefits with your people — and earn some perks for yourself."</em></span></div>
+          <div class="line"><span class="speaker member">Member</span><span class="line-text">"Share the benefits?"</span></div>
+          <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"Absolutely. Having a workout buddy makes a real difference — more fun, more motivation, better results. So we make it easy to invite your friends. Every friend you refer gets 7 days of free VIP access — a $75 value they can only get from you. For every name you write down, you get 50 points. If they join, 500 more. Think about who would love to join you here — classes, the recovery suite, the equipment, the whole community."</em></span></div>
+          <div class="line"><span class="speaker action">ACTION</span><span class="line-text action-text">Sits alongside. Hands them the sheet with a pen.</span></div>
+          <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"Just write down anyone who comes to mind. I won't reach out for 24 hours — and if you want anyone removed from this list before then, just say the word. Let's get your people in here with you."</em></span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- L7 -->
+    <div class="lesson-card" data-lesson="7">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">07</span>
+        <span class="lesson-title-text">The Four Reasons Buddies Matter — Know Them Cold</span>
+        <span class="lesson-tag">The Case</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>Before you ask for referrals, you need to be able to articulate — genuinely and specifically — why having a workout partner is one of the most powerful things a new member can do for their success. These four reasons are not sales language. They are real member outcomes backed by consistent data. Know them well enough to say them naturally, not recite them.</p>
+        <div class="buddy-list">
+          <div class="buddy-row">
+            <span class="buddy-num">1</span>
+            <div class="buddy-text"><strong>Consistency.</strong> Members who have a workout partner are 30% more consistent in attendance than those who work out alone. The accountability of another person is the most powerful consistency driver available — more than apps, more than schedules, more than willpower.</div>
+          </div>
+          <div class="buddy-row">
+            <span class="buddy-num">2</span>
+            <div class="buddy-text"><strong>Commitment longevity.</strong> Members who train with a friend stay members significantly longer. When the motivation to go for yourself wavers — and it always does at some point — the commitment to not let your partner down carries you through.</div>
+          </div>
+          <div class="buddy-row">
+            <span class="buddy-num">3</span>
+            <div class="buddy-text"><strong>Performance.</strong> People train harder when someone is watching. Not aggressively harder — encouragingly harder. A friend who celebrates your progress and pushes you through the last set is a performance enhancer that no equipment can replicate.</div>
+          </div>
+          <div class="buddy-row">
+            <span class="buddy-num">4</span>
+            <div class="buddy-text"><strong>Enjoyment.</strong> Working out with someone you like is simply more fun. And things that are fun get done. The members who stick longest are the ones who genuinely look forward to coming in — and a social element is one of the biggest drivers of that enjoyment.</div>
+          </div>
+        </div>
+        <div class="callout callout-tip">
+          <div class="callout-label">Connect to Their X-Factor</div>
+          When you deliver the buddy reasons, personalize them. If their X-Factor was consistency ("I always start and stop"), lead with reason #1. If they mentioned enjoyment or dreading working out alone, lead with reason #4. The right reason for the right person hits differently than all four delivered equally.
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end lesson grid -->
+
+  <div class="study-complete-banner" id="studyBanner">
+    <h3>All 7 Lessons Complete</h3>
+    <p>The Referral Play is the final step. Unlock your certification quiz below.</p>
+    <button class="cf-btn" onclick="unlockQuiz()" style="max-width:300px;margin:0 auto;">Unlock Certification ↓</button>
+  </div>
+
+  <!-- MISTAKES -->
+  <div class="divider-label">Common Mistakes</div>
+  <div class="section-header" style="padding-top:0;">
+    <div class="s-eyebrow">What Kills the Ask</div>
+    <h2 class="s-title">6 Referral Mistakes<br>& How to Fix Them</h2>
+  </div>
+  <div class="mistakes-grid">
+    <div class="mistake-card">
+      <div class="mistake-label bad">✗ The Mistake</div>
+      <div class="mistake-text">Asking for referrals 30 days later or via a follow-up email. <strong>The enthusiasm window has closed. The emotional energy is gone. Response rates are a fraction of POS.</strong></div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label good">✓ The Fix</div>
+      <div class="mistake-text"><strong>Always ask at POS — right after they sign, while they are still at the desk.</strong> The first 5 minutes after joining is the highest-conversion window in the referral process. Use it every single time.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label bad">✗ The Mistake</div>
+      <div class="mistake-text">Leading with the ask before explaining the why: <strong>"Do you know anyone who might want to join?"</strong> — sudden, transactional, and produces one name at most.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label good">✓ The Fix</div>
+      <div class="mistake-text"><strong>Why before what — every time.</strong> Explain the buddy consistency benefit, then the perks for both parties, then the 24-hour promise, then ask for names. By the time you ask, they already want to say yes.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label bad">✗ The Mistake</div>
+      <div class="mistake-text">Standing across the desk while asking for referrals. <strong>The formal desk dynamic creates a transactional feeling — and produces fewer names.</strong></div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label good">✓ The Fix</div>
+      <div class="mistake-text"><strong>Sit alongside them — not across.</strong> Side-by-side communicates collaboration, not transaction. The physical shift changes the energy of the ask completely. People give more names when they feel like you're doing something together.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label bad">✗ The Mistake</div>
+      <div class="mistake-text">Using a small card or asking casually with no paper. <strong>The physical absence of a sheet signals you are expecting one or two names. You get one or two names.</strong></div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label good">✓ The Fix</div>
+      <div class="mistake-text"><strong>Full sheet of paper. Every time.</strong> The visual size of the sheet anchors the expectation of volume. Aim for 10 names explicitly: "Who are the 10 people you'd want as your accountability group?"</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label bad">✗ The Mistake</div>
+      <div class="mistake-text">Not addressing the trust concern before asking. <strong>The member hesitates to give names because they are worried about their friends feeling spammed.</strong></div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label good">✓ The Fix</div>
+      <div class="mistake-text"><strong>Deliver the 24-hour promise proactively.</strong> "I won't contact anyone for 24 hours — if you change your mind about anyone, just let me know and I'll remove them." That one sentence unlocks significantly more names by removing the fear of losing control.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label bad">✗ The Mistake</div>
+      <div class="mistake-text">Letting the member stall at 2–3 names without guiding the brainstorm. <strong>They run out of obvious names and stop — but there are 7 more waiting if you prompt by category.</strong></div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label good">✓ The Fix</div>
+      <div class="mistake-text"><strong>Prompt by category when they stall:</strong> "Anyone from work? Neighbors? Family you've been meaning to motivate? Old friends you've lost touch with who used to be active?" Each category unlocks a different mental network and produces names they would not have thought of otherwise.</div>
+    </div>
+  </div>
+
+  <!-- ROLE PLAY -->
+  <div class="divider-label">Role-Play Scenarios</div>
+  <div class="section-header" style="padding-top:0;">
+    <div class="s-eyebrow">Practice</div>
+    <h2 class="s-title">4 Referral Scenarios<br>to Train On</h2>
+  </div>
+
+  <div class="roleplay-card">
+    <div class="roleplay-header">
+      <span class="roleplay-scenario">Scenario 01 — The Enthusiastic New Member</span>
+      <span class="roleplay-type">High Energy</span>
+    </div>
+    <div class="roleplay-body">
+      <div class="roleplay-setup">Member just signed, is visibly excited, and says: "I can't wait to get started — this place is amazing!" The energy in the room is perfect.</div>
+      <div class="roleplay-objective"><strong>Your objective:</strong> Use their enthusiasm as the bridge into the referral ask. "That's exactly the energy I love hearing — and that's exactly why I want to talk about one more thing before you head out." Execute the full referral sequence: transition line, sit alongside, why before what, buddy reasons, VIP perk explanation, 24-hour promise, full sheet, aim for 10 names. This scenario is about riding the energy wave — not letting it peak and then awkwardly pivoting to a new ask. The transition should feel like a natural continuation of the celebration.</div>
+      <div class="coaching-note">High-energy new members produce the most referrals when the ask is positioned as an extension of their excitement — "You love it here? Let's get your people in here with you." Make the invite feel like sharing something great, not fulfilling a sales obligation.</div>
+    </div>
+  </div>
+
+  <div class="roleplay-card">
+    <div class="roleplay-header">
+      <span class="roleplay-scenario">Scenario 02 — "I Don't Really Know Anyone Who'd Be Interested"</span>
+      <span class="roleplay-type">Hesitation</span>
+    </div>
+    <div class="roleplay-body">
+      <div class="roleplay-setup">After the referral setup, the member says: "I appreciate it, but I don't really think any of my friends would be interested in a gym."</div>
+      <div class="roleplay-objective"><strong>Your objective:</strong> Do not accept this and move on. Gently challenge the assumption: "I totally get that feeling — but you'd be surprised. Most people are more open to it than they let on, especially when it's a week for free with no pressure. Who in your life has mentioned wanting to get healthier, or who used to be active and kind of fell off? It doesn't have to be someone who is already a gym person." Then prompt by category: work, family, old friends. Aim to get at least 3–5 names even from a reluctant member.</div>
+      <div class="coaching-note">The "nobody would be interested" response almost always means the member has not been asked to think categorically. They picture their most gym-unlikely friend and project that onto everyone. Category prompts break this by directing them to specific, different social networks where active or health-curious people live.</div>
+    </div>
+  </div>
+
+  <div class="roleplay-card">
+    <div class="roleplay-header">
+      <span class="roleplay-scenario">Scenario 03 — "I'll Think About Who to Recommend Later"</span>
+      <span class="roleplay-type">Timing Objection</span>
+    </div>
+    <div class="roleplay-body">
+      <div class="roleplay-setup">The member is warm and cooperative but says: "Can I think about it and send you some names later? I don't want to give you anyone right now without asking them first."</div>
+      <div class="roleplay-objective"><strong>Your objective:</strong> Acknowledge their consideration for their friends, then make the case for right now: "I love that you're thoughtful about it — that's exactly the kind of person your friends are lucky to have. Here's the thing though: the VIP pass is something I can only give out at this moment as part of your new member setup. And honestly, the names you write down right now are the ones that are top of mind — those are the people you're most excited about sharing this with. Let's just put them down — you can always ask them yourself later, or I can reach out on your behalf with the offer. Either way works." Aim to get at least a partial list before they leave.</div>
+      <div class="coaching-note">The "I'll send names later" response converts at dramatically lower rates than POS. Once they leave, the enthusiasm fades, the follow-through drops, and the list rarely materializes. The goal is not to pressure them — it is to capture the moment before the window closes. A partial list today beats a promised full list that never arrives.</div>
+    </div>
+  </div>
+
+  <div class="roleplay-card">
+    <div class="roleplay-header">
+      <span class="roleplay-scenario">Scenario 04 — Stalling at 2–3 Names</span>
+      <span class="roleplay-type">Brainstorm Coaching</span>
+    </div>
+    <div class="roleplay-body">
+      <div class="roleplay-setup">The member writes down two names quickly, then stares at the sheet and says: "I can't really think of anyone else right now."</div>
+      <div class="roleplay-objective"><strong>Your objective:</strong> Guide the brainstorm with category prompts — gently and without pressure. "That's a great start. Let me help you think through a few categories. Anyone at work who has mentioned wanting to be more active? A neighbor you see regularly? Any family members — siblings, cousins — who have talked about wanting to make a change? Old friends from school or a previous job who used to work out?" Each prompt should be delivered as a genuine brainstorm helper, not a pressure tactic. Pause after each one and let them think. The goal is 7–10 — but even 5 quality names is a strong result.</div>
+      <div class="coaching-note">Category prompting works because people's social networks are organized by context — work people, neighborhood people, family, old friends. When you ask generically, they access their most active social circle only. When you name specific contexts, they access different networks and surface names that would never have come up otherwise.</div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="divider-label">Certification</div>
+  <div class="section-header" style="padding-top:0;">
+    <div class="s-eyebrow">Final Knowledge Check</div>
+    <h2 class="s-title">Referral Play Certification</h2>
+    <p class="s-sub">14 questions. 80% or higher to pass. Complete all 7 lessons above to unlock. This is the final certification in the City Fitness Sales Play series.</p>
+  </div>
+
+  <div class="quiz-section" id="quizSection">
+    <div class="quiz-locked" id="quizLocked">
+      <div class="quiz-locked-icon">🔒</div>
+      <h3>Complete All Lessons to Unlock</h3>
+      <p>Open all 7 lessons above. The quiz unlocks automatically when you finish.</p>
+    </div>
+    <div class="name-panel" id="namePanel" style="display:none;">
+      <h3>Final Certification Registry</h3>
+      <p>Enter your full name as it should appear on your certification record.</p>
+      <input type="text" class="cf-input" id="empNameInput" placeholder="Full Name"/>
+      <button class="cf-btn" onclick="startQuiz()">Begin Final Test →</button>
+    </div>
+    <div class="quiz-active" id="quizActive" style="display:none;">
+      <div class="q-progress-wrap"><div class="q-progress-bar" id="qBar"></div></div>
+      <div class="q-meta">
+        <span class="q-counter" id="qCounter"></span>
+        <span class="q-topic">Module 11 · The Referral Play</span>
+      </div>
+      <div class="q-text" id="qText"></div>
+      <div class="q-options" id="qOptions"></div>
+    </div>
+    <div class="results-panel" id="resultsPanel">
+      <div class="result-score" id="resultScore"></div>
+      <div class="result-label" id="resultLabel"></div>
+      <div id="missedSection"></div>
+      <button class="cf-btn" onclick="resetModule()" style="margin-top:22px;">Return to Module</button>
+    </div>
+  </div>
+
+  <!-- COMPLETION BANNER -->
+  <div class="completion-banner">
+    <div class="cb-eyebrow">City Fitness Deep Training Series · Complete</div>
+    <div class="cb-title">The Play Is Yours.</div>
+    <p class="cb-text">You have worked through every step — from the first call to the final referral. The T.I., the Greeting, Discovery, the Tour, B+F, HACCL, the Price, LIGO, the T.O., and the Referral Play. That is the full City Fitness Sales Play. Now the only thing left is to execute it — with confidence, with empathy, and with the belief that every person who walks through that door deserves your very best.</p>
+    <div class="cb-values">Smile · Clean · Cutting Edge</div>
+  </div>
+
+</div><!-- end module-wrap -->
+
+<div class="module-footer">
+  <p>City Fitness Philadelphia &nbsp;·&nbsp; Deep Training Module 11 &nbsp;·&nbsp; 2026 &nbsp;·&nbsp; We Are Yours.</p>
+</div>
+
+<iframe name="cf_hidden" id="cf_hidden" style="display:none;"></iframe>
+<form id="certForm" target="cf_hidden" method="GET" action="https://script.google.com/a/macros/cityfitness.com/s/AKfycbzZokf4OQGpHYEkb_9mcVdJ-t9jop9RWIpclIcLSjTWRcBQfeDJ751bl0qO8k7VrZwe/exec">
+  <input type="hidden" name="employee" id="formEmployee"/>
+  <input type="hidden" name="topic" id="formTopic"/>
+  <input type="hidden" name="result" id="formResult"/>
+</form>
+
+<script>
+window.addEventListener('scroll',()=>{
+  const el=document.documentElement;
+  const pct=(el.scrollTop/(el.scrollHeight-el.clientHeight))*100;
+  document.getElementById('topFill').style.width=pct+'%';
+});
+
+let openedLessons=new Set();
+const totalLessons=7;
+
+function toggleLesson(header){
+  const card=header.parentElement;
+  const isOpen=card.classList.contains('open');
+  card.classList.toggle('open',!isOpen);
+  if(!isOpen){
+    openedLessons.add(parseInt(card.dataset.lesson));
+    checkStudyComplete();
+  }
+}
+
+function checkStudyComplete(){
+  if(openedLessons.size>=totalLessons){
+    const banner=document.getElementById('studyBanner');
+    banner.style.display='block';
+    banner.scrollIntoView({behavior:'smooth',block:'center'});
+  }
+}
+
+function unlockQuiz(){
+  document.getElementById('quizLocked').style.display='none';
+  document.getElementById('namePanel').style.display='block';
+  document.getElementById('quizSection').scrollIntoView({behavior:'smooth'});
+}
+
+const questions=[
+  {q:"Why is Point of Sale (POS) timing critical for the referral ask?",a:["It is required by City Fitness policy before the member leaves","The new member's enthusiasm, validation-seeking, and emotional energy are at their absolute peak immediately after joining — and fade quickly","It gives the consultant more time to process the membership paperwork","It ensures the referral names are entered into HubSpot correctly"],c:1},
+  {q:"What are the three primary reasons new members give referrals at POS?",a:["Commission, loyalty points, and gym access","They want to validate their decision, they want to share something they are excited about, and the perks for both parties make the ask feel mutual","They feel obligated, they are confused about the process, and they want a discount","They know City Fitness needs members, they like their consultant, and they were asked nicely"],c:1},
+  {q:"What is the correct sequence for the referral ask?",a:["Ask for names → explain perks → deliver 24-hour promise","Explain perks → ask for names → explain why referrals matter","Why referrals matter (buddy benefits) → perks for both → 24-hour promise → ask for names","Ask for names → sit alongside → full sheet"],c:2},
+  {q:"What does the 7-Day VIP Access pass give the referred friend?",a:["A one-day trial of the club","A discounted first month of membership","A full week of complete club access — a $75 value — exclusively available through member referral","A free Thrive assessment only"],c:2},
+  {q:"How many rewards points does the member earn per referral name provided?",a:["10 points","25 points","50 points","100 points"],c:2},
+  {q:"What does the 24-Hour Promise specifically commit to?",a:["Giving the referred friend a free month if they join within 24 hours","Not contacting any names on the referral list for 24 hours — and removing anyone the member requests before then","Calling all referrals within 24 hours to offer the VIP pass","Giving the member 24 hours to add more names before the list is locked"],c:1},
+  {q:"Why does the 24-Hour Promise produce more referral names?",a:["It creates urgency for the friend to join quickly","It removes the member's fear of losing control over who gets contacted — making it safe to provide more names","It gives the consultant more time to prepare the outreach","It is required by law before contacting anyone"],c:1},
+  {q:"Why is sitting alongside the new member (rather than across the desk) important?",a:["It is more comfortable for the consultant","It creates a collaborative, side-by-side energy rather than a transactional desk dynamic — producing more names","It allows the consultant to see the sheet while the member writes","City Fitness requires this seating arrangement"],c:1},
+  {q:"What is the target number of referral names to aim for?",a:["3–5 names","1–2 quality names are better than many mediocre ones","10 names","As many as possible with no specific target"],c:2},
+  {q:"What technique do you use when a member stalls after providing 2–3 names?",a:["Accept the names they gave and end the referral conversation","Ask them to call their friends right now to ask permission","Guide with category prompts: work, neighbors, family, old friends — each unlocks a different social network","Tell them you need at least 5 before they can leave"],c:2},
+  {q:"What is the correct response when a member says 'I don't think any of my friends would be interested'?",a:["Accept it and move on — some members genuinely have no contacts","Gently challenge the assumption and guide them to think about who has mentioned wanting to be healthier or used to be active","Offer them double points if they try harder","Skip the referral conversation entirely for this member"],c:1},
+  {q:"Why does referral conversion drop significantly when the ask is delayed to 30 days later?",a:["Members forget the referral program exists","The emotional enthusiasm and decision-validation need have faded — the motivations that power POS referrals no longer exist at the same level","Members lose access to their contacts after 30 days","The VIP pass expires in 30 days and cannot be offered"],c:1},
+  {q:"The four reasons a workout buddy improves member outcomes are consistency, commitment longevity, performance, and:",a:["Weight loss acceleration","Social media content creation","Enjoyment — making the experience more fun and sustainable","Faster membership payoff"],c:2},
+  {q:"What is the transition phrase that signals the importance of the referral moment?",a:["'By the way, before you go...'","'One more quick thing...'","'Now it's time for the most important thing we do for our new members'","'I almost forgot to mention...'"],c:2}
+];
+
+let empName='',qIndex=0,score=0,missed=[];
+
+function startQuiz(){
+  empName=document.getElementById('empNameInput').value.trim();
+  if(!empName){alert('Please enter your full name.');return;}
+  document.getElementById('namePanel').style.display='none';
+  document.getElementById('quizActive').style.display='block';
+  qIndex=0;score=0;missed=[];
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const q=questions[qIndex];
+  document.getElementById('qBar').style.width=((qIndex/questions.length)*100)+'%';
+  document.getElementById('qCounter').textContent=`Question ${qIndex+1} of ${questions.length}`;
+  document.getElementById('qText').textContent=q.q;
+  const opts=document.getElementById('qOptions');
+  opts.innerHTML='';
+  q.a.forEach((opt,i)=>{
+    const btn=document.createElement('button');
+    btn.className='q-opt';
+    btn.textContent=opt;
+    btn.onclick=()=>handleAnswer(i);
+    opts.appendChild(btn);
+  });
+}
+
+function handleAnswer(idx){
+  const q=questions[qIndex];
+  if(idx===q.c){score++;}
+  else{missed.push({q:q.q,a:q.a[q.c]});}
+  qIndex++;
+  if(qIndex<questions.length){renderQuestion();}
+  else{showResults();}
+}
+
+function showResults(){
+  const pct=Math.round((score/questions.length)*100);
+  document.getElementById('quizActive').style.display='none';
+  const rp=document.getElementById('resultsPanel');
+  rp.style.display='block';
+  const scoreEl=document.getElementById('resultScore');
+  scoreEl.textContent=pct+'%';
+  scoreEl.className='result-score '+(pct>=80?'result-pass':'result-fail');
+  document.getElementById('resultLabel').textContent=pct>=80?'Certification Passed — Module 11: The Referral Play · The Play Is Complete.':'Retake Required — Review Missed Questions Below';
+  let missedHtml='';
+  if(missed.length){
+    missedHtml='<div class="missed-label">Knowledge Gaps — Review These</div>';
+    missed.forEach(m=>{
+      missedHtml+=`<div class="missed-item"><div class="missed-q">${m.q}</div><div class="missed-a">Correct Answer: ${m.a}</div></div>`;
+    });
+  }
+  document.getElementById('missedSection').innerHTML=missedHtml;
+  document.getElementById('formEmployee').value=empName;
+  document.getElementById('formTopic').value='Module 11 - The Referral Play';
+  document.getElementById('formResult').value=pct;
+  document.getElementById('certForm').submit();
+}
+
+function resetModule(){
+  document.getElementById('resultsPanel').style.display='none';
+  document.getElementById('namePanel').style.display='block';
+  document.getElementById('empNameInput').value='';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
