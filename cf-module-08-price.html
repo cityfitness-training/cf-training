@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>CF Training | Module 08: Price Presentation</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:ital,wght@0,400;0,500;0,600;1,400;1,600&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg: #111210;
+  --surface: #181714;
+  --card: #1e1c19;
+  --border: #2a2724;
+  --border-light: #363330;
+  --copper: #B87C4C;
+  --copper-light: #C9A07A;
+  --copper-dim: rgba(184,124,76,0.12);
+  --copper-glow: rgba(184,124,76,0.05);
+  --tan: #BF9B6F;
+  --white: #F0EDE8;
+  --grey: #6e7068;
+  --dim: #909288;
+  --red: #c0392b;
+  --red-dim: rgba(192,57,43,0.1);
+  --green: #4a9a60;
+  --green-dim: rgba(74,154,96,0.1);
+  --gold: #c4a44a;
+  --gold-dim: rgba(196,164,74,0.1);
+  --grad: linear-gradient(135deg, #B87C4C 0%, #C9A07A 100%);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--white);font-family:'Barlow',sans-serif;line-height:1.65;overflow-x:hidden;}
+
+.top-bar{position:fixed;top:0;left:0;right:0;height:3px;background:var(--border);z-index:9999;}
+.top-bar-fill{height:100%;background:var(--grad);width:0%;transition:width .3s ease;}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:80px 60px;position:relative;overflow:hidden;}
+.hero-bg-price{position:absolute;right:-20px;top:50%;transform:translateY(-50%);font-family:'Barlow Condensed',sans-serif;font-size:clamp(180px,28vw,360px);font-weight:900;color:transparent;-webkit-text-stroke:1px rgba(184,124,76,0.05);pointer-events:none;user-select:none;line-height:1;}
+.hero-eyebrow{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--copper);letter-spacing:4px;text-transform:uppercase;margin-bottom:18px;display:flex;align-items:center;gap:12px;}
+.hero-eyebrow::before{content:'';display:block;width:32px;height:2px;background:var(--copper);}
+.hero-title{font-family:'Barlow Condensed',sans-serif;font-size:clamp(52px,8vw,100px);font-weight:900;line-height:.88;text-transform:uppercase;letter-spacing:-2px;margin-bottom:22px;max-width:700px;position:relative;z-index:1;}
+.hero-title em{font-style:normal;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.hero-desc{font-size:16px;color:var(--dim);line-height:1.75;margin-bottom:36px;max-width:580px;position:relative;z-index:1;}
+.hero-stats{display:flex;gap:36px;margin-bottom:44px;position:relative;z-index:1;}
+.stat{display:flex;flex-direction:column;}
+.stat-num{font-family:'Barlow Condensed',sans-serif;font-size:34px;font-weight:900;color:var(--copper);line-height:1;}
+.stat-label{font-size:11px;color:var(--grey);text-transform:uppercase;letter-spacing:2px;margin-top:3px;}
+.hero-btn{display:inline-flex;align-items:center;gap:10px;background:var(--grad);border:none;padding:16px 32px;color:white;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;letter-spacing:2px;text-transform:uppercase;border-radius:4px;cursor:pointer;transition:.2s;position:relative;z-index:1;}
+.hero-btn:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(184,124,76,0.3);}
+
+/* LAYOUT */
+.module-wrap{max-width:900px;margin:0 auto;padding:0 40px 120px;}
+.section-header{padding:70px 0 36px;}
+.s-eyebrow{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--copper);letter-spacing:4px;text-transform:uppercase;display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+.s-eyebrow::after{content:'';width:48px;height:1px;background:var(--copper);opacity:.4;}
+.s-title{font-family:'Barlow Condensed',sans-serif;font-size:clamp(30px,5vw,46px);font-weight:900;text-transform:uppercase;letter-spacing:-.5px;line-height:1.05;margin-bottom:10px;}
+.s-sub{font-size:16px;color:var(--dim);max-width:680px;line-height:1.6;}
+
+/* LESSONS */
+.lesson-grid{display:flex;flex-direction:column;gap:2px;}
+.lesson-card{background:var(--surface);border:1px solid var(--border);overflow:hidden;}
+.lesson-card:first-child{border-radius:10px 10px 0 0;}
+.lesson-card:last-child{border-radius:0 0 10px 10px;}
+.lesson-header{display:flex;align-items:center;gap:20px;padding:20px 26px;cursor:pointer;user-select:none;transition:.15s;}
+.lesson-header:hover{background:var(--copper-glow);}
+.lesson-num{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--copper);letter-spacing:2px;min-width:34px;}
+.lesson-title-text{font-size:16px;font-weight:700;flex:1;}
+.lesson-tag{font-size:10px;font-weight:700;color:var(--copper);background:var(--copper-dim);padding:4px 10px;border-radius:20px;text-transform:uppercase;letter-spacing:1px;white-space:nowrap;}
+.lesson-arrow{color:var(--grey);font-size:11px;transition:.3s;font-style:normal;}
+.lesson-card.open .lesson-arrow{transform:rotate(180deg);color:var(--copper);}
+.lesson-card.open .lesson-header{border-bottom:1px solid var(--border);}
+.lesson-body{display:none;padding:28px 26px 26px;}
+.lesson-card.open .lesson-body{display:block;}
+.lesson-body p{color:var(--dim);font-size:15px;line-height:1.75;margin-bottom:14px;}
+.lesson-body p:last-child{margin-bottom:0;}
+.lesson-body strong{color:var(--white);font-weight:700;}
+.lesson-body em{color:var(--tan);font-style:italic;}
+
+/* CALLOUTS */
+.callout{border-radius:8px;padding:18px 22px;margin:18px 0;font-size:15px;line-height:1.65;}
+.callout-rule{border-left:3px solid var(--copper);background:var(--copper-dim);color:var(--copper-light);}
+.callout-script{border-left:3px solid var(--tan);background:rgba(191,155,111,0.07);color:var(--tan);font-style:italic;}
+.callout-warn{border-left:3px solid var(--red);background:var(--red-dim);color:#d97060;}
+.callout-tip{border-left:3px solid var(--green);background:var(--green-dim);color:#7ac09a;}
+.callout-gold{border-left:3px solid var(--gold);background:var(--gold-dim);color:#d4b870;}
+.callout-silence{border-left:3px solid var(--red);background:rgba(192,57,43,0.06);padding:24px 28px;text-align:center;}
+.callout-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:3px;text-transform:uppercase;margin-bottom:7px;opacity:.7;display:block;}
+
+/* CHECKLIST */
+.checklist{display:flex;flex-direction:column;gap:8px;margin:18px 0;}
+.check-item{display:flex;align-items:flex-start;gap:14px;padding:14px 18px;background:var(--card);border:1px solid var(--border);border-radius:8px;}
+.check-icon{font-size:16px;min-width:20px;padding-top:1px;}
+.check-text{font-size:14px;color:var(--dim);line-height:1.55;}
+.check-text strong{color:var(--white);}
+
+/* PRICE CARD VISUAL */
+.price-card-visual{background:var(--card);border:1px solid var(--border-light);border-radius:12px;overflow:hidden;margin:20px 0;}
+.pcv-header{background:var(--copper-dim);border-bottom:1px solid rgba(184,124,76,0.2);padding:14px 20px;display:flex;justify-content:space-between;align-items:center;}
+.pcv-title{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--copper);}
+.pcv-side{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;padding:4px 10px;border-radius:12px;}
+.pcv-side.features{color:var(--green);background:var(--green-dim);}
+.pcv-side.price{color:var(--red);background:var(--red-dim);}
+.pcv-body{padding:20px;}
+.pcv-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);}
+.pcv-row:last-child{border-bottom:none;}
+.pcv-label{font-size:13px;color:var(--dim);}
+.pcv-value{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:800;color:var(--white);}
+.pcv-value.highlight{color:var(--copper);}
+.pcv-total{background:var(--copper-dim);border-top:1px solid rgba(184,124,76,0.2);padding:16px 20px;display:flex;justify-content:space-between;align-items:center;}
+.pcv-total-label{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--copper);}
+.pcv-total-value{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;color:var(--copper);}
+
+/* SILENCE BOX */
+.silence-box{background:rgba(192,57,43,0.06);border:1px solid rgba(192,57,43,0.2);border-radius:12px;padding:32px;text-align:center;margin:20px 0;}
+.silence-title{font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:900;text-transform:uppercase;letter-spacing:2px;color:#d97060;margin-bottom:10px;}
+.silence-sub{font-size:14px;color:var(--dim);line-height:1.6;max-width:480px;margin:0 auto;}
+.silence-rule{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:#d97060;margin-top:16px;}
+
+/* DIALOGUE */
+.dialogue-block{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:22px;margin:18px 0;}
+.dialogue-title{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--copper);letter-spacing:3px;text-transform:uppercase;margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+.line{display:flex;gap:14px;margin-bottom:14px;align-items:flex-start;}
+.line:last-child{margin-bottom:0;}
+.speaker{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;min-width:90px;padding-top:3px;}
+.speaker.prospect{color:var(--grey);}
+.speaker.consultant{color:var(--copper);}
+.speaker.action{color:rgba(191,155,111,0.5);}
+.line-text{font-size:15px;color:var(--dim);line-height:1.65;}
+.line-text em{color:var(--white);font-style:normal;font-weight:600;}
+.line-text.action-text{font-style:italic;color:rgba(191,155,111,0.45);font-size:13px;}
+
+/* FLOW STEPS */
+.flow-steps{display:flex;flex-direction:column;gap:2px;margin:18px 0;}
+.flow-step{display:grid;grid-template-columns:36px 1fr;gap:16px;align-items:start;padding:16px 18px;background:var(--surface);border:1px solid var(--border);}
+.flow-step:first-child{border-radius:8px 8px 0 0;}
+.flow-step:last-child{border-radius:0 0 8px 8px;}
+.flow-num{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;color:var(--copper);line-height:1;padding-top:2px;}
+.flow-content{}
+.flow-title{font-size:14px;font-weight:700;color:var(--white);margin-bottom:4px;}
+.flow-desc{font-size:13px;color:var(--dim);line-height:1.55;}
+.flow-desc strong{color:var(--copper-light);}
+.flow-script{font-size:13px;color:var(--tan);font-style:italic;margin-top:6px;line-height:1.5;}
+
+/* MISTAKES */
+.mistakes-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px;}
+.mistake-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:18px;}
+.mistake-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:3px;text-transform:uppercase;margin-bottom:8px;}
+.mistake-label.bad{color:var(--red);}
+.mistake-label.good{color:var(--green);}
+.mistake-text{font-size:14px;line-height:1.6;color:var(--dim);}
+.mistake-text strong{color:var(--white);}
+
+/* ROLEPLAY */
+.roleplay-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:14px;}
+.roleplay-header{padding:18px 22px;background:var(--copper-dim);display:flex;justify-content:space-between;align-items:center;}
+.roleplay-scenario{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--copper);}
+.roleplay-type{font-size:11px;color:var(--grey);}
+.roleplay-body{padding:22px;}
+.roleplay-setup{font-size:15px;font-style:italic;color:var(--tan);margin-bottom:14px;padding:12px 16px;background:rgba(191,155,111,0.06);border-radius:6px;line-height:1.6;}
+.roleplay-objective{font-size:14px;color:var(--dim);line-height:1.6;}
+.roleplay-objective strong{color:var(--white);}
+.coaching-note{margin-top:12px;padding:12px 16px;background:rgba(184,124,76,0.07);border-radius:6px;font-size:13px;color:var(--copper-light);line-height:1.6;}
+.coaching-note::before{content:'COACHING NOTE  ';font-weight:800;letter-spacing:2px;font-size:10px;display:block;margin-bottom:3px;opacity:.7;}
+
+/* DIVIDER */
+.divider-label{display:flex;align-items:center;gap:16px;color:var(--grey);font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin:56px 0 30px;}
+.divider-label::before,.divider-label::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* STUDY BANNER */
+.study-complete-banner{background:var(--copper-dim);border:1px solid rgba(184,124,76,0.3);border-radius:12px;padding:28px;text-align:center;margin:36px 0;display:none;}
+.study-complete-banner h3{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;color:var(--copper);margin-bottom:6px;}
+.study-complete-banner p{color:var(--dim);font-size:14px;margin-bottom:18px;}
+
+/* QUIZ */
+.quiz-section{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-top:36px;}
+.quiz-locked{padding:56px 40px;text-align:center;}
+.quiz-locked-icon{font-size:36px;margin-bottom:14px;opacity:.3;}
+.quiz-locked h3{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;text-transform:uppercase;color:var(--grey);margin-bottom:6px;}
+.quiz-locked p{color:var(--grey);font-size:14px;}
+.quiz-active{padding:38px;}
+.q-progress-wrap{height:3px;background:var(--border);border-radius:2px;margin-bottom:28px;overflow:hidden;}
+.q-progress-bar{height:100%;background:var(--grad);width:0%;transition:.4s;}
+.q-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;}
+.q-counter{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--copper);letter-spacing:2px;text-transform:uppercase;}
+.q-topic{font-size:11px;color:var(--grey);}
+.q-text{font-size:20px;font-weight:700;color:var(--white);margin-bottom:26px;line-height:1.4;}
+.q-options{display:flex;flex-direction:column;gap:9px;}
+.q-opt{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:15px 18px;color:var(--dim);font-size:15px;text-align:left;cursor:pointer;transition:.2s;font-family:'Barlow',sans-serif;}
+.q-opt:hover{border-color:var(--copper);color:var(--white);background:var(--copper-glow);}
+.name-panel{padding:38px;}
+.name-panel h3{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;color:var(--white);margin-bottom:5px;}
+.name-panel p{color:var(--dim);font-size:14px;margin-bottom:22px;}
+.cf-input{background:var(--bg);border:1px solid var(--border);color:var(--white);padding:13px 16px;width:100%;border-radius:8px;font-family:'Barlow',sans-serif;font-size:16px;margin-bottom:14px;outline:none;transition:.2s;}
+.cf-input:focus{border-color:var(--copper);}
+.cf-btn{background:var(--grad);border:none;padding:15px 28px;color:white;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;letter-spacing:2px;text-transform:uppercase;border-radius:8px;cursor:pointer;width:100%;transition:.2s;}
+.cf-btn:hover{opacity:.9;transform:translateY(-1px);}
+.results-panel{padding:38px;display:none;}
+.result-score{font-family:'Barlow Condensed',sans-serif;font-size:70px;font-weight:900;line-height:1;margin-bottom:6px;}
+.result-pass{color:var(--copper);}
+.result-fail{color:var(--red);}
+.result-label{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--grey);margin-bottom:22px;}
+.missed-label{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--dim);letter-spacing:3px;text-transform:uppercase;margin-bottom:10px;margin-top:22px;}
+.missed-item{background:rgba(192,57,43,0.07);border-left:3px solid var(--red);border-radius:0 6px 6px 0;padding:13px 15px;margin-bottom:7px;}
+.missed-q{font-size:14px;color:var(--dim);margin-bottom:5px;}
+.missed-a{font-size:14px;color:var(--tan);font-weight:600;}
+
+.module-footer{text-align:center;padding:50px 40px;border-top:1px solid var(--border);}
+.module-footer p{color:var(--grey);font-size:11px;letter-spacing:3px;text-transform:uppercase;}
+
+@media(max-width:700px){
+  .hero{padding:80px 24px 50px;}
+  .module-wrap{padding:0 20px 80px;}
+  .flow-step{grid-template-columns:1fr;}
+  .mistakes-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar"><div class="top-bar-fill" id="topFill"></div></div>
+
+<section class="hero">
+  <div class="hero-bg-price">$</div>
+  <div class="hero-eyebrow">City Fitness Training · Deep Module Series</div>
+  <h1 class="hero-title">Price<br><em>Presentation.</em></h1>
+  <p class="hero-desc">This is the moment everything you have built culminates. The greeting, the discovery, the tour, B+F Logic, HACCL — all of it has been preparing for this. When you get here, you are not presenting a price. You are confirming a solution the guest has already described. This module teaches you to do it with precision, confidence, and — most importantly — silence.</p>
+  <div class="hero-stats">
+    <div class="stat"><span class="stat-num">8</span><span class="stat-label">Core Lessons</span></div>
+    <div class="stat"><span class="stat-num">5</span><span class="stat-label">Full Scripts</span></div>
+    <div class="stat"><span class="stat-num">4</span><span class="stat-label">Role-Play Scenarios</span></div>
+    <div class="stat"><span class="stat-num">16</span><span class="stat-label">Quiz Questions</span></div>
+  </div>
+  <button class="hero-btn" onclick="document.getElementById('lessons').scrollIntoView({behavior:'smooth'})">Begin Training ↓</button>
+</section>
+
+<div class="module-wrap">
+
+  <div class="section-header" style="padding-top:50px;">
+    <div class="s-eyebrow">The Objective</div>
+    <h2 class="s-title">Ask. Present. Close.<br>Then Be Silent.</h2>
+    <p class="s-sub">The price presentation is not a negotiation. It is not a guess. It is the logical conclusion of everything that came before it — delivered with confidence, structured with precision, and closed with one question followed by absolute silence. The consultant who masters that silence masters the close.</p>
+  </div>
+
+  <div class="callout callout-rule">
+    <div class="callout-label">The Core Truth</div>
+    Selling is a transfer of emotion. If you are confident, they become confident. If you fumble numbers, apologize for the price, or fill the silence after the close question — you transfer doubt. Confidence in the price presentation is not optional. It is the close itself.
+  </div>
+
+  <div class="section-header" id="lessons">
+    <div class="s-eyebrow">Core Lessons</div>
+    <h2 class="s-title">8 Lessons to Master<br>the Price Close</h2>
+    <p class="s-sub">Open all 8 lessons in order. The certification unlocks when you finish.</p>
+  </div>
+
+  <div class="lesson-grid" id="lessonGrid">
+
+    <!-- L1 -->
+    <div class="lesson-card" data-lesson="1">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">01</span>
+        <span class="lesson-title-text">The Pre-Presentation Checklist — Are You Ready?</span>
+        <span class="lesson-tag">Before You Begin</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>Before you reach for the laminated sheet, you must be able to answer yes to four questions. If any of these is a no, you are not ready — and presenting price before you are ready is one of the most expensive mistakes in the sales process.</p>
+        <div class="checklist">
+          <div class="check-item">
+            <span class="check-icon">✓</span>
+            <div class="check-text"><strong>Does this guest have reason to like and trust me?</strong> — The relationship is the foundation. If you are not sure they trust you, they will not buy from you. A simple test: have you learned enough about them to genuinely like them? If yes, the trust is likely mutual. If not, the close is premature.</div>
+          </div>
+          <div class="check-item">
+            <span class="check-icon">✓</span>
+            <div class="check-text"><strong>Did we get yes answers to all five HACCL questions?</strong> — HACCL is your pre-close. If any letter produced hesitation that was not fully resolved, go back and address it before presenting price. An unresolved HACCL item will surface as an objection post-price and is twice as hard to handle there.</div>
+          </div>
+          <div class="check-item">
+            <span class="check-icon">✓</span>
+            <div class="check-text"><strong>Are there any outstanding objections that were mentioned earlier and not addressed?</strong> — Did they mention a partner needs to be consulted? A competing gym they are also considering? A health concern? These do not go away — they resurface at the worst possible moment. Address them before the price card.</div>
+          </div>
+          <div class="check-item">
+            <span class="check-icon">✓</span>
+            <div class="check-text"><strong>Do I have the prorated amounts calculated and ready?</strong> — Fumbling with a calculator after asking for the sale destroys confidence instantly. Know your numbers before you sit down. Have the prorated dues, the due-today total, the next billing date, and the annual facility fee date already calculated. Write them cleanly. Selling is a transfer of emotion — and that emotion is confidence.</div>
+          </div>
+        </div>
+        <div class="callout callout-warn">
+          <div class="callout-label">If Any Answer Is No</div>
+          Do not proceed to price. Identify which checklist item is incomplete and address it first. Presenting price before the foundation is solid does not save time — it creates objections you could have prevented.
+        </div>
+      </div>
+    </div>
+
+    <!-- L2 -->
+    <div class="lesson-card" data-lesson="2">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">02</span>
+        <span class="lesson-title-text">One Option First — You Are the Expert</span>
+        <span class="lesson-tag">The Recommendation</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>You are not a menu. You are a prescription. Based on everything you learned in discovery and confirmed with B+F Logic, you know which membership is the right fit. Recommend that one — and only that one — first. Do not present all three tiers and let the guest choose.</p>
+        <p>When a doctor prescribes medication, they do not say "here are three options, pick the one you like best." They say "based on your symptoms and history, this is what I recommend." You are the fitness professional. The membership recommendation follows the same logic.</p>
+        <div class="callout callout-rule">
+          <div class="callout-label">The Default Recommendation</div>
+          Always lead with Performance+ if the guest's frequency data supports it — pool, Revive, studio classes, multi-club. It is the most comprehensive, highest-value membership and delivers the best member experience. When it is the right fit, present it as the only fit. Introduce alternatives only if Performance+ is genuinely not appropriate after LIGO.
+        </div>
+        <div class="callout callout-script">
+          <div class="callout-label">The Recommendation Script</div>
+          "Based on everything you shared with me today — and specifically based on how you said you'd use the pool, Revive, and the studio — there's really one membership that covers everything you described. It's called Performance+, and I want to walk you through exactly what's included."
+        </div>
+        <p>Notice the structure: <strong>reference their specific usage → state the conclusion → transition to the features side.</strong> You are not pitching. You are confirming. The language "based on how you said you'd use it" is the key — it roots the recommendation in their words, not your preference.</p>
+      </div>
+    </div>
+
+    <!-- L3 -->
+    <div class="lesson-card" data-lesson="3">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">03</span>
+        <span class="lesson-title-text">Features Side First — ALWAYS. Never Start With Price.</span>
+        <span class="lesson-tag">The Sheet</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>The laminated price sheet has two sides: the Membership Features side and the Price side. This is not a coincidence — it is a sequence. You always begin on the Features side. Always. Without exception. Starting on the Price side is one of the most damaging mistakes in the presentation.</p>
+        <p>Here is why the order matters: when a guest sees a number before they fully understand what it covers, their brain anchors to the cost and evaluates everything through that lens. When they understand the full value of what they are getting first, the price lands in the context of everything it includes — which is where it belongs.</p>
+        <div class="callout callout-gold">
+          <div class="callout-label">The Psychology of Features First</div>
+          Value is built incrementally. Every feature you describe adds to the perceived worth of the membership. By the time you flip to the price side, the guest has mentally calculated what everything is worth — and the price you present is almost always less than what they expected. That gap between expectation and reality is where the close lives.
+        </div>
+        <div class="callout callout-tip">
+          <div class="callout-label">Line-by-Line With B+F Integration</div>
+          As you walk through each feature on the features side, integrate the frequency questions from B+F Logic: "So if you woke up tomorrow with unlimited access to the recovery suite — how often would you use it per month?" Their answers reinforce the value in real time. By the end of the features side, they have re-stated their usage commitments and the tier is fully justified before the flip.
+        </div>
+        <div class="callout callout-warn">
+          <div class="callout-label">The Most Common Sheet Mistake</div>
+          Flipping directly to the price side because "they seem ready" or "they already know what they want." It does not matter how engaged they are — always go through the features side first. You are not saving time by skipping it. You are removing the value foundation that makes the price defensible.
+        </div>
+      </div>
+    </div>
+
+    <!-- L4 -->
+    <div class="lesson-card" data-lesson="4">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">04</span>
+        <span class="lesson-title-text">The Price Side — Walking Through Every Line</span>
+        <span class="lesson-tag">The Numbers</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>After the features side is complete, you flip to the price side. This is where precision matters. Every line item should be explained clearly and confidently — no hesitation, no apologizing for fees, no mumbling through numbers. Know them cold before you sit down.</p>
+        <div class="flow-steps">
+          <div class="flow-step">
+            <div class="flow-num">1</div>
+            <div class="flow-content">
+              <div class="flow-title">Agreement Type</div>
+              <div class="flow-desc">State the agreement length first. <strong>Performance+ is a 12-month agreement.</strong></div>
+              <div class="flow-script">"The Performance+ is a 12-month agreement."</div>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">2</div>
+            <div class="flow-content">
+              <div class="flow-title">Bi-Weekly Dues</div>
+              <div class="flow-desc">State the bi-weekly dues and point to the box. <strong>$79.50 bi-weekly for Performance+.</strong></div>
+              <div class="flow-script">"Your bi-weekly dues are $79.50." [Point to the bi-weekly dues box.]</div>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">3</div>
+            <div class="flow-content">
+              <div class="flow-title">Next Billing Date</div>
+              <div class="flow-desc">Write the next billing date in the box. This removes the anxiety of "when does my first payment come out?"</div>
+              <div class="flow-script">"Your next payment isn't due until [date]." [Write the date clearly.]</div>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">4</div>
+            <div class="flow-content">
+              <div class="flow-title">Annual Facility Fee</div>
+              <div class="flow-desc">State the annual fee and the date it is due — 90 days from enrollment. Never bury this. Transparency here prevents a future cancellation triggered by a surprise charge.</div>
+              <div class="flow-script">"There's a standard Annual Facility Fee of $[X], which helps us maintain our clubs. That's due on [date — 90 days from today]." [Write the date.]</div>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">5</div>
+            <div class="flow-content">
+              <div class="flow-title">Enrollment Fee</div>
+              <div class="flow-desc">State the enrollment fee clearly. For Performance+, enrollment is $0 — which is itself a strong selling point worth calling out.</div>
+              <div class="flow-script">"This membership has a $0 enrollment fee — all members pay it, and Performance+ waives it entirely." [Write $0.]</div>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">6</div>
+            <div class="flow-content">
+              <div class="flow-title">Prorated Dues</div>
+              <div class="flow-desc">Explain prorates before writing the amount. A prorated charge that appears without explanation triggers confusion and resistance.</div>
+              <div class="flow-script">"Because your next full billing date isn't until [date], there's a small prorated amount due today — this just aligns your membership with our billing cycle. That comes to [prorated amount]." [Write it clearly.]</div>
+            </div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-num">7</div>
+            <div class="flow-content">
+              <div class="flow-title">Due Today Total</div>
+              <div class="flow-desc">Add enrollment fee plus prorated dues. Write the total in the Due Today box. This is the number the guest will see and focus on.</div>
+              <div class="flow-script">"So the enrollment fee of $[X] plus the prorated dues of $[X] equals your total due today: $[TOTAL]." [Write it clearly and confidently.]</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- L5 -->
+    <div class="lesson-card" data-lesson="5">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">05</span>
+        <span class="lesson-title-text">The Close Question — One Line. Then Silence.</span>
+        <span class="lesson-tag">The Most Important Moment</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>You have walked through every feature. You have explained every line item on the price side. The due today total is written clearly. Now you ask one question — and you do not say another word until the guest speaks.</p>
+        <div class="callout callout-script">
+          <div class="callout-label">The Close Question — Exact Wording</div>
+          "So, [Guest's Name], the total today is $[AMOUNT]. Did you want to use debit or credit?"
+        </div>
+        <p>Then stop. Completely. Do not add anything. Do not explain. Do not soften. Do not fill the silence. The question has been asked. The next person who speaks loses.</p>
+        <div class="silence-box">
+          <div class="silence-title">The Silence.</div>
+          <div class="silence-sub">After you ask the close question, you do not speak again until the guest does. Not to fill the silence. Not to help them think. Not to add one more benefit. The moment you speak, you have taken the pressure off — and invited doubt back into the room.</div>
+          <div class="silence-rule">The next person who speaks loses.</div>
+        </div>
+        <p>Why the silence works: the close question creates a moment of productive tension. The guest is processing. Their silence is not a no — it is thinking. Every second you let that tension exist is a second closer to a yes. The moment you break the silence to help them, you have done their job for them — and the job they were about to do was say yes.</p>
+        <div class="callout callout-gold">
+          <div class="callout-label">Why "Debit or Credit?" Instead of "Would You Like to Join?"</div>
+          "Would you like to join?" is a yes/no question. It explicitly invites a no. "Did you want to use debit or credit?" is an assumptive close — it assumes membership and only asks about the payment method. Both answers (debit or credit) result in a membership. The question is not if — it is how.
+        </div>
+        <div class="callout callout-tip">
+          <div class="callout-label">Hold for at Least 30 Seconds</div>
+          30 seconds of silence feels like an eternity. It is not. Practice holding silence in role-play until it feels comfortable. The consultant who can hold silence comfortably for 30+ seconds closes at a dramatically higher rate than one who fills it at 5 seconds.
+        </div>
+      </div>
+    </div>
+
+    <!-- L6 -->
+    <div class="lesson-card" data-lesson="6">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">06</span>
+        <span class="lesson-title-text">Studio+ and Neighborhood — When and How to Present</span>
+        <span class="lesson-tag">The Alternatives</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>Performance+ is the default recommendation. But there are situations where Studio+ or Neighborhood is the genuinely appropriate fit — and when those situations arise, you need to know how to present each one with the same conviction and structure you would give Performance+.</p>
+        <div class="callout callout-rule">
+          <div class="callout-label">Studio+ — When to Present It</div>
+          Present Studio+ only when you are certain the guest has no interest in the Pool Club or full Revive suite — even after presenting the value of both. It should never feel like a consolation prize. Lead with what it includes: all studio classes, multi-club access across all 8 locations, Cryo and Hydromassage. Studio+ members report higher satisfaction and longer tenure than Neighborhood members — present it as a strong, comprehensive choice.
+        </div>
+        <div class="callout callout-script">
+          <div class="callout-label">Studio+ Presentation Bridge</div>
+          "Since you mentioned the pool and Revive aren't things you'd use regularly, I want to show you the membership that's actually the best fit for what you described. It's called Studio+ — and it gives you everything you told me you care about: all eight locations, every studio class, and recovery access through cryo and Hydromassage."
+        </div>
+        <div class="callout callout-rule" style="margin-top:18px;">
+          <div class="callout-label">Neighborhood — Last Resort Only</div>
+          Present Neighborhood only when a guest has explicitly and repeatedly refused all premium benefits after a full B+F review and LIGO application. It is basic facility access at their home club only — no classes, no multi-club, limited recovery. Never offer it proactively. It is an option of last resort, not a starting point.
+        </div>
+        <p>Regardless of which tier you present, the structure is identical: features side first, line-by-line with B+F frequency questions, price side with every field explained, close question, silence. The framework does not change — only the membership details do.</p>
+      </div>
+    </div>
+
+    <!-- L7 -->
+    <div class="lesson-card" data-lesson="7">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">07</span>
+        <span class="lesson-title-text">Confidence Is the Product — Numbers Without Apology</span>
+        <span class="lesson-tag">Delivery</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>The way you present the price is as important as the price itself. A consultant who writes the due-today total slowly, pauses awkwardly, and then says "so... it's $XXX... but that includes everything..." has just communicated doubt. A consultant who writes it cleanly, looks up, and says "the total today is $XXX — debit or credit?" has communicated certainty.</p>
+        <p>The guest is not just evaluating the number. They are evaluating whether you believe the number is fair. Your delivery is the answer to that question before they even process the amount.</p>
+        <div class="callout callout-warn">
+          <div class="callout-label">The Confidence Killers — What Never to Do</div>
+          Never apologize for the price: "I know it's a little higher than some places, but..." — Never preemptively defend it: "It might seem like a lot, but when you consider everything..." — Never trail off after writing the total: the silence after writing should be your confident look-up, not an awkward pause. Never reach for the calculator visibly unless absolutely necessary — know your numbers cold.
+        </div>
+        <div class="callout callout-tip">
+          <div class="callout-label">The Look-Up Technique</div>
+          After writing the due-today total, put the pen down. Look up from the sheet. Make direct eye contact. Then ask the close question. This sequence — write, pen down, look up, question — communicates complete confidence and readiness. Practice it until it feels completely natural in role-play.
+        </div>
+        <p>Remember: a guest who asks "why is it so expensive?" after a confident presentation is giving you an opportunity. A guest who asks the same question after an apologetic one is expressing genuine doubt you planted yourself. Confidence is not arrogance. It is belief in what you are selling.</p>
+      </div>
+    </div>
+
+    <!-- L8 -->
+    <div class="lesson-card" data-lesson="8">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">08</span>
+        <span class="lesson-title-text">The Complete Price Presentation — Full Sequence in Flow</span>
+        <span class="lesson-tag">Full Execution</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>Here is a complete price presentation from recommendation through close — showing the features side, the B+F integration, the flip, every price side line item, and the close question with silence. The guest has completed HACCL cleanly and is ready.</p>
+        <div class="dialogue-block">
+          <div class="dialogue-title">Complete Price Presentation — Performance+ Full Flow</div>
+          <div class="line"><span class="speaker action">SETUP</span><span class="line-text action-text">Consultant reaches for the laminated sheet. Features side facing up. Pen in hand.</span></div>
+          <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"Based on everything you shared — the pool, Revive after your workouts, and 2–3 studio classes a week — there's one membership that covers all of it. Performance+. Let me walk you through exactly what's included."</em></span></div>
+          <div class="line"><span class="speaker action">FEATURES SIDE</span><span class="line-text action-text">Goes line by line through the features. At each premium item, asks a brief B+F question.</span></div>
+          <div class="line"><span class="speaker consultant">At Pool</span><span class="line-text"><em>"75-foot rooftop pool, three lanes, 80 degrees year-round. You said 4–6 times a month — that's covered."</em></span></div>
+          <div class="line"><span class="speaker consultant">At Revive</span><span class="line-text"><em>"Full Revive suite — sauna, red light, cryo, compression. You said after every workout. That's available every single day."</em></span></div>
+          <div class="line"><span class="speaker consultant">At Studio</span><span class="line-text"><em>"Every studio class, every format, morning and evening. You said 2–3 a week — no restrictions."</em></span></div>
+          <div class="line"><span class="speaker consultant">At Multi-Club</span><span class="line-text"><em>"All 8 locations. The one near your office downtown — that's yours too."</em></span></div>
+          <div class="line"><span class="speaker action">THE FLIP</span><span class="line-text action-text">Smooth, confident motion. Price side now visible. Pen positioned.</span></div>
+          <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"Performance+ is a 12-month agreement."</em> [Points to agreement box.] <em>"Your bi-weekly dues are $79.50."</em> [Points.] <em>"Your next payment isn't due until [date]."</em> [Writes date.] <em>"There's an Annual Facility Fee of $[X] — that's due [date, 90 days out]."</em> [Writes.] <em>"Enrollment fee — this one's $0 on Performance+, which is the best part."</em> [Writes $0.] <em>"Because your next full billing cycle doesn't start until [date], there's a prorated amount due today — this just syncs you to the billing schedule. That's $[prorated amount]."</em> [Writes.] <em>"So the prorated dues of $[X] plus the $0 enrollment — your total due today is $[TOTAL]."</em> [Writes total clearly. Puts pen down. Looks up. Makes eye contact.]</span></div>
+          <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"So, [Name], the total today is $[TOTAL]. Did you want to use debit or credit?"</em></span></div>
+          <div class="line"><span class="speaker action">SILENCE</span><span class="line-text action-text">Consultant does not speak. Does not move. Holds eye contact calmly. The guest processes. This silence is the close.</span></div>
+          <div class="line"><span class="speaker prospect">Guest</span><span class="line-text">"Let's do debit."</span></div>
+        </div>
+        <p>Clean. Confident. Structured. The silence did its job. The guest closed themselves.</p>
+      </div>
+    </div>
+
+  </div><!-- end lesson grid -->
+
+  <div class="study-complete-banner" id="studyBanner">
+    <h3>All 8 Lessons Complete</h3>
+    <p>The price presentation is your close. Certification quiz is now unlocked.</p>
+    <button class="cf-btn" onclick="unlockQuiz()" style="max-width:300px;margin:0 auto;">Unlock Certification ↓</button>
+  </div>
+
+  <!-- MISTAKES -->
+  <div class="divider-label">Common Mistakes</div>
+  <div class="section-header" style="padding-top:0;">
+    <div class="s-eyebrow">What Kills the Close</div>
+    <h2 class="s-title">6 Price Presentation Mistakes<br>& How to Fix Them</h2>
+  </div>
+  <div class="mistakes-grid">
+    <div class="mistake-card">
+      <div class="mistake-label bad">✗ The Mistake</div>
+      <div class="mistake-text">Starting on the price side of the sheet. <strong>The guest anchors to the cost before understanding what it covers. Value is never built. Price feels unjustified.</strong></div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label good">✓ The Fix</div>
+      <div class="mistake-text"><strong>Features side first. Always. No exceptions.</strong> Every feature you explain adds to perceived value. By the time you flip, the price lands in the context of everything it includes.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label bad">✗ The Mistake</div>
+      <div class="mistake-text">Presenting all three membership tiers upfront. <strong>"We have Performance+, Studio+, and Neighborhood — which interests you?" — You just invited them to choose the cheapest option before they understand the value of the best one.</strong></div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label good">✓ The Fix</div>
+      <div class="mistake-text"><strong>One membership. The right one. Based on their data.</strong> Present it as the conclusion, not an option. Alternatives come only after LIGO has been applied and Performance+ has been genuinely declined.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label bad">✗ The Mistake</div>
+      <div class="mistake-text">Breaking the silence after the close question. <strong>"So... what do you think?" or "Is that okay?" or "I know it's a lot, but..." — You just took the pressure off and invited doubt back in.</strong></div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label good">✓ The Fix</div>
+      <div class="mistake-text"><strong>Ask the question. Stop talking. Hold the silence for at least 30 seconds.</strong> The guest will fill it — and when they do, it will be with a payment method or an objection you can handle. Either is better than doubt you created yourself.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label bad">✗ The Mistake</div>
+      <div class="mistake-text">Apologizing for or qualifying the price: <strong>"I know it's a bit higher than some gyms, but..." — You just told them it's expensive before they thought it was.</strong></div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label good">✓ The Fix</div>
+      <div class="mistake-text"><strong>Present every number matter-of-factly and with complete confidence.</strong> You are confirming a solution they already described. The price is the logical outcome of their own usage — own it.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label bad">✗ The Mistake</div>
+      <div class="mistake-text">Fumbling with numbers — grabbing the calculator after asking for the sale, writing sloppily, having to erase and rewrite. <strong>Every hesitation transfers doubt.</strong></div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label good">✓ The Fix</div>
+      <div class="mistake-text"><strong>Know your numbers before you sit down.</strong> Prorated dues, due today total, next billing date, annual fee date — all calculated. Written cleanly and confidently. Selling is a transfer of emotion. Make sure the emotion is certainty.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label bad">✗ The Mistake</div>
+      <div class="mistake-text">Not explaining the prorated dues before writing the amount. <strong>An unexplained number creates suspicion and immediately triggers "wait, what is this charge?"</strong></div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label good">✓ The Fix</div>
+      <div class="mistake-text"><strong>Always explain prorates before writing the number:</strong> "Because your next full billing date isn't until [date], there's a prorated amount that aligns you to the billing cycle." Explanation first. Number second. Confusion eliminated.</div>
+    </div>
+  </div>
+
+  <!-- ROLE PLAY -->
+  <div class="divider-label">Role-Play Scenarios</div>
+  <div class="section-header" style="padding-top:0;">
+    <div class="s-eyebrow">Practice</div>
+    <h2 class="s-title">4 Price Presentation<br>Scenarios to Train On</h2>
+  </div>
+
+  <div class="roleplay-card">
+    <div class="roleplay-header">
+      <span class="roleplay-scenario">Scenario 01 — Clean Performance+ Close</span>
+      <span class="roleplay-type">Standard</span>
+    </div>
+    <div class="roleplay-body">
+      <div class="roleplay-setup">Guest completed HACCL with five clean yes answers. B+F review confirmed strong usage across pool, Revive, and studio. Pre-presentation checklist is all green. Prorates are calculated and ready.</div>
+      <div class="roleplay-objective"><strong>Your objective:</strong> Execute the complete presentation — features side line-by-line with B+F frequency callbacks, smooth flip to the price side, every field explained and written clearly, close question, and hold the silence for a full 30 seconds without speaking. Focus specifically on the pen-down, look-up, eye contact sequence before the close question. The close question and the silence are the two things to drill hardest here.</div>
+      <div class="coaching-note">Time yourself. The full features-side walkthrough plus price-side explanation should take 5–7 minutes. The close question should take 5 seconds. The silence after it should feel like 60 seconds — it will probably only be 15–20. That's fine. Hold it. The guest will speak first.</div>
+    </div>
+  </div>
+
+  <div class="roleplay-card">
+    <div class="roleplay-header">
+      <span class="roleplay-scenario">Scenario 02 — Guest Asks About Price Mid-Features Side</span>
+      <span class="roleplay-type">Interruption</span>
+    </div>
+    <div class="roleplay-body">
+      <div class="roleplay-setup">You are walking through the features side and the guest interrupts: "Before we go further — can you just tell me how much it is?"</div>
+      <div class="roleplay-objective"><strong>Your objective:</strong> Do not flip to the price side. Acknowledge the question warmly and redirect: "I promise we're going to get there in about 60 seconds — I just want to make sure you see everything that's included first so the number makes complete sense in context. Bear with me for one more minute." Continue on the features side. Flip when you are ready — not when they push. Rewarding impatience with the price before value is built resets everything you just built.</div>
+      <div class="coaching-note">This happens more often than you might expect. The guest is not being difficult — they are genuinely curious and slightly impatient. Your job is to buy 60 more seconds without making them feel dismissed. Warm acknowledgment plus a confident redirect works every time. Never say "I'll get to that" flatly — make it sound like you are doing them a favor by showing them the features first.</div>
+    </div>
+  </div>
+
+  <div class="roleplay-card">
+    <div class="roleplay-header">
+      <span class="roleplay-scenario">Scenario 03 — Silence Breaks — Guest Starts to Waffle</span>
+      <span class="roleplay-type">Post-Close Pressure</span>
+    </div>
+    <div class="roleplay-body">
+      <div class="roleplay-setup">You asked the close question and held the silence. After 20 seconds, the guest says: "I don't know... I think I need to think about it a little more."</div>
+      <div class="roleplay-objective"><strong>Your objective:</strong> This is your transition into LIGO — do not react with disappointment or pushback. Listen fully. Identify: "It sounds like you want to make sure this is the right decision — I completely understand that." Give permission: "That's actually a really healthy instinct." Offer alternative: return to their X-Factor and the frequency commitments they made. "I just want to make sure — when you think about what you said earlier about wanting to feel like yourself again and finally having something that covers everything... what part of this feels unclear?" Draw out the real objection and handle it specifically.</div>
+      <div class="coaching-note">The "I need to think about it" response after the close is one of the most common in the business. It almost never means what it says. It usually means: "I'm not 100% sure about something and I don't know exactly what it is." Your job through LIGO is to help them identify that something — and resolve it. The close question is not one and done. It can be asked again after LIGO resolution.</div>
+    </div>
+  </div>
+
+  <div class="roleplay-card">
+    <div class="roleplay-header">
+      <span class="roleplay-scenario">Scenario 04 — Numbers Fumble Recovery</span>
+      <span class="roleplay-type">Confidence Under Pressure</span>
+    </div>
+    <div class="roleplay-body">
+      <div class="roleplay-setup">You are mid-price-side and realize you have the prorated amount wrong. You need to recalculate in front of the guest. You can feel the energy in the room shift.</div>
+      <div class="roleplay-objective"><strong>Your objective:</strong> Do not panic, over-apologize, or let the energy drop. Own it quickly and calmly: "Give me one second — I want to make sure I have your exact prorated amount right." Recalculate clearly. Write the corrected number. Continue without making the moment larger than it is. A quick, matter-of-fact correction from a confident consultant loses almost no ground. An apologetic, flustered correction loses everything. The recovery is the skill — practice it so it feels instinctive.</div>
+      <div class="coaching-note">Number fumbles happen to everyone — even experienced consultants. What separates pros from beginners is recovery speed. One breath, a calm acknowledgment, a clean correction, and you are right back in flow. The guest takes their cues from you. If you treat it as a minor interruption, they will too. If you treat it as a crisis, they will as well.</div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="divider-label">Certification</div>
+  <div class="section-header" style="padding-top:0;">
+    <div class="s-eyebrow">Knowledge Check</div>
+    <h2 class="s-title">Price Presentation Certification</h2>
+    <p class="s-sub">16 questions. 80% or higher to pass. Complete all 8 lessons above to unlock.</p>
+  </div>
+
+  <div class="quiz-section" id="quizSection">
+    <div class="quiz-locked" id="quizLocked">
+      <div class="quiz-locked-icon">🔒</div>
+      <h3>Complete All Lessons to Unlock</h3>
+      <p>Open all 8 lessons above. The quiz unlocks automatically when you finish.</p>
+    </div>
+    <div class="name-panel" id="namePanel" style="display:none;">
+      <h3>Certification Registry</h3>
+      <p>Enter your full name as it should appear on your certification record.</p>
+      <input type="text" class="cf-input" id="empNameInput" placeholder="Full Name"/>
+      <button class="cf-btn" onclick="startQuiz()">Begin Official Test →</button>
+    </div>
+    <div class="quiz-active" id="quizActive" style="display:none;">
+      <div class="q-progress-wrap"><div class="q-progress-bar" id="qBar"></div></div>
+      <div class="q-meta">
+        <span class="q-counter" id="qCounter"></span>
+        <span class="q-topic">Module 08 · Price Presentation</span>
+      </div>
+      <div class="q-text" id="qText"></div>
+      <div class="q-options" id="qOptions"></div>
+    </div>
+    <div class="results-panel" id="resultsPanel">
+      <div class="result-score" id="resultScore"></div>
+      <div class="result-label" id="resultLabel"></div>
+      <div id="missedSection"></div>
+      <button class="cf-btn" onclick="resetModule()" style="margin-top:22px;">Return to Module</button>
+    </div>
+  </div>
+
+</div><!-- end module-wrap -->
+
+<div class="module-footer">
+  <p>City Fitness Philadelphia &nbsp;·&nbsp; Deep Training Module 08 &nbsp;·&nbsp; 2026</p>
+</div>
+
+<iframe name="cf_hidden" id="cf_hidden" style="display:none;"></iframe>
+<form id="certForm" target="cf_hidden" method="GET" action="https://script.google.com/a/macros/cityfitness.com/s/AKfycbzZokf4OQGpHYEkb_9mcVdJ-t9jop9RWIpclIcLSjTWRcBQfeDJ751bl0qO8k7VrZwe/exec">
+  <input type="hidden" name="employee" id="formEmployee"/>
+  <input type="hidden" name="topic" id="formTopic"/>
+  <input type="hidden" name="result" id="formResult"/>
+</form>
+
+<script>
+window.addEventListener('scroll',()=>{
+  const el=document.documentElement;
+  const pct=(el.scrollTop/(el.scrollHeight-el.clientHeight))*100;
+  document.getElementById('topFill').style.width=pct+'%';
+});
+
+let openedLessons=new Set();
+const totalLessons=8;
+
+function toggleLesson(header){
+  const card=header.parentElement;
+  const isOpen=card.classList.contains('open');
+  card.classList.toggle('open',!isOpen);
+  if(!isOpen){
+    openedLessons.add(parseInt(card.dataset.lesson));
+    checkStudyComplete();
+  }
+}
+
+function checkStudyComplete(){
+  if(openedLessons.size>=totalLessons){
+    const banner=document.getElementById('studyBanner');
+    banner.style.display='block';
+    banner.scrollIntoView({behavior:'smooth',block:'center'});
+  }
+}
+
+function unlockQuiz(){
+  document.getElementById('quizLocked').style.display='none';
+  document.getElementById('namePanel').style.display='block';
+  document.getElementById('quizSection').scrollIntoView({behavior:'smooth'});
+}
+
+const questions=[
+  {q:"What are the four items on the Pre-Presentation Checklist?",a:["Goals, Bucket, Tier, Price","Trust, HACCL yes answers, outstanding objections resolved, prorates calculated","Discovery, Tour, B+F, HACCL","Name, Phone, Email, Membership preference"],c:1},
+  {q:"Why is 'does this guest like and trust me?' on the checklist?",a:["It is required by City Fitness policy","People do not buy from people they do not trust — the relationship is the foundation of the close","It determines which membership to present","It is used to decide whether to involve the manager"],c:1},
+  {q:"How many membership options should you recommend initially?",a:["All three — let them choose","Two — Performance+ and Studio+","One — the single best fit based on their data","None — wait for them to ask"],c:2},
+  {q:"What is the correct phrasing to introduce your membership recommendation?",a:["We have three options I want to show you","Based on everything you shared and how you said you'd use it, there's one membership that covers everything you described","Which membership were you thinking about?","Let me show you our most popular option"],c:1},
+  {q:"Which side of the laminated sheet do you ALWAYS start on?",a:["The Price side — to anchor expectations","Either side — it doesn't matter","The Membership Features side — always, without exception","The side with the contract language"],c:2},
+  {q:"Why do you start on the Features side before the Price side?",a:["City Fitness policy requires it","The price side is harder to read","Value is built incrementally — by the time you flip, the price lands in the context of everything it includes","The features side has more information"],c:2},
+  {q:"What is the exact wording of the close question?",a:["What do you think — does that work for you?","Are you ready to sign up today?","So, [Name], the total today is $[X]. Did you want to use debit or credit?","Would you like to become a member?"],c:2},
+  {q:"Why is 'Did you want to use debit or credit?' more effective than 'Would you like to join?'",a:["It is shorter and easier to say","It is an assumptive close — both answers result in a membership. 'Would you like to join?' explicitly invites a no.","It sounds more professional","It avoids mentioning the price directly"],c:1},
+  {q:"What is 'The Silence' and why does it matter?",a:["A brief pause before beginning the features side","The period after the close question where the consultant does not speak — the next person who speaks loses","A quiet zone in the club where tours end","The moment after the guest says no"],c:1},
+  {q:"How long should you hold the silence after the close question?",a:["5 seconds maximum — any longer feels awkward","At least 30 seconds — however long it takes for the guest to speak first","Until the manager arrives","Until you feel comfortable speaking again"],c:1},
+  {q:"When should you explain prorated dues?",a:["After writing the prorated amount","Before writing the prorated amount — explanation first, number second","Only if the guest asks about it","At the end after all other fees are explained"],c:1},
+  {q:"When is Studio+ the appropriate recommendation?",a:["As the default for all guests to start low and upgrade","Only when the guest specifically asks for it","When you are certain the guest has no genuine interest in the Pool Club or full Revive suite","When the guest cannot afford Performance+"],c:2},
+  {q:"When should Neighborhood be presented?",a:["As the opening offer to anchor price low","For all Never Fitness guests","Only as a last resort when the guest has explicitly and repeatedly declined all premium benefits after B+F and LIGO","Whenever the guest asks about it"],c:2},
+  {q:"What does 'selling is a transfer of emotion' mean in the context of price presentation?",a:["You should show enthusiasm about the membership features","Your confidence or lack of it directly transfers to the guest — if you fumble or apologize for the price, you transfer doubt","You should be emotionally connected to the guest's goals","You should show excitement when they say yes"],c:1},
+  {q:"If a guest asks for the price in the middle of the features side walkthrough, you should:",a:["Flip immediately to the price side — always give them what they ask for","Stop and present all three tiers","Acknowledge warmly, redirect ('bear with me one more minute — I want the number to make complete sense'), and continue the features side","Bring in the manager to handle the question"],c:2},
+  {q:"What is the sequence of the price side walkthrough?",a:["Due Today → Enrollment → Prorates → Annual Fee → Bi-Weekly","Agreement type → Bi-weekly dues → Next billing date → Annual fee → Enrollment fee → Prorated dues → Due Today total","Bi-Weekly → Due Today → Annual Fee → Enrollment","Enrollment → Annual Fee → Bi-Weekly → Due Today"],c:1}
+];
+
+let empName='',qIndex=0,score=0,missed=[];
+
+function startQuiz(){
+  empName=document.getElementById('empNameInput').value.trim();
+  if(!empName){alert('Please enter your full name.');return;}
+  document.getElementById('namePanel').style.display='none';
+  document.getElementById('quizActive').style.display='block';
+  qIndex=0;score=0;missed=[];
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const q=questions[qIndex];
+  document.getElementById('qBar').style.width=((qIndex/questions.length)*100)+'%';
+  document.getElementById('qCounter').textContent=`Question ${qIndex+1} of ${questions.length}`;
+  document.getElementById('qText').textContent=q.q;
+  const opts=document.getElementById('qOptions');
+  opts.innerHTML='';
+  q.a.forEach((opt,i)=>{
+    const btn=document.createElement('button');
+    btn.className='q-opt';
+    btn.textContent=opt;
+    btn.onclick=()=>handleAnswer(i);
+    opts.appendChild(btn);
+  });
+}
+
+function handleAnswer(idx){
+  const q=questions[qIndex];
+  if(idx===q.c){score++;}
+  else{missed.push({q:q.q,a:q.a[q.c]});}
+  qIndex++;
+  if(qIndex<questions.length){renderQuestion();}
+  else{showResults();}
+}
+
+function showResults(){
+  const pct=Math.round((score/questions.length)*100);
+  document.getElementById('quizActive').style.display='none';
+  const rp=document.getElementById('resultsPanel');
+  rp.style.display='block';
+  const scoreEl=document.getElementById('resultScore');
+  scoreEl.textContent=pct+'%';
+  scoreEl.className='result-score '+(pct>=80?'result-pass':'result-fail');
+  document.getElementById('resultLabel').textContent=pct>=80?'Certification Passed — Module 08: Price Presentation':'Retake Required — Review Missed Questions Below';
+  let missedHtml='';
+  if(missed.length){
+    missedHtml='<div class="missed-label">Knowledge Gaps — Review These</div>';
+    missed.forEach(m=>{
+      missedHtml+=`<div class="missed-item"><div class="missed-q">${m.q}</div><div class="missed-a">Correct Answer: ${m.a}</div></div>`;
+    });
+  }
+  document.getElementById('missedSection').innerHTML=missedHtml;
+  document.getElementById('formEmployee').value=empName;
+  document.getElementById('formTopic').value='Module 08 - Price Presentation';
+  document.getElementById('formResult').value=pct;
+  document.getElementById('certForm').submit();
+}
+
+function resetModule(){
+  document.getElementById('resultsPanel').style.display='none';
+  document.getElementById('namePanel').style.display='block';
+  document.getElementById('empNameInput').value='';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
