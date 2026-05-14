@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>CF Training | Module 01: The T.I.</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:ital,wght@0,400;0,500;0,600;1,400;1,600&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg: #141210;
+  --surface: #1c1917;
+  --card: #242017;
+  --border: #2e2a24;
+  --border-light: #3a3530;
+  --copper: #B87C4C;
+  --copper-light: #C9A07A;
+  --copper-dim: rgba(184,124,76,0.12);
+  --copper-glow: rgba(184,124,76,0.06);
+  --tan: #BF9B6F;
+  --white: #F5F0E8;
+  --grey: #7a7570;
+  --dim: #9a9490;
+  --red: #c0392b;
+  --green: #6aaa64;
+  --grad: linear-gradient(135deg, #B87C4C 0%, #C9A07A 50%, #BF9B6F 100%);
+  --grad-h: linear-gradient(90deg, #B87C4C, #C9A07A);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--white);font-family:'Barlow',sans-serif;line-height:1.65;overflow-x:hidden;}
+
+/* ── PROGRESS BAR ── */
+.top-bar{position:fixed;top:0;left:0;right:0;height:3px;background:var(--border);z-index:9999;}
+.top-bar-fill{height:100%;background:var(--grad);width:0%;transition:width .4s ease;}
+
+/* ── HERO ── */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;padding:80px 60px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 70% 50%, rgba(184,124,76,0.07) 0%, transparent 70%);}
+.hero-eyebrow{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--copper);letter-spacing:4px;text-transform:uppercase;margin-bottom:20px;display:flex;align-items:center;gap:12px;}
+.hero-eyebrow::before{content:'';display:block;width:40px;height:2px;background:var(--copper);}
+.hero-num{font-family:'Barlow Condensed',sans-serif;font-size:clamp(100px,18vw,200px);font-weight:900;line-height:.85;color:transparent;-webkit-text-stroke:1px rgba(184,124,76,0.15);position:absolute;right:-20px;top:50%;transform:translateY(-50%);pointer-events:none;user-select:none;}
+.hero-title{font-family:'Barlow Condensed',sans-serif;font-size:clamp(48px,7vw,90px);font-weight:900;line-height:.95;text-transform:uppercase;letter-spacing:-1px;margin-bottom:24px;}
+.hero-title em{font-style:normal;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.hero-desc{max-width:560px;font-size:17px;color:var(--dim);line-height:1.7;margin-bottom:40px;}
+.hero-stats{display:flex;gap:40px;margin-bottom:50px;}
+.stat{display:flex;flex-direction:column;}
+.stat-num{font-family:'Barlow Condensed',sans-serif;font-size:36px;font-weight:900;color:var(--copper);line-height:1;}
+.stat-label{font-size:11px;color:var(--grey);text-transform:uppercase;letter-spacing:2px;margin-top:4px;}
+.hero-btn{display:inline-flex;align-items:center;gap:10px;background:var(--grad);border:none;padding:16px 32px;color:white;font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:800;letter-spacing:2px;text-transform:uppercase;border-radius:4px;cursor:pointer;transition:.2s;}
+.hero-btn:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(184,124,76,0.3);}
+.scroll-hint{position:absolute;bottom:40px;left:60px;display:flex;align-items:center;gap:10px;color:var(--grey);font-size:11px;letter-spacing:2px;text-transform:uppercase;}
+.scroll-line{width:40px;height:1px;background:var(--border-light);}
+
+/* ── LAYOUT ── */
+.module-wrap{max-width:900px;margin:0 auto;padding:0 40px 120px;}
+
+/* ── SECTION HEADERS ── */
+.section-header{padding:80px 0 40px;}
+.s-eyebrow{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--copper);letter-spacing:4px;text-transform:uppercase;display:flex;align-items:center;gap:12px;margin-bottom:16px;}
+.s-eyebrow::after{content:'';flex:1;max-width:60px;height:1px;background:var(--copper);opacity:.4;}
+.s-title{font-family:'Barlow Condensed',sans-serif;font-size:clamp(32px,5vw,48px);font-weight:900;text-transform:uppercase;letter-spacing:-0.5px;line-height:1.05;margin-bottom:12px;}
+.s-sub{font-size:16px;color:var(--dim);max-width:680px;line-height:1.6;}
+
+/* ── LESSON CARDS ── */
+.lesson-grid{display:flex;flex-direction:column;gap:2px;}
+.lesson-card{background:var(--surface);border:1px solid var(--border);border-radius:0;overflow:hidden;transition:.2s;}
+.lesson-card:first-child{border-radius:10px 10px 0 0;}
+.lesson-card:last-child{border-radius:0 0 10px 10px;}
+.lesson-header{display:flex;align-items:center;gap:20px;padding:22px 28px;cursor:pointer;user-select:none;}
+.lesson-header:hover{background:var(--copper-glow);}
+.lesson-num{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--copper);letter-spacing:2px;min-width:36px;}
+.lesson-title-text{font-size:16px;font-weight:700;flex:1;}
+.lesson-tag{font-size:10px;font-weight:700;color:var(--copper);background:var(--copper-dim);padding:4px 10px;border-radius:20px;text-transform:uppercase;letter-spacing:1px;}
+.lesson-arrow{color:var(--grey);font-size:12px;transition:.3s;font-style:normal;}
+.lesson-card.open .lesson-arrow{transform:rotate(180deg);color:var(--copper);}
+.lesson-card.open .lesson-header{border-bottom:1px solid var(--border);}
+.lesson-body{display:none;padding:30px 28px 28px;}
+.lesson-card.open .lesson-body{display:block;}
+.lesson-body p{color:var(--dim);font-size:15px;line-height:1.75;margin-bottom:16px;}
+.lesson-body p:last-child{margin-bottom:0;}
+.lesson-body strong{color:var(--white);font-weight:700;}
+.lesson-body em{color:var(--tan);font-style:italic;}
+
+/* ── CALLOUTS ── */
+.callout{border-radius:8px;padding:20px 24px;margin:20px 0;font-size:15px;}
+.callout-rule{border-left:3px solid var(--copper);background:var(--copper-dim);color:var(--copper-light);}
+.callout-script{border-left:3px solid var(--tan);background:rgba(191,155,111,0.08);color:var(--tan);font-style:italic;line-height:1.7;}
+.callout-warn{border-left:3px solid var(--red);background:rgba(192,57,43,0.08);color:#e07060;}
+.callout-tip{border-left:3px solid #4a9a6a;background:rgba(74,154,106,0.08);color:#7ac09a;}
+.callout-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:3px;text-transform:uppercase;margin-bottom:8px;opacity:.7;}
+
+/* ── DIALOGUE ── */
+.dialogue-block{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:24px;margin:20px 0;overflow:hidden;}
+.dialogue-title{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--copper);letter-spacing:3px;text-transform:uppercase;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+.line{display:flex;gap:14px;margin-bottom:16px;align-items:flex-start;}
+.line:last-child{margin-bottom:0;}
+.speaker{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;min-width:100px;padding-top:2px;}
+.speaker.prospect{color:var(--grey);}
+.speaker.consultant{color:var(--copper);}
+.speaker.front-desk{color:var(--tan);}
+.line-text{font-size:15px;color:var(--dim);line-height:1.65;}
+.line-text em{color:var(--white);font-style:normal;font-weight:600;}
+
+/* ── MISTAKES SECTION ── */
+.mistakes-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px;}
+.mistake-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:20px;}
+.mistake-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:3px;text-transform:uppercase;margin-bottom:10px;}
+.mistake-label.bad{color:var(--red);}
+.mistake-label.good{color:var(--green);}
+.mistake-text{font-size:14px;line-height:1.6;color:var(--dim);}
+.mistake-text strong{color:var(--white);}
+
+/* ── ROLEPLAY ── */
+.roleplay-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:16px;}
+.roleplay-header{padding:20px 24px;background:var(--copper-dim);display:flex;justify-content:space-between;align-items:center;}
+.roleplay-scenario{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--copper);}
+.roleplay-type{font-size:11px;color:var(--grey);}
+.roleplay-body{padding:24px;}
+.roleplay-prospect{font-size:15px;font-style:italic;color:var(--tan);margin-bottom:16px;padding:14px 18px;background:rgba(191,155,111,0.06);border-radius:6px;}
+.roleplay-objective{font-size:14px;color:var(--dim);line-height:1.6;}
+.roleplay-objective strong{color:var(--white);}
+.coaching-note{margin-top:14px;padding:14px 18px;background:rgba(184,124,76,0.08);border-radius:6px;font-size:13px;color:var(--copper-light);line-height:1.6;}
+.coaching-note::before{content:'COACHING NOTE  ';font-weight:800;letter-spacing:2px;font-size:10px;display:block;margin-bottom:4px;opacity:.7;}
+
+/* ── DIVIDER ── */
+.divider{height:1px;background:var(--border);margin:60px 0;}
+.divider-label{display:flex;align-items:center;gap:16px;color:var(--grey);font-size:11px;font-weight:800;letter-spacing:3px;text-transform:uppercase;margin:60px 0;}
+.divider-label::before,.divider-label::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* ── STUDY COMPLETE ── */
+.study-complete-banner{background:var(--copper-dim);border:1px solid rgba(184,124,76,0.3);border-radius:12px;padding:30px;text-align:center;margin:40px 0;display:none;}
+.study-complete-banner h3{font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:900;text-transform:uppercase;color:var(--copper);margin-bottom:8px;}
+.study-complete-banner p{color:var(--dim);font-size:14px;margin-bottom:20px;}
+
+/* ── QUIZ ── */
+.quiz-section{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-top:40px;}
+.quiz-locked{padding:60px 40px;text-align:center;}
+.quiz-locked-icon{font-size:40px;margin-bottom:16px;opacity:.3;}
+.quiz-locked h3{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;color:var(--grey);margin-bottom:8px;}
+.quiz-locked p{color:var(--grey);font-size:14px;}
+.quiz-active{padding:40px;}
+.quiz-active.hidden{display:none;}
+.q-progress-wrap{height:3px;background:var(--border);border-radius:2px;margin-bottom:30px;overflow:hidden;}
+.q-progress-bar{height:100%;background:var(--grad);width:0%;transition:.4s;}
+.q-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;}
+.q-counter{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--copper);letter-spacing:2px;text-transform:uppercase;}
+.q-topic{font-size:11px;color:var(--grey);}
+.q-text{font-size:20px;font-weight:700;color:var(--white);margin-bottom:28px;line-height:1.4;}
+.q-options{display:flex;flex-direction:column;gap:10px;}
+.q-opt{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px 20px;color:var(--dim);font-size:15px;text-align:left;cursor:pointer;transition:.2s;font-family:'Barlow',sans-serif;}
+.q-opt:hover{border-color:var(--copper);color:var(--white);background:var(--copper-glow);}
+.name-panel{padding:40px;}
+.name-panel h3{font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:900;text-transform:uppercase;color:var(--white);margin-bottom:6px;}
+.name-panel p{color:var(--dim);font-size:14px;margin-bottom:24px;}
+.cf-input{background:var(--bg);border:1px solid var(--border);color:var(--white);padding:14px 18px;width:100%;border-radius:8px;font-family:'Barlow',sans-serif;font-size:16px;margin-bottom:16px;outline:none;transition:.2s;}
+.cf-input:focus{border-color:var(--copper);}
+.cf-btn{background:var(--grad);border:none;padding:16px 32px;color:white;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;letter-spacing:2px;text-transform:uppercase;border-radius:8px;cursor:pointer;width:100%;transition:.2s;}
+.cf-btn:hover{opacity:.9;transform:translateY(-1px);}
+.results-panel{padding:40px;display:none;}
+.result-score{font-family:'Barlow Condensed',sans-serif;font-size:72px;font-weight:900;line-height:1;margin-bottom:8px;}
+.result-pass{color:var(--copper);}
+.result-fail{color:var(--red);}
+.result-label{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--grey);margin-bottom:24px;}
+.missed-section{margin-top:24px;}
+.missed-label{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--dim);letter-spacing:3px;text-transform:uppercase;margin-bottom:12px;}
+.missed-item{background:rgba(192,57,43,0.07);border-left:3px solid var(--red);border-radius:0 6px 6px 0;padding:14px 16px;margin-bottom:8px;}
+.missed-q{font-size:14px;color:var(--dim);margin-bottom:6px;}
+.missed-a{font-size:14px;color:var(--tan);font-weight:600;}
+
+/* ── FOOTER ── */
+.module-footer{text-align:center;padding:60px 40px;border-top:1px solid var(--border);}
+.module-footer p{color:var(--grey);font-size:11px;letter-spacing:3px;text-transform:uppercase;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:700px){
+  .hero{padding:80px 24px 60px;}
+  .module-wrap{padding:0 20px 80px;}
+  .mistakes-grid{grid-template-columns:1fr;}
+  .hero-stats{gap:24px;}
+  .hero-num{display:none;}
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar"><div class="top-bar-fill" id="topFill"></div></div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-num">01</div>
+  <div class="hero-eyebrow">City Fitness Training  ·  Deep Module Series</div>
+  <h1 class="hero-title">The Art of<br>the <em>T.I.</em></h1>
+  <p class="hero-desc">The Telephone Inquiry is your first shot. Before they ever walk through the door, you are already either building trust or losing them. This module covers everything — from your opening line to the moment they commit to showing up.</p>
+  <div class="hero-stats">
+    <div class="stat"><span class="stat-num">8</span><span class="stat-label">Core Lessons</span></div>
+    <div class="stat"><span class="stat-num">4</span><span class="stat-label">Full Scripts</span></div>
+    <div class="stat"><span class="stat-num">4</span><span class="stat-label">Role-Play Scenarios</span></div>
+    <div class="stat"><span class="stat-num">16</span><span class="stat-label">Quiz Questions</span></div>
+  </div>
+  <button class="hero-btn" onclick="document.getElementById('lessons').scrollIntoView({behavior:'smooth'})">Begin Training ↓</button>
+  <div class="scroll-hint"><div class="scroll-line"></div>Scroll to start</div>
+</section>
+
+<div class="module-wrap">
+
+  <!-- OBJECTIVE -->
+  <div class="section-header" style="padding-top:60px;">
+    <div class="s-eyebrow">The Objective</div>
+    <h2 class="s-title">One Goal. One Outcome.</h2>
+    <p class="s-sub">Every T.I. has exactly one measure of success: <strong style="color:var(--white)">a scheduled appointment that shows.</strong> Not a membership sold. Not a question answered. An appointment. Everything in this module serves that single outcome.</p>
+  </div>
+
+  <div class="callout callout-rule">
+    <div class="callout-label">The Prime Directive</div>
+    Answer enough to quench their thirst for information — without satisfying their curiosity enough to stay home.
+  </div>
+
+  <!-- LESSONS -->
+  <div class="section-header" id="lessons">
+    <div class="s-eyebrow">Core Lessons</div>
+    <h2 class="s-title">8 Elements of a<br>Dominant T.I.</h2>
+    <p class="s-sub">Work through every lesson in order. Each one builds on the last. The certification unlocks when you reach the end.</p>
+  </div>
+
+  <div class="lesson-grid" id="lessonGrid">
+
+    <!-- L1 -->
+    <div class="lesson-card" data-lesson="1">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">01</span>
+        <span class="lesson-title-text">The Mindset Before You Dial</span>
+        <span class="lesson-tag">Foundation</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>Before you say a single word, your internal state is already communicating. Confidence, enthusiasm, and belief in City Fitness are not optional accessories — they are the product. When a prospect calls, they are evaluating whether this place is worth their time, their money, and their commitment. Your energy is the first answer they get.</p>
+        <div class="callout callout-tip">
+          <div class="callout-label">Pro Tip — The Mirror Rule</div>
+          Place a small mirror near the phone. Smile at yourself before you answer. This is not gimmicky — it is physiologically proven. When you smile, your vocal cords relax, your pitch becomes warmer, and customers report a measurably better impression of the person they are speaking with.
+        </div>
+        <p>Before each call, take 5 seconds to reset. Remind yourself: <em>"City Fitness has everything this person needs."</em> That belief will transfer through the phone faster than any script.</p>
+        <div class="callout callout-rule">
+          <div class="callout-label">Self-Talk Anchors</div>
+          "I am the guide they have been looking for." &nbsp;·&nbsp; "City Fitness changes lives." &nbsp;·&nbsp; "My job is to help, not to sell."
+        </div>
+        <p>The moment you frame the T.I. as a selling call, you have already lost it. Frame it as a discovery conversation where your only job is to get them excited to come in.</p>
+      </div>
+    </div>
+
+    <!-- L2 -->
+    <div class="lesson-card" data-lesson="2">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">02</span>
+        <span class="lesson-title-text">The Opening — Energetic, Clear, In Control</span>
+        <span class="lesson-tag">First 10 Seconds</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>The tone, pace, and clarity of your voice in the first 10 seconds forms the prospect's entire impression of City Fitness. You are the brand. There is no second chance at a first impression on a phone call.</p>
+        <div class="callout callout-script">
+          <div class="callout-label">Opening Script</div>
+          "It's a great day at City Fitness in [Location]. How can I help you today?"
+        </div>
+        <p>What makes this opening powerful: it is <strong>energetic</strong> ("It's a great day"), it is <strong>specific</strong> (your location), and it is <strong>open</strong> ("How can I help"). You have set a tone of warmth and competence before they have said a word.</p>
+        <p>The most common trap here is answering on autopilot — flat tone, rushed delivery, sounding like you have answered this call 400 times. Every call is the first call for that person. Match their moment.</p>
+        <div class="callout callout-warn">
+          <div class="callout-label">What to Avoid</div>
+          Mumbling the club name. Skipping the location. Starting with "Um..." or "Hello?" with rising inflection. Sounding bored before they have said anything.
+        </div>
+      </div>
+    </div>
+
+    <!-- L3 -->
+    <div class="lesson-card" data-lesson="3">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">03</span>
+        <span class="lesson-title-text">Respond & Ask — Taking Conversational Control</span>
+        <span class="lesson-tag">The Pivot</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>Nearly every T.I. starts with the prospect asking you a direct question: <em>"How much is a membership?"</em> or <em>"What are your hours?"</em> or <em>"Do you have yoga classes?"</em> This is the moment most consultants lose control of the conversation — and the appointment — before it even starts.</p>
+        <p>The framework is simple: <strong>Acknowledge → Pivot → Ask.</strong> Never answer directly and let the conversation stall. Never ignore their question (that feels dismissive). Acknowledge that their question is valid, and immediately redirect with a question of your own.</p>
+        <div class="callout callout-script">
+          <div class="callout-label">The Control Script</div>
+          "Great question — we actually custom tailor memberships based on your specific interests, so there's no one-size-fits-all answer. First, can I get your name? I'm [Your Name], nice to meet you! And tell me a little bit about your situation."
+        </div>
+        <p>Notice what this does: it validates their question, positions City Fitness as personalized and premium, gets their name (critical for rapport), gives your name (reciprocity), and hands control of the conversation back to you with <em>"tell me about your situation."</em></p>
+        <div class="callout callout-rule">
+          <div class="callout-label">The Law of the T.I.</div>
+          Whoever asks the questions controls the conversation. Your job is to be the one asking.
+        </div>
+        <p>Every time the prospect asks a question and you answer it with a clean close — no follow-up question from you — they hold the power. Keep pivoting. Keep asking.</p>
+      </div>
+    </div>
+
+    <!-- L4 -->
+    <div class="lesson-card" data-lesson="4">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">04</span>
+        <span class="lesson-title-text">"Tell Me About Your Situation" — Deep Listening</span>
+        <span class="lesson-tag">Discovery</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>This is the most underrated line in the entire T.I. Four words that open an entire world of information about who this person is and why they are calling. <em>"Tell me about your situation."</em></p>
+        <p>The beauty of this question is its breadth. You are not asking <em>"What are your goals?"</em> — that signals you want to pitch. You are not asking <em>"Have you been to a gym before?"</em> — that's a closed yes/no. You are asking them to tell their story. And people always tell you what matters most to them when they tell their own story.</p>
+        <div class="callout callout-rule">
+          <div class="callout-label">The Listening Standard</div>
+          Do NOT interrupt. Do NOT try to formulate your response while they are still talking. Just listen. The better listener you are, the more trust you build — and on a phone call, trust is everything.
+        </div>
+        <p>What you are listening for:</p>
+        <p><strong>Fitness history:</strong> Are they coming back after time off? Brand new? Been active and looking for a change? This helps you identify their Bucket before they even walk in.</p>
+        <p><strong>Emotional clues:</strong> Are they frustrated? Motivated by fear? Excited? The emotion behind their words is more valuable than the words themselves.</p>
+        <p><strong>X-Factor hints:</strong> You will not push for the X-Factor on the T.I. — that is saved for the in-person — but you will often hear the seeds of it. A mention of a health scare. A comment about a big event coming up. A reference to a relationship. File it away.</p>
+        <div class="callout callout-tip">
+          <div class="callout-label">Pro Tip — Find Common Ground</div>
+          As they talk, actively look for shared interests or experiences you can briefly acknowledge. "Oh, I actually know exactly what you mean about getting back into a routine after the holidays." A moment of genuine connection turns a cold call into a warm conversation.
+        </div>
+      </div>
+    </div>
+
+    <!-- L5 -->
+    <div class="lesson-card" data-lesson="5">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">05</span>
+        <span class="lesson-title-text">Goals & The X-Factor — How Deep Do You Go?</span>
+        <span class="lesson-tag">Motivation</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>Yes, you ask about goals on the T.I. No, you do not go all the way to the X-Factor. Here is the distinction and why it matters.</p>
+        <p>Goals give you content — what to highlight in your verbal tour, which membership makes sense, how to frame the appointment. Goals are practical and you need them. Ask for them.</p>
+        <p>The X-Factor — the deep, personal <em>why</em> behind the goal — requires trust and physical presence to unlock properly. On a phone call, many people will not go there. And if you push too hard and it feels invasive, you lose the rapport you just built. Leave the deep X-Factor work for the in-person tour where body language, eye contact, and environment all work in your favor.</p>
+        <div class="callout callout-script">
+          <div class="callout-label">Goals Bridge Script</div>
+          "That's great context — it really helps me recommend the right direction for you. What are the main goals you're working toward? Just so I can point you toward the parts of the club that are going to matter most for you."
+        </div>
+        <p>The phrase <em>"point you toward the parts of the club that matter most for you"</em> is doing important work here. It frames your goal question as service, not interrogation. You are gathering information to help them — and they feel that.</p>
+        <div class="callout callout-warn">
+          <div class="callout-label">The Trap — Over-Discovery on the Phone</div>
+          If you start asking probing personal questions about their weight, health history, or emotional relationship with fitness over the phone before rapport is established, they will pull back. Save the depth for when they are sitting across from you.
+        </div>
+      </div>
+    </div>
+
+    <!-- L6 -->
+    <div class="lesson-card" data-lesson="6">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">06</span>
+        <span class="lesson-title-text">The Verbal Tour — Building Anticipation with Words</span>
+        <span class="lesson-tag">Excitement</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>This is where most consultants completely skip a massive opportunity. After you have learned something about what this person needs, you have enough to paint a picture. Not a features list — a picture. Use emotionally charged adjectives. Make them see themselves inside City Fitness before they set foot in it.</p>
+        <p>The verbal tour should be short (60–90 seconds), targeted to what they just told you, and designed to spark one specific emotion: <em>I need to see this in person.</em></p>
+        <div class="dialogue-block">
+          <div class="dialogue-title">Verbal Tour — "Getting Back Into It" Scenario</div>
+          <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text">"Based on what you just told me — getting back into a consistent routine and wanting something that actually feels worth the drive — I think you're going to love what we have here. <em>We have a massive open floor that never feels crowded, top-of-the-line equipment that's always maintained, and honestly the cleanest facility you'll find in the city. Plus our studio class schedule is stacked — yoga, cycling, functional training — a ton of options depending on your mood that day.</em> And honestly the vibe here... it's hard to describe over the phone. It's welcoming but it pushes you. Does it sound like we might have what you're looking for?"</span></div>
+        </div>
+        <p>Notice the structure: <strong>reflect their need → paint the picture with specific adjectives → connect to their goals → confirm with a tie-down question.</strong></p>
+        <div class="callout callout-rule">
+          <div class="callout-label">The Tie-Down to End the Verbal Tour</div>
+          Always close the verbal tour with a confirming question: "Does it sound like we might have what you're looking for?" or "Does that kind of environment sound like what you've been missing?" You want them to say yes before you ask for the appointment.
+        </div>
+      </div>
+    </div>
+
+    <!-- L7 -->
+    <div class="lesson-card" data-lesson="7">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">07</span>
+        <span class="lesson-title-text">Scheduling the Appointment — Alternate of Choice</span>
+        <span class="lesson-tag">The Close</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>This is the close of the T.I. and it is where nervous energy kills more appointments than any other single factor. The moment you go to book the appointment, your tone must stay <strong>exactly the same</strong> as it has been the entire call. If it shifts — if it drops in energy, speeds up, or goes tentative — the prospect feels the pressure and instinctively resists.</p>
+        <p>The technique is called <strong>Alternate of Choice</strong>. Instead of asking <em>"When do you want to come in?"</em> — which opens the door to "I'll call you back when I know my schedule" — you offer two specific options that both result in an appointment. You have turned an open-ended decision into a multiple-choice test where every answer is a win.</p>
+        <div class="callout callout-script">
+          <div class="callout-label">Alternate of Choice Sequence</div>
+          "Based on everything you shared, I'd love to set aside some dedicated time for you — no interruptions, just us. Would today work or would tomorrow be better?" [Wait] "Great — would you prefer earlier in the day or evening is usually better?" [Wait] "Perfect — I could do [Time A] or [Time B], which works better?"
+        </div>
+        <p>Three rounds of choice. Each round narrows down to a specific time. By the third question, you are no longer asking <em>if</em> they are coming — that has been decided. You are only deciding <em>when.</em></p>
+        <div class="callout callout-warn">
+          <div class="callout-label">The Vocal Shift — The Appointment Killer</div>
+          The moment you shift from conversational warmth to "appointment booking mode" — dropping energy, slowing down like you are reading from a form — the prospect detects the transition and their guard goes up. Keep the same voice you have used the entire call. The booking is a natural next step, not a different phase.
+        </div>
+        <div class="dialogue-block">
+          <div class="dialogue-title">Full Appointment Booking Sequence</div>
+          <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text">"This sounds like a great fit — I genuinely think you're going to be impressed when you see it. Let me set aside some dedicated time for you so you get my full attention. <em>Would today work or would tomorrow be easier?</em>"</span></div>
+          <div class="line"><span class="speaker prospect">Prospect</span><span class="line-text">"Tomorrow works."</span></div>
+          <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text">"Perfect. <em>Earlier in the afternoon or evening is usually better for you?</em>"</span></div>
+          <div class="line"><span class="speaker prospect">Prospect</span><span class="line-text">"Evening, probably after 6."</span></div>
+          <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text">"Great. <em>I could do 6:00 or 6:30 — which do you prefer?</em>"</span></div>
+          <div class="line"><span class="speaker prospect">Prospect</span><span class="line-text">"6:30 works."</span></div>
+          <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text">"6:30 tomorrow it is. I'm setting aside that time specifically for you — we won't be interrupted. I'm really looking forward to helping you take that first step. Can I grab your last name and best phone number in case anything changes on my end?"</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- L8 -->
+    <div class="lesson-card" data-lesson="8">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">08</span>
+        <span class="lesson-title-text">Front Desk T.I. Protocol — Your Role in the Funnel</span>
+        <span class="lesson-tag">Front Desk</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>The front desk is the first live human voice a prospect hears. Before a T.I. ever reaches a membership consultant, front desk has already set the tone — or broken it. This protocol is non-negotiable because failing to get a name and number before the transfer means if the call drops, that lead is gone forever.</p>
+        <div class="callout callout-rule">
+          <div class="callout-label">The Two Rules of Front Desk T.I.</div>
+          1. Always get the name and phone number BEFORE placing the caller on hold or transferring. &nbsp;&nbsp;2. Always ask if they have been here before — this tells membership how to calibrate the conversation.
+        </div>
+        <div class="dialogue-block">
+          <div class="dialogue-title">Script — First-Time Caller</div>
+          <div class="line"><span class="speaker prospect">Prospect</span><span class="line-text">"Hi, how much are your memberships?"</span></div>
+          <div class="line"><span class="speaker front-desk">Front Desk</span><span class="line-text"><em>"Thank you for calling City Fitness! Let me connect you with our membership team — they'll have all the right information for you. Have you been to City Fitness before?"</em></span></div>
+          <div class="line"><span class="speaker prospect">Prospect</span><span class="line-text">"No, first time."</span></div>
+          <div class="line"><span class="speaker front-desk">Front Desk</span><span class="line-text"><em>"Great, welcome! Can I grab your name? And your best phone number? Perfect — is it okay if I put you on a brief hold while I connect you? It'll just be a second."</em></span></div>
+        </div>
+        <div class="dialogue-block">
+          <div class="dialogue-title">Script — Returning Caller</div>
+          <div class="line"><span class="speaker prospect">Prospect</span><span class="line-text">"Hi, I have a question about upgrading my membership."</span></div>
+          <div class="line"><span class="speaker front-desk">Front Desk</span><span class="line-text"><em>"Of course, let me get you connected with membership! Have you been to our location before?"</em></span></div>
+          <div class="line"><span class="speaker prospect">Prospect</span><span class="line-text">"Yeah, I was in about a year ago."</span></div>
+          <div class="line"><span class="speaker front-desk">Front Desk</span><span class="line-text"><em>"Perfect, do you remember who you spoke with? No worries if not. Can I grab your name and number real quick, and I'll get you right over to the team — one moment."</em></span></div>
+        </div>
+        <p>The reason you collect name and phone number before the transfer is not bureaucratic — it is protective. If the call drops during transfer, you still have a lead. If the consultant is busy and you have to take a message, you have a lead. Every caller who hangs up without leaving their information is a lost opportunity that never has to happen.</p>
+      </div>
+    </div>
+
+  </div><!-- end lesson-grid -->
+
+  <!-- STUDY COMPLETE BANNER -->
+  <div class="study-complete-banner" id="studyBanner">
+    <h3>All 8 Lessons Complete</h3>
+    <p>You've worked through every core lesson. The certification quiz is now unlocked below.</p>
+    <button class="cf-btn" onclick="unlockQuiz()" style="max-width:320px;margin:0 auto;">Unlock Certification ↓</button>
+  </div>
+
+  <!-- COMMON MISTAKES -->
+  <div class="divider-label">Common Mistakes</div>
+
+  <div class="section-header" style="padding-top:0;">
+    <div class="s-eyebrow">What Kills the Appointment</div>
+    <h2 class="s-title">6 T.I. Mistakes &<br>How to Fix Them</h2>
+  </div>
+
+  <div class="mistakes-grid">
+    <div class="mistake-card">
+      <div class="mistake-label bad">✗ The Mistake</div>
+      <div class="mistake-text">Answering the price question directly: <strong>"Our memberships start at $39.99."</strong> — Now they have what they called for and no reason to come in.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label good">✓ The Fix</div>
+      <div class="mistake-text">Acknowledge and pivot: <strong>"We actually custom tailor every membership — there is no one-size-fits-all here. Can I grab your name first?"</strong></div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label bad">✗ The Mistake</div>
+      <div class="mistake-text">Giving a full feature rundown unprompted: listing every amenity, every class, every price tier. <strong>You have satisfied their curiosity and eliminated any reason to visit.</strong></div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label good">✓ The Fix</div>
+      <div class="mistake-text">Target the verbal tour to only what they told you they care about. <strong>Leave things out on purpose.</strong> Curiosity is the engine that drives the appointment.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label bad">✗ The Mistake</div>
+      <div class="mistake-text">Asking <strong>"When do you want to come in?"</strong> — an open question that invites "I'll have to check my schedule and call you back."</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label good">✓ The Fix</div>
+      <div class="mistake-text">Always use <strong>Alternate of Choice</strong>. Two specific options. Never an open-ended ask. The question is always <em>when</em>, never <em>if</em>.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label bad">✗ The Mistake</div>
+      <div class="mistake-text">The <strong>vocal shift</strong> — energy drops, pace slows, tone becomes transactional the moment you move toward booking the appointment.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label good">✓ The Fix</div>
+      <div class="mistake-text">The booking is a natural next step in a warm conversation, not a mode switch. <strong>Maintain the exact same energy from start to finish.</strong></div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label bad">✗ The Mistake</div>
+      <div class="mistake-text">Front desk transfers without getting name and number first. Call drops during transfer. <strong>Lead is gone forever.</strong></div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label good">✓ The Fix</div>
+      <div class="mistake-text"><strong>Name and number before hold, every single time.</strong> No exceptions. This is the one non-negotiable of the front desk protocol.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label bad">✗ The Mistake</div>
+      <div class="mistake-text">Skipping the recap after booking: hanging up without confirming the time, expressing genuine excitement, and setting the expectation of dedicated time.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label good">✓ The Fix</div>
+      <div class="mistake-text">Always close with: <strong>"I'm setting aside that time specifically for you — we won't be disrupted. I'm looking forward to it."</strong> This plants an obligation and builds anticipation.</div>
+    </div>
+  </div>
+
+  <!-- ROLE PLAY -->
+  <div class="divider-label">Role-Play Scenarios</div>
+
+  <div class="section-header" style="padding-top:0;">
+    <div class="s-eyebrow">Practice</div>
+    <h2 class="s-title">4 Scenarios to<br>Train On</h2>
+    <p class="s-sub">These are the four most common T.I. call types. Practice each one until your responses are fluid, warm, and automatic — not rehearsed-sounding.</p>
+  </div>
+
+  <div class="roleplay-card">
+    <div class="roleplay-header">
+      <span class="roleplay-scenario">Scenario 01 — The Price Hunter</span>
+      <span class="roleplay-type">Most Common</span>
+    </div>
+    <div class="roleplay-body">
+      <div class="roleplay-prospect">"Hi, I just wanted to get some pricing information on your memberships."</div>
+      <div class="roleplay-objective"><strong>Your objective:</strong> Do not give them a number. Acknowledge the request, pivot to gathering their name and situation, deliver a targeted verbal tour, and book an appointment using Alternate of Choice.</div>
+      <div class="coaching-note">The urge to just answer the price question feels like good customer service. It is not. It is giving away the one reason they have to come in. Resist it. Your response to pricing questions is a system, not improvisation.</div>
+    </div>
+  </div>
+
+  <div class="roleplay-card">
+    <div class="roleplay-header">
+      <span class="roleplay-scenario">Scenario 02 — The Class Inquirer</span>
+      <span class="roleplay-type">Studio Interest</span>
+    </div>
+    <div class="roleplay-body">
+      <div class="roleplay-prospect">"Hey, do you guys have yoga? I've been looking for a good yoga class near me."</div>
+      <div class="roleplay-objective"><strong>Your objective:</strong> Confirm you have yoga (yes, answer that), but use it as the entry point to discover more about them — why yoga, what they are dealing with (stress, flexibility, recovery?), and what else they might benefit from. Build a targeted verbal tour around their answer and book.</div>
+      <div class="coaching-note">This caller has handed you their interest on a plate. Your job is to expand it: "Yes, we have amazing yoga — tell me more about what you're looking for. Is this more for stress relief, flexibility, or just something you've always wanted to try?" Let them talk. Then paint the picture.</div>
+    </div>
+  </div>
+
+  <div class="roleplay-card">
+    <div class="roleplay-header">
+      <span class="roleplay-scenario">Scenario 03 — The Comparison Shopper</span>
+      <span class="roleplay-type">Competitive</span>
+    </div>
+    <div class="roleplay-body">
+      <div class="roleplay-prospect">"I'm looking at a few different gyms in the area. What makes you guys different from the others?"</div>
+      <div class="roleplay-objective"><strong>Your objective:</strong> Do not trash competitors. Do not list a wall of features. Ask what they have seen so far and what has impressed or disappointed them — then speak only to the gaps. Your differentiators should feel like a direct response to their specific unmet needs, not a marketing brochure.</div>
+      <div class="coaching-note">The comparison shopper is actually your best prospect — they are actively in decision mode. Ask: "What have you seen so far, and is there something you're finding that the other places don't quite nail?" Whatever they say, that is your opening. Speak directly to that void.</div>
+    </div>
+  </div>
+
+  <div class="roleplay-card">
+    <div class="roleplay-header">
+      <span class="roleplay-scenario">Scenario 04 — The Reluctant Booker</span>
+      <span class="roleplay-type">Objection Handling</span>
+    </div>
+    <div class="roleplay-body">
+      <div class="roleplay-prospect">"I mean, it sounds good, but I'm pretty busy. Can you just send me some info by email?"</div>
+      <div class="roleplay-objective"><strong>Your objective:</strong> Acknowledge the request warmly, do not argue against it, but use the Offer Alternative principle — offer to send a follow-up AND book a quick appointment. "I will absolutely send you some info. And given what you shared, I think five minutes in person will show you more than a brochure ever could. I could fit you in quickly tomorrow — would 5:30 or 6:00 be easier?"</div>
+      <div class="coaching-note">The email request is almost always a soft "not ready yet" — not a hard no. The fix is not to fight it. Agree, then layer the appointment on top. A short, low-pressure ask alongside the email agreement removes the resistance entirely.</div>
+    </div>
+  </div>
+
+  <!-- QUIZ SECTION -->
+  <div class="divider-label">Certification</div>
+
+  <div class="section-header" style="padding-top:0;">
+    <div class="s-eyebrow">Knowledge Check</div>
+    <h2 class="s-title">T.I. Certification</h2>
+    <p class="s-sub">16 questions covering everything in this module. You need 80% or higher to pass. Complete all 8 lessons above to unlock.</p>
+  </div>
+
+  <div class="quiz-section" id="quizSection">
+
+    <!-- LOCKED STATE -->
+    <div class="quiz-locked" id="quizLocked">
+      <div class="quiz-locked-icon">🔒</div>
+      <h3>Complete All Lessons to Unlock</h3>
+      <p>Work through all 8 lessons above. The quiz unlocks automatically when you finish.</p>
+    </div>
+
+    <!-- NAME ENTRY -->
+    <div class="name-panel" id="namePanel" style="display:none;">
+      <h3>Certification Registry</h3>
+      <p>Enter your full name as it should appear on your certification record.</p>
+      <input type="text" class="cf-input" id="empNameInput" placeholder="Full Name"/>
+      <button class="cf-btn" onclick="startQuiz()">Begin Official Test →</button>
+    </div>
+
+    <!-- QUIZ ACTIVE -->
+    <div class="quiz-active" id="quizActive" style="display:none;">
+      <div class="q-progress-wrap"><div class="q-progress-bar" id="qBar"></div></div>
+      <div class="q-meta">
+        <span class="q-counter" id="qCounter"></span>
+        <span class="q-topic">Module 01 · The T.I.</span>
+      </div>
+      <div class="q-text" id="qText"></div>
+      <div class="q-options" id="qOptions"></div>
+    </div>
+
+    <!-- RESULTS -->
+    <div class="results-panel" id="resultsPanel">
+      <div class="result-score" id="resultScore"></div>
+      <div class="result-label" id="resultLabel"></div>
+      <div class="missed-section" id="missedSection"></div>
+      <button class="cf-btn" onclick="resetModule()" style="margin-top:24px;">Return to Module</button>
+    </div>
+
+  </div><!-- end quiz-section -->
+
+</div><!-- end module-wrap -->
+
+<div class="module-footer">
+  <p>City Fitness Philadelphia &nbsp;·&nbsp; Deep Training Module 01 &nbsp;·&nbsp; 2026</p>
+</div>
+
+<iframe name="cf_hidden" id="cf_hidden" style="display:none;"></iframe>
+<form id="certForm" target="cf_hidden" method="GET" action="https://script.google.com/a/macros/cityfitness.com/s/AKfycbzZokf4OQGpHYEkb_9mcVdJ-t9jop9RWIpclIcLSjTWRcBQfeDJ751bl0qO8k7VrZwe/exec">
+  <input type="hidden" name="employee" id="formEmployee"/>
+  <input type="hidden" name="topic" id="formTopic"/>
+  <input type="hidden" name="result" id="formResult"/>
+</form>
+
+<script>
+// ── SCROLL PROGRESS ──
+window.addEventListener('scroll', () => {
+  const el = document.documentElement;
+  const pct = (el.scrollTop / (el.scrollHeight - el.clientHeight)) * 100;
+  document.getElementById('topFill').style.width = pct + '%';
+});
+
+// ── LESSON ACCORDION ──
+let openedLessons = new Set();
+const totalLessons = 8;
+
+function toggleLesson(header) {
+  const card = header.parentElement;
+  const isOpen = card.classList.contains('open');
+  card.classList.toggle('open', !isOpen);
+  if (!isOpen) {
+    const num = parseInt(card.dataset.lesson);
+    openedLessons.add(num);
+    checkStudyComplete();
+  }
+}
+
+function checkStudyComplete() {
+  if (openedLessons.size >= totalLessons) {
+    document.getElementById('studyBanner').style.display = 'block';
+    document.getElementById('studyBanner').scrollIntoView({behavior:'smooth', block:'center'});
+  }
+}
+
+function unlockQuiz() {
+  document.getElementById('quizLocked').style.display = 'none';
+  document.getElementById('namePanel').style.display = 'block';
+  document.getElementById('quizSection').scrollIntoView({behavior:'smooth'});
+}
+
+// ── QUIZ DATA ──
+const questions = [
+  {q:"What is the single primary goal of every Telephone Inquiry?", a:["Sell a membership over the phone","Give an accurate price quote","Schedule an appointment that shows","Explain all membership tiers"], c:2},
+  {q:"The Prime Directive of the T.I. is to answer enough to:", a:["Satisfy all of their curiosity","Quench their thirst without satisfying their full curiosity","Avoid answering anything","Give a full facility rundown"], c:1},
+  {q:"What is the 'Mirror Rule' and why does it work?", a:["Repeat their exact words back to them to build rapport","Smile in a mirror before calls — it relaxes vocal cords and warms your tone","Look in a mirror to check your appearance before shifts","Mirror their vocabulary to match their fitness level"], c:1},
+  {q:"When a prospect immediately asks 'How much is a membership?', the correct sequence is:", a:["Answer the price, then ask their name","Tell them prices vary and hang up","Acknowledge, explain memberships are custom tailored, get their name, and redirect","Put them on hold immediately"], c:2},
+  {q:"What makes 'Tell me about your situation' such a powerful opening question?", a:["It forces a yes or no answer","It is broad enough to let them reveal what matters most to them","It gathers pricing preferences","It immediately identifies their bucket type"], c:1},
+  {q:"During the T.I., how deeply should you pursue the X-Factor?", a:["Go as deep as possible — the more you know the better","Ask for it directly, then confirm it before proceeding","Gather goals but save the deep X-Factor conversation for the in-person tour","Never mention goals at all on the phone"], c:2},
+  {q:"What is the purpose of the Verbal Tour on a T.I.?", a:["To give a comprehensive feature-by-feature overview","To satisfy their curiosity completely so they feel informed","To spark anticipation and excitement about seeing the club in person","To close the sale over the phone"], c:2},
+  {q:"The 'Vocal Shift' refers to:", a:["Adjusting your accent to match the prospect","The dangerous drop in energy that happens when moving toward booking","Raising your voice to project confidence","Switching to a scripted tone throughout the call"], c:1},
+  {q:"What is the 'Alternate of Choice' technique?", a:["Offering two different membership tiers to choose between","Offering two specific appointment times so the decision is when, not if","Asking the prospect to choose between visiting today or emailing","Giving them the option to come in or take a virtual tour"], c:1},
+  {q:"How many rounds of Alternate of Choice do you use to nail down a specific appointment time?", a:["One round — day or time","Two rounds — day, then time slot","Three rounds — day, part of day, then specific time","As many as needed with no specific structure"], c:2},
+  {q:"Why is it critical to recap the appointment after booking?", a:["To repeat the price one more time","To make them feel watched","To solidify their commitment, set expectations, and build anticipation","Because the system requires it before the call can end"], c:2},
+  {q:"The correct Front Desk T.I. protocol requires gathering the caller's name and number:", a:["After the transfer is complete","Only if membership asks for it","Before placing them on hold — every single time, no exceptions","At the end of the call as a courtesy"], c:2},
+  {q:"Why does the Front Desk ask 'Have you been here before?' before transferring?", a:["To decide whether to charge them for the call","To help the membership team calibrate the conversation appropriately","To determine which consultant to transfer to","It is optional — just a nice touch"], c:1},
+  {q:"When a prospect says 'Just send me some info by email,' the correct response is:", a:["Agree to send the email and end the call","Refuse the email request and push for the in-person visit","Agree to send info, but layer an appointment ask on top of it","Ask why they won't come in person"], c:2},
+  {q:"What should you actively listen for when a prospect says 'Tell me about your situation'?", a:["Their credit score and financial readiness","Their fitness history, emotional clues, and early X-Factor hints","Exactly how many days per week they plan to work out","Which membership tier they are most likely to purchase"], c:1},
+  {q:"Which of the following is NEVER the correct move on a T.I.?", a:["Acknowledging their question before redirecting","Using emotionally charged adjectives in the verbal tour","Giving the full pricing breakdown to help them make an informed decision","Recapping the appointment after booking"], c:2}
+];
+
+let empName = '';
+let qIndex = 0;
+let score = 0;
+let missed = [];
+
+function startQuiz() {
+  empName = document.getElementById('empNameInput').value.trim();
+  if (!empName) { alert('Please enter your full name.'); return; }
+  document.getElementById('namePanel').style.display = 'none';
+  document.getElementById('quizActive').style.display = 'block';
+  qIndex = 0; score = 0; missed = [];
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[qIndex];
+  document.getElementById('qBar').style.width = ((qIndex / questions.length) * 100) + '%';
+  document.getElementById('qCounter').textContent = `Question ${qIndex + 1} of ${questions.length}`;
+  document.getElementById('qText').textContent = q.q;
+  const opts = document.getElementById('qOptions');
+  opts.innerHTML = '';
+  q.a.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'q-opt';
+    btn.textContent = opt;
+    btn.onclick = () => handleAnswer(i);
+    opts.appendChild(btn);
+  });
+}
+
+function handleAnswer(idx) {
+  const q = questions[qIndex];
+  if (idx === q.c) { score++; }
+  else { missed.push({q: q.q, a: q.a[q.c]}); }
+  qIndex++;
+  if (qIndex < questions.length) { renderQuestion(); }
+  else { showResults(); }
+}
+
+function showResults() {
+  const pct = Math.round((score / questions.length) * 100);
+  document.getElementById('quizActive').style.display = 'none';
+  const rp = document.getElementById('resultsPanel');
+  rp.style.display = 'block';
+  const scoreEl = document.getElementById('resultScore');
+  scoreEl.textContent = pct + '%';
+  scoreEl.className = 'result-score ' + (pct >= 80 ? 'result-pass' : 'result-fail');
+  document.getElementById('resultLabel').textContent = pct >= 80 ? 'Certification Passed — Module 01: The T.I.' : 'Retake Required — Review Missed Questions Below';
+
+  let missedHtml = '';
+  if (missed.length) {
+    missedHtml = `<div class="missed-label">Knowledge Gaps — Review These</div>`;
+    missed.forEach(m => {
+      missedHtml += `<div class="missed-item"><div class="missed-q">${m.q}</div><div class="missed-a">Correct Answer: ${m.a}</div></div>`;
+    });
+  }
+  document.getElementById('missedSection').innerHTML = missedHtml;
+
+  document.getElementById('formEmployee').value = empName;
+  document.getElementById('formTopic').value = 'Module 01 - The T.I.';
+  document.getElementById('formResult').value = pct;
+  document.getElementById('certForm').submit();
+}
+
+function resetModule() {
+  document.getElementById('resultsPanel').style.display = 'none';
+  document.getElementById('quizActive').style.display = 'none';
+  document.getElementById('namePanel').style.display = 'block';
+  document.getElementById('empNameInput').value = '';
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+</script>
+</body>
+</html>
