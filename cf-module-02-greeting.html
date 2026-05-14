@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>CF Training | Module 02: The Greeting</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:ital,wght@0,400;0,500;0,600;1,400;1,600&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg: #121418;
+  --surface: #191c22;
+  --card: #1f2229;
+  --border: #2a2d36;
+  --border-light: #353840;
+  --copper: #B87C4C;
+  --copper-light: #C9A07A;
+  --copper-dim: rgba(184,124,76,0.12);
+  --copper-glow: rgba(184,124,76,0.05);
+  --tan: #BF9B6F;
+  --white: #F0EDE8;
+  --grey: #6e7280;
+  --dim: #9096a0;
+  --red: #c0392b;
+  --green: #4a9a6a;
+  --grad: linear-gradient(135deg, #B87C4C 0%, #C9A07A 100%);
+  --accent: #5b7fa6;
+  --accent-dim: rgba(91,127,166,0.12);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--white);font-family:'Barlow',sans-serif;line-height:1.65;overflow-x:hidden;}
+
+/* PROGRESS */
+.top-bar{position:fixed;top:0;left:0;right:0;height:3px;background:var(--border);z-index:9999;}
+.top-bar-fill{height:100%;background:var(--grad);width:0%;transition:width .3s ease;}
+
+/* HERO */
+.hero{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;align-items:center;padding:80px 60px;position:relative;overflow:hidden;gap:60px;}
+.hero::after{content:'';position:absolute;right:0;top:0;bottom:0;width:50%;background:radial-gradient(ellipse 100% 80% at 80% 50%, rgba(91,127,166,0.08) 0%, transparent 70%);pointer-events:none;}
+.hero-left{position:relative;z-index:1;}
+.hero-eyebrow{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--copper);letter-spacing:4px;text-transform:uppercase;margin-bottom:20px;display:flex;align-items:center;gap:12px;}
+.hero-eyebrow::before{content:'';display:block;width:32px;height:2px;background:var(--copper);}
+.hero-title{font-family:'Barlow Condensed',sans-serif;font-size:clamp(52px,7vw,88px);font-weight:900;line-height:.9;text-transform:uppercase;letter-spacing:-1px;margin-bottom:24px;}
+.hero-title em{font-style:normal;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.hero-desc{font-size:16px;color:var(--dim);line-height:1.75;margin-bottom:36px;max-width:460px;}
+.hero-stats{display:flex;gap:32px;margin-bottom:44px;}
+.stat{display:flex;flex-direction:column;}
+.stat-num{font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:900;color:var(--copper);line-height:1;}
+.stat-label{font-size:11px;color:var(--grey);text-transform:uppercase;letter-spacing:2px;margin-top:3px;}
+.hero-btn{display:inline-flex;align-items:center;gap:10px;background:var(--grad);border:none;padding:15px 30px;color:white;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;letter-spacing:2px;text-transform:uppercase;border-radius:4px;cursor:pointer;transition:.2s;}
+.hero-btn:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(184,124,76,0.3);}
+
+/* HERO RIGHT — visual */
+.hero-right{position:relative;z-index:1;display:flex;flex-direction:column;gap:12px;}
+.impression-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px 24px;transition:.3s;}
+.impression-card:nth-child(2){transform:translateX(20px);}
+.impression-card:nth-child(3){transform:translateX(10px);}
+.imp-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:3px;text-transform:uppercase;margin-bottom:8px;}
+.imp-label.good{color:var(--green);}
+.imp-label.bad{color:var(--red);}
+.imp-text{font-size:14px;color:var(--dim);line-height:1.5;}
+.imp-text strong{color:var(--white);}
+.hero-num-bg{position:absolute;right:-40px;top:50%;transform:translateY(-50%);font-family:'Barlow Condensed',sans-serif;font-size:220px;font-weight:900;color:transparent;-webkit-text-stroke:1px rgba(91,127,166,0.08);pointer-events:none;user-select:none;line-height:1;}
+
+/* LAYOUT */
+.module-wrap{max-width:900px;margin:0 auto;padding:0 40px 120px;}
+
+/* SECTION HEADERS */
+.section-header{padding:70px 0 36px;}
+.s-eyebrow{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--copper);letter-spacing:4px;text-transform:uppercase;display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+.s-eyebrow::after{content:'';width:48px;height:1px;background:var(--copper);opacity:.4;}
+.s-title{font-family:'Barlow Condensed',sans-serif;font-size:clamp(30px,5vw,46px);font-weight:900;text-transform:uppercase;letter-spacing:-.5px;line-height:1.05;margin-bottom:10px;}
+.s-sub{font-size:16px;color:var(--dim);max-width:680px;line-height:1.6;}
+
+/* LESSONS */
+.lesson-grid{display:flex;flex-direction:column;gap:2px;}
+.lesson-card{background:var(--surface);border:1px solid var(--border);overflow:hidden;transition:.2s;}
+.lesson-card:first-child{border-radius:10px 10px 0 0;}
+.lesson-card:last-child{border-radius:0 0 10px 10px;}
+.lesson-header{display:flex;align-items:center;gap:20px;padding:20px 26px;cursor:pointer;user-select:none;transition:.15s;}
+.lesson-header:hover{background:var(--copper-glow);}
+.lesson-num{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--copper);letter-spacing:2px;min-width:34px;}
+.lesson-title-text{font-size:16px;font-weight:700;flex:1;}
+.lesson-tag{font-size:10px;font-weight:700;color:var(--copper);background:var(--copper-dim);padding:4px 10px;border-radius:20px;text-transform:uppercase;letter-spacing:1px;white-space:nowrap;}
+.lesson-arrow{color:var(--grey);font-size:11px;transition:.3s;font-style:normal;}
+.lesson-card.open .lesson-arrow{transform:rotate(180deg);color:var(--copper);}
+.lesson-card.open .lesson-header{border-bottom:1px solid var(--border);}
+.lesson-body{display:none;padding:28px 26px 26px;}
+.lesson-card.open .lesson-body{display:block;}
+.lesson-body p{color:var(--dim);font-size:15px;line-height:1.75;margin-bottom:14px;}
+.lesson-body p:last-child{margin-bottom:0;}
+.lesson-body strong{color:var(--white);font-weight:700;}
+.lesson-body em{color:var(--tan);font-style:italic;}
+
+/* CALLOUTS */
+.callout{border-radius:8px;padding:18px 22px;margin:18px 0;font-size:15px;line-height:1.65;}
+.callout-rule{border-left:3px solid var(--copper);background:var(--copper-dim);color:var(--copper-light);}
+.callout-script{border-left:3px solid var(--tan);background:rgba(191,155,111,0.07);color:var(--tan);font-style:italic;}
+.callout-warn{border-left:3px solid var(--red);background:rgba(192,57,43,0.08);color:#d97060;}
+.callout-tip{border-left:3px solid var(--green);background:rgba(74,154,106,0.08);color:#7ac09a;}
+.callout-accent{border-left:3px solid var(--accent);background:var(--accent-dim);color:#8ab0d0;}
+.callout-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:3px;text-transform:uppercase;margin-bottom:7px;opacity:.7;display:block;}
+
+/* DIALOGUE */
+.dialogue-block{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:22px;margin:18px 0;}
+.dialogue-title{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--copper);letter-spacing:3px;text-transform:uppercase;margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+.line{display:flex;gap:14px;margin-bottom:14px;align-items:flex-start;}
+.line:last-child{margin-bottom:0;}
+.speaker{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;min-width:90px;padding-top:3px;}
+.speaker.prospect{color:var(--grey);}
+.speaker.consultant{color:var(--copper);}
+.line-text{font-size:15px;color:var(--dim);line-height:1.65;}
+.line-text em{color:var(--white);font-style:normal;font-weight:600;}
+
+/* NON VERBAL GRID */
+.nv-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0;}
+.nv-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:18px;}
+.nv-icon{font-size:22px;margin-bottom:10px;}
+.nv-title{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--white);margin-bottom:6px;}
+.nv-text{font-size:13px;color:var(--dim);line-height:1.55;}
+.nv-text strong{color:var(--copper-light);}
+
+/* SELF TALK */
+.self-talk-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:16px 0;}
+.st-card{background:var(--copper-dim);border:1px solid rgba(184,124,76,0.2);border-radius:8px;padding:16px 18px;text-align:center;}
+.st-text{font-size:14px;color:var(--copper-light);font-style:italic;line-height:1.5;}
+
+/* MISTAKES */
+.mistakes-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px;}
+.mistake-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:18px;}
+.mistake-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:3px;text-transform:uppercase;margin-bottom:8px;}
+.mistake-label.bad{color:var(--red);}
+.mistake-label.good{color:var(--green);}
+.mistake-text{font-size:14px;line-height:1.6;color:var(--dim);}
+.mistake-text strong{color:var(--white);}
+
+/* ROLEPLAY */
+.roleplay-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:14px;}
+.roleplay-header{padding:18px 22px;background:var(--copper-dim);display:flex;justify-content:space-between;align-items:center;}
+.roleplay-scenario{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--copper);}
+.roleplay-type{font-size:11px;color:var(--grey);}
+.roleplay-body{padding:22px;}
+.roleplay-setup{font-size:15px;font-style:italic;color:var(--tan);margin-bottom:14px;padding:12px 16px;background:rgba(191,155,111,0.06);border-radius:6px;line-height:1.6;}
+.roleplay-objective{font-size:14px;color:var(--dim);line-height:1.6;}
+.roleplay-objective strong{color:var(--white);}
+.coaching-note{margin-top:12px;padding:12px 16px;background:rgba(184,124,76,0.07);border-radius:6px;font-size:13px;color:var(--copper-light);line-height:1.6;}
+.coaching-note::before{content:'COACHING NOTE  ';font-weight:800;letter-spacing:2px;font-size:10px;display:block;margin-bottom:3px;opacity:.7;}
+
+/* DIVIDER */
+.divider-label{display:flex;align-items:center;gap:16px;color:var(--grey);font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin:56px 0 30px;}
+.divider-label::before,.divider-label::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* STUDY BANNER */
+.study-complete-banner{background:var(--copper-dim);border:1px solid rgba(184,124,76,0.3);border-radius:12px;padding:28px;text-align:center;margin:36px 0;display:none;}
+.study-complete-banner h3{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;color:var(--copper);margin-bottom:6px;}
+.study-complete-banner p{color:var(--dim);font-size:14px;margin-bottom:18px;}
+
+/* QUIZ */
+.quiz-section{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-top:36px;}
+.quiz-locked{padding:56px 40px;text-align:center;}
+.quiz-locked-icon{font-size:36px;margin-bottom:14px;opacity:.3;}
+.quiz-locked h3{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;text-transform:uppercase;color:var(--grey);margin-bottom:6px;}
+.quiz-locked p{color:var(--grey);font-size:14px;}
+.quiz-active{padding:38px;}
+.q-progress-wrap{height:3px;background:var(--border);border-radius:2px;margin-bottom:28px;overflow:hidden;}
+.q-progress-bar{height:100%;background:var(--grad);width:0%;transition:.4s;}
+.q-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;}
+.q-counter{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--copper);letter-spacing:2px;text-transform:uppercase;}
+.q-topic{font-size:11px;color:var(--grey);}
+.q-text{font-size:20px;font-weight:700;color:var(--white);margin-bottom:26px;line-height:1.4;}
+.q-options{display:flex;flex-direction:column;gap:9px;}
+.q-opt{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:15px 18px;color:var(--dim);font-size:15px;text-align:left;cursor:pointer;transition:.2s;font-family:'Barlow',sans-serif;}
+.q-opt:hover{border-color:var(--copper);color:var(--white);background:var(--copper-glow);}
+.name-panel{padding:38px;}
+.name-panel h3{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;color:var(--white);margin-bottom:5px;}
+.name-panel p{color:var(--dim);font-size:14px;margin-bottom:22px;}
+.cf-input{background:var(--bg);border:1px solid var(--border);color:var(--white);padding:13px 16px;width:100%;border-radius:8px;font-family:'Barlow',sans-serif;font-size:16px;margin-bottom:14px;outline:none;transition:.2s;}
+.cf-input:focus{border-color:var(--copper);}
+.cf-btn{background:var(--grad);border:none;padding:15px 28px;color:white;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;letter-spacing:2px;text-transform:uppercase;border-radius:8px;cursor:pointer;width:100%;transition:.2s;}
+.cf-btn:hover{opacity:.9;transform:translateY(-1px);}
+.results-panel{padding:38px;display:none;}
+.result-score{font-family:'Barlow Condensed',sans-serif;font-size:70px;font-weight:900;line-height:1;margin-bottom:6px;}
+.result-pass{color:var(--copper);}
+.result-fail{color:var(--red);}
+.result-label{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--grey);margin-bottom:22px;}
+.missed-label{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--dim);letter-spacing:3px;text-transform:uppercase;margin-bottom:10px;margin-top:22px;}
+.missed-item{background:rgba(192,57,43,0.07);border-left:3px solid var(--red);border-radius:0 6px 6px 0;padding:13px 15px;margin-bottom:7px;}
+.missed-q{font-size:14px;color:var(--dim);margin-bottom:5px;}
+.missed-a{font-size:14px;color:var(--tan);font-weight:600;}
+
+/* DEPLOY BOX */
+.deploy-box{background:var(--card);border:2px dashed var(--border-light);border-radius:12px;padding:32px;margin:60px 0 0;}
+.deploy-title{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;text-transform:uppercase;letter-spacing:1px;color:var(--copper);margin-bottom:18px;display:flex;align-items:center;gap:10px;}
+.deploy-steps{display:flex;flex-direction:column;gap:8px;}
+.deploy-step{display:flex;align-items:flex-start;gap:14px;padding:11px 14px;background:var(--surface);border:1px solid var(--border);border-radius:7px;}
+.deploy-num{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--copper);letter-spacing:1px;min-width:20px;padding-top:1px;}
+.deploy-text{font-size:14px;color:var(--dim);line-height:1.5;}
+.deploy-text strong{color:var(--white);}
+.deploy-text code{background:var(--copper-dim);color:var(--copper-light);padding:1px 6px;border-radius:4px;font-size:13px;font-family:'Courier New',monospace;}
+
+/* FOOTER */
+.module-footer{text-align:center;padding:50px 40px;border-top:1px solid var(--border);}
+.module-footer p{color:var(--grey);font-size:11px;letter-spacing:3px;text-transform:uppercase;}
+
+@media(max-width:800px){
+  .hero{grid-template-columns:1fr;min-height:auto;padding:80px 24px 40px;}
+  .hero-right{display:none;}
+  .module-wrap{padding:0 20px 80px;}
+  .nv-grid{grid-template-columns:1fr;}
+  .self-talk-grid{grid-template-columns:1fr;}
+  .mistakes-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar"><div class="top-bar-fill" id="topFill"></div></div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow">City Fitness Training · Deep Module Series</div>
+    <h1 class="hero-title">Mastering<br>the <em>Greeting.</em></h1>
+    <p class="hero-desc">They have already decided something about you before you open your mouth. This module is about making sure that decision is the right one — and then building on it through every second of the opening interaction.</p>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-num">7</span><span class="stat-label">Core Lessons</span></div>
+      <div class="stat"><span class="stat-num">4</span><span class="stat-label">Full Scripts</span></div>
+      <div class="stat"><span class="stat-num">4</span><span class="stat-label">Role-Play Scenarios</span></div>
+      <div class="stat"><span class="stat-num">15</span><span class="stat-label">Quiz Questions</span></div>
+    </div>
+    <button class="hero-btn" onclick="document.getElementById('lessons').scrollIntoView({behavior:'smooth'})">Begin Training ↓</button>
+  </div>
+  <div class="hero-right">
+    <div class="hero-num-bg">02</div>
+    <div class="impression-card">
+      <div class="imp-label good">✓ Strong Greeting</div>
+      <div class="imp-text">Guest walks in. Consultant stands immediately, makes eye contact, smiles, and moves toward them with energy. <strong>Trust is built before a word is spoken.</strong></div>
+    </div>
+    <div class="impression-card">
+      <div class="imp-label bad">✗ Weak Greeting</div>
+      <div class="imp-text">Consultant looks up from the desk, gives a flat "Hey, can I help you?" without standing. <strong>The guest immediately feels like an interruption.</strong></div>
+    </div>
+    <div class="impression-card">
+      <div class="imp-label good">✓ The Standard</div>
+      <div class="imp-text">Stand. Smile. Move first. Ask their name before giving yours. <strong>Make it about them from the very first second.</strong></div>
+    </div>
+  </div>
+</section>
+
+<div class="module-wrap">
+
+  <!-- OBJECTIVE -->
+  <div class="section-header" style="padding-top:50px;">
+    <div class="s-eyebrow">The Objective</div>
+    <h2 class="s-title">You Have 7 Seconds.</h2>
+    <p class="s-sub">Research is consistent on this: people form lasting impressions within the first 7 seconds of meeting someone. In that window, they are not evaluating your knowledge of the membership tiers. They are evaluating whether they like and trust you. That decision drives everything that follows.</p>
+  </div>
+
+  <div class="callout callout-rule">
+    <div class="callout-label">The Core Truth</div>
+    A strong greeting does not just feel good — it does measurable sales work. A guest who trusts you from the first moment asks fewer defensive questions, reveals more during discovery, and says yes at a significantly higher rate. The greeting is not a pleasantry. It is the foundation of the close.
+  </div>
+
+  <!-- LESSONS -->
+  <div class="section-header" id="lessons">
+    <div class="s-eyebrow">Core Lessons</div>
+    <h2 class="s-title">7 Elements of an<br>Unforgettable Greeting</h2>
+    <p class="s-sub">Every element works together. Open each lesson in order — the certification unlocks when you finish all seven.</p>
+  </div>
+
+  <div class="lesson-grid" id="lessonGrid">
+
+    <!-- L1 -->
+    <div class="lesson-card" data-lesson="1">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">01</span>
+        <span class="lesson-title-text">On Purpose — Your Non-Verbal Communication</span>
+        <span class="lesson-tag">Before You Speak</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>The moment a guest steps into your sightline, the greeting has already started. You have not spoken yet — but they are already reading you. Every non-verbal signal you send in those first moments is forming their first impression of you and of City Fitness.</p>
+        <p>There are four non-verbal elements that must be deliberate and on point every single time. Not most of the time. Every time.</p>
+        <div class="nv-grid">
+          <div class="nv-card">
+            <div class="nv-icon">👔</div>
+            <div class="nv-title">Appearance</div>
+            <div class="nv-text">Are you dressed to the City Fitness standard? Do you look like someone who belongs in a premium fitness environment? <strong>Your appearance communicates professionalism before you say a word.</strong></div>
+          </div>
+          <div class="nv-card">
+            <div class="nv-icon">🧍</div>
+            <div class="nv-title">Posture</div>
+            <div class="nv-text">Stand tall. Shoulders back and open. No slouching over the desk, no leaning on the counter. <strong>Open posture signals confidence and approachability simultaneously.</strong></div>
+          </div>
+          <div class="nv-card">
+            <div class="nv-icon">😊</div>
+            <div class="nv-title">Facial Expression</div>
+            <div class="nv-text">Genuine smile. Eyes engaged. Not a customer service performance smile — a real one. <strong>People detect fake smiles instantly. Your face should reflect that you are actually glad they came in.</strong></div>
+          </div>
+          <div class="nv-card">
+            <div class="nv-icon">🚶</div>
+            <div class="nv-title">Movement</div>
+            <div class="nv-text">Walk toward them with energy and purpose. Do not shuffle. Do not rush. Move like someone who is genuinely happy to greet them. <strong>The way you walk toward a guest tells them exactly how important they are.</strong></div>
+          </div>
+        </div>
+        <div class="callout callout-tip">
+          <div class="callout-label">Self-Check Habit</div>
+          Before every shift, take 10 seconds at a mirror. Check all four: appearance, posture, expression, energy. Athletes warm up before they compete. You should too.
+        </div>
+        <div class="callout callout-warn">
+          <div class="callout-label">The Desk Trap</div>
+          The single most common non-verbal failure: staying seated when a guest walks in. It communicates immediately that they are an interruption rather than the entire point of your day. Stand up. Every time. No exceptions.
+        </div>
+      </div>
+    </div>
+
+    <!-- L2 -->
+    <div class="lesson-card" data-lesson="2">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">02</span>
+        <span class="lesson-title-text">Confidence — The Most Contagious Thing in the Room</span>
+        <span class="lesson-tag">Internal State</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>Confidence is not an act you put on for a guest. It is an internal state that leaks out whether you manage it or not. If you are uncertain about the value City Fitness offers, that uncertainty will show — in your voice, your posture, your eye contact, the pace of your words.</p>
+        <p>The guest is not just evaluating the club. They are evaluating whether you believe in it. And your belief — or lack of it — transfers directly to them. This is not motivational language. This is human psychology. People buy confidence as much as they buy products.</p>
+        <div class="callout callout-accent">
+          <div class="callout-label">The Core Belief</div>
+          Before every interaction, anchor yourself to this: <em>"City Fitness has everything this person needs to achieve their goals. My job is to show them that."</em> When that belief is genuine, your entire presence changes.
+        </div>
+        <p>Here is what real member feedback sounds like — the kind that should fuel your confidence every single day:</p>
+        <div class="callout callout-script" style="font-style:normal;">
+          <div class="callout-label">Real Member — Fishtown</div>
+          "I must say it is one of, if not the most admirable gym I've ever worked out in... I joined immediately and got my friend to join an hour later."
+        </div>
+        <div class="callout callout-script" style="font-style:normal;">
+          <div class="callout-label">Real Member — Fishtown</div>
+          "I originally joined this gym because it's close to my office, but I find myself coming here even on my days off — and I live 15 miles away. That says everything."
+        </div>
+        <p>This is what you are selling. You are not selling a price point. You are selling an experience that people drive 15 miles out of their way for on their days off. Walk into every greeting knowing that.</p>
+        <div class="self-talk-grid">
+          <div class="st-card"><div class="st-text">"I am genuinely excited to help this person."</div></div>
+          <div class="st-card"><div class="st-text">"City Fitness has everything they need."</div></div>
+          <div class="st-card"><div class="st-text">"I am the right person to guide them."</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- L3 -->
+    <div class="lesson-card" data-lesson="3">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">03</span>
+        <span class="lesson-title-text">Ask for Their Name First — Make It About Them</span>
+        <span class="lesson-tag">The Opening Line</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>Most people open with their own name. <em>"Hi, I'm Mike, welcome to City Fitness!"</em> It sounds friendly. It is also subtly self-centered. You have led with yourself.</p>
+        <p>The City Fitness standard flips this. You ask for their name first. One small change with a significant psychological effect: it signals immediately that this interaction is about them, not about you. They are the priority from the very first word.</p>
+        <div class="callout callout-script">
+          <div class="callout-label">The Standard Opening Line</div>
+          "Hello, welcome to City Fitness! What's your name?"
+        </div>
+        <p>What happens when you ask for their name first:</p>
+        <p><strong>They feel prioritized.</strong> You have established before anything else that they are the focus of this conversation, not you.</p>
+        <p><strong>Natural reciprocity.</strong> After giving their name, most people will naturally ask for yours. The exchange feels balanced and collaborative rather than transactional.</p>
+        <p><strong>You now have their name.</strong> Use it. Not constantly — that becomes awkward — but strategically throughout the interaction. A person's name is the single most powerful word in any conversation.</p>
+        <div class="callout callout-tip">
+          <div class="callout-label">Name Recall Tip</div>
+          The moment they tell you their name, repeat it back immediately: <em>"Great to meet you, [Name]!"</em> This cements it in your memory and signals that you actually heard them — not just waiting for your turn to talk.
+        </div>
+        <div class="callout callout-warn">
+          <div class="callout-label">If You Miss It</div>
+          If you did not catch their name clearly, ask again immediately and directly: <em>"I'm sorry — say that one more time?"</em> Do not guess. Do not skip it. Using the wrong name is worse than asking again.
+        </div>
+      </div>
+    </div>
+
+    <!-- L4 -->
+    <div class="lesson-card" data-lesson="4">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">04</span>
+        <span class="lesson-title-text">Give Your Name — Complete the Exchange</span>
+        <span class="lesson-tag">Reciprocity</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>After they give you their name and you respond warmly, now is when you introduce yourself. The sequence matters: them first, you second. This is not a rule for its own sake — it is a psychological principle. When you establish their importance before your own, the reciprocity that follows feels genuine rather than scripted.</p>
+        <div class="callout callout-script">
+          <div class="callout-label">The Name Exchange</div>
+          "Great to meet you, [Their Name]! I'm [Your Name] — I'm going to be taking care of you today."
+        </div>
+        <p>The phrase <em>"taking care of you today"</em> is doing important work. It positions you as a host and guide — not a salesperson. It sets a tone of service and personal attention before the process has even started.</p>
+        <div class="callout callout-rule">
+          <div class="callout-label">The Relationship Rule</div>
+          People buy from people they like. And people like people who make them feel seen and valued. The name exchange — done in the right order, with genuine warmth — is the fastest way to start building that liking.
+        </div>
+      </div>
+    </div>
+
+    <!-- L5 -->
+    <div class="lesson-card" data-lesson="5">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">05</span>
+        <span class="lesson-title-text">Lay Out Expectations — Frame the Process</span>
+        <span class="lesson-tag">Setting the Stage</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>After the name exchange, there is a moment of uncertainty for the guest. They do not know what is about to happen. That uncertainty — even if small — creates low-level anxiety. Your job is to remove it immediately by giving them a clear, simple picture of the next 45 minutes.</p>
+        <p>This is called laying out expectations. It is not a lengthy explanation. It is a three-part sentence that answers the question every guest has in the back of their mind: <em>"What is this going to be like?"</em></p>
+        <div class="callout callout-script">
+          <div class="callout-label">The Framework Script</div>
+          "So here's what we're going to do — first, we'll head back to my desk and chat a little about your fitness background. Then I'll take you on a quick lap so you can see everything we've got. And if you love it — which I think you will — I'll show you how memberships work. Sound fair?"
+        </div>
+        <p>Why <em>"Sound fair?"</em> matters: it is a tie-down — a small agreement that gets the guest nodding and mentally aligned with the process before it begins. They have now implicitly committed to the structure. The tour feels collaborative rather than something being done to them.</p>
+        <div class="callout callout-accent">
+          <div class="callout-label">The Psychology of Certainty</div>
+          Anxiety thrives in uncertainty. The moment someone knows what to expect, their guard drops. A guest who is relaxed and certain about the process is significantly easier to build rapport with than one who is wondering when the sales pitch is coming.
+        </div>
+        <div class="callout callout-warn">
+          <div class="callout-label">Keep It Simple</div>
+          Do not over-explain the process. Do not mention pricing in the framework. Do not make it sound like a formal appointment. It should feel like a friend showing them around. Three beats. One tie-down. Done.
+        </div>
+      </div>
+    </div>
+
+    <!-- L6 -->
+    <div class="lesson-card" data-lesson="6">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">06</span>
+        <span class="lesson-title-text">"Come On Back" — Creating Instant Belonging</span>
+        <span class="lesson-tag">Transition</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>Three words that do more work than they look like they should. <em>"Come on back."</em></p>
+        <p>On the surface, it is an invitation to follow you. Underneath, it is something more intentional. Even for a first-time visitor who has never been in the building, this phrase implies they already belong here. It is welcoming without being formal. It is casual without being dismissive. It sounds like something you say to someone who is already part of the community — not someone you are evaluating for membership.</p>
+        <div class="callout callout-script">
+          <div class="callout-label">The Transition</div>
+          [After name exchange and framework] "Come on back." [Gesture warmly toward the desk or floor — walk alongside them, not ahead.]
+        </div>
+        <p>The physical movement here matters. As you say "come on back," begin moving — and gesture for them to walk with you rather than behind you. Walking alongside a guest in these first moments communicates equality and partnership. Leading too far in front communicates that you are in charge and they are following, which subtly reinforces a power dynamic you do not want.</p>
+        <div class="callout callout-rule">
+          <div class="callout-label">The Walk Standard</div>
+          Alongside or slightly angled toward them — never more than one step ahead. This is both rapport-building and practical: it allows natural conversation, eye contact, and real-time body language reading from the first moment you move together.
+        </div>
+      </div>
+    </div>
+
+    <!-- L7 -->
+    <div class="lesson-card" data-lesson="7">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">07</span>
+        <span class="lesson-title-text">The Complete Greeting — All 5 Elements in Flow</span>
+        <span class="lesson-tag">Full Execution</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>Every element we have covered works together as a single fluid sequence. When it is done right, it does not feel like a system — it feels like a genuine, warm human interaction. That is exactly the goal. Here is the full greeting executed from start to finish.</p>
+        <div class="dialogue-block">
+          <div class="dialogue-title">The Complete Greeting — Full Script</div>
+          <div class="line"><span class="speaker prospect">SCENARIO</span><span class="line-text" style="font-style:italic;color:var(--grey);">A guest walks through the front door. Consultant stands, smiles, and moves toward them with energy before they reach the desk.</span></div>
+          <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"Hello! Welcome to City Fitness."</em> [Genuine smile, direct eye contact, warm energy — already moving toward them.]</span></div>
+          <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"What's your name?"</em> [Asks before giving their own name — makes it about the guest first.]</span></div>
+          <div class="line"><span class="speaker prospect">Guest</span><span class="line-text">"I'm Sarah."</span></div>
+          <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"Sarah, great to meet you! I'm [Name] — I'll be taking care of you today."</em> [Handshake if natural. Genuine warmth. Uses her name immediately to cement it.]</span></div>
+          <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"So here's what we're going to do — we'll head back to my desk and chat a little about your fitness background. Then I'll take you on a quick tour so you can see everything. And if you love it, I'll walk you through how memberships work. Sound fair?"</em></span></div>
+          <div class="line"><span class="speaker prospect">Guest</span><span class="line-text">"Yeah, sounds good."</span></div>
+          <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"Perfect. Come on back, Sarah."</em> [Gestures alongside — begins walking with them, not ahead.]</span></div>
+        </div>
+        <p>From door to desk, this entire exchange takes under 60 seconds. In that time, the guest has learned your name, felt prioritized, understood the process, and started walking through the club feeling like they already belong. That is the power of a great greeting done right.</p>
+        <div class="callout callout-tip">
+          <div class="callout-label">The Practice Standard</div>
+          This sequence should be practiced until it feels completely natural — not recited. Record yourself on your phone. Watch it back. Does it feel genuine or scripted? Keep going until you cannot tell the difference. That is when you have it.
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end lesson grid -->
+
+  <!-- STUDY COMPLETE -->
+  <div class="study-complete-banner" id="studyBanner">
+    <h3>All 7 Lessons Complete</h3>
+    <p>You've worked through every element of the greeting. Unlock your certification quiz below.</p>
+    <button class="cf-btn" onclick="unlockQuiz()" style="max-width:300px;margin:0 auto;">Unlock Certification ↓</button>
+  </div>
+
+  <!-- MISTAKES -->
+  <div class="divider-label">Common Mistakes</div>
+
+  <div class="section-header" style="padding-top:0;">
+    <div class="s-eyebrow">What Kills the First Impression</div>
+    <h2 class="s-title">6 Greeting Mistakes<br>& How to Fix Them</h2>
+  </div>
+
+  <div class="mistakes-grid">
+    <div class="mistake-card">
+      <div class="mistake-label bad">✗ The Mistake</div>
+      <div class="mistake-text">Staying seated when a guest walks in. <strong>It communicates they are an interruption, not the priority.</strong></div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label good">✓ The Fix</div>
+      <div class="mistake-text"><strong>Stand every single time.</strong> No exceptions. Even if you are mid-task, put it down and stand up. This is non-negotiable.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label bad">✗ The Mistake</div>
+      <div class="mistake-text">Leading with your name: <em>"Hi, I'm Mike!"</em> <strong>Self-centered order. You have made the first moment about you, not them.</strong></div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label good">✓ The Fix</div>
+      <div class="mistake-text"><strong>Always ask their name first.</strong> "What's your name?" comes before "I'm [Name]." Always. Without exception.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label bad">✗ The Mistake</div>
+      <div class="mistake-text">Flat, formulaic opener: <em>"Can I help you?"</em> <strong>It sounds like a retail transaction, not a premium fitness experience.</strong></div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label good">✓ The Fix</div>
+      <div class="mistake-text"><strong>"Hello, welcome to City Fitness! What's your name?"</strong> Warm, specific, and immediately focused on them.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label bad">✗ The Mistake</div>
+      <div class="mistake-text">Skipping the framework. Guest has no idea what is about to happen. <strong>Uncertainty creates anxiety. Anxiety creates resistance.</strong></div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label good">✓ The Fix</div>
+      <div class="mistake-text"><strong>Always frame the process in three beats:</strong> chat at desk, tour, memberships. Close with "Sound fair?" to get their first agreement.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label bad">✗ The Mistake</div>
+      <div class="mistake-text">Walking ahead of the guest during the transition — consultant leads, guest follows behind. <strong>Creates a follower dynamic, kills rapport.</strong></div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label good">✓ The Fix</div>
+      <div class="mistake-text"><strong>Walk alongside or angled toward them.</strong> Partners walk together. Guides walk beside. Leaders walk ahead. Be a partner.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label bad">✗ The Mistake</div>
+      <div class="mistake-text">Performative smile that does not reach the eyes. <strong>People detect inauthenticity instantly — it creates distrust before the conversation begins.</strong></div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label good">✓ The Fix</div>
+      <div class="mistake-text">Root your genuine smile in genuine belief. <strong>If you remember why City Fitness is exceptional, the smile takes care of itself.</strong></div>
+    </div>
+  </div>
+
+  <!-- ROLE PLAY -->
+  <div class="divider-label">Role-Play Scenarios</div>
+
+  <div class="section-header" style="padding-top:0;">
+    <div class="s-eyebrow">Practice</div>
+    <h2 class="s-title">4 Scenarios to<br>Train On</h2>
+    <p class="s-sub">The greeting needs to feel natural across every type of guest energy — from warm and excited to guarded and skeptical. Practice all four until the framework holds regardless of what walks through the door.</p>
+  </div>
+
+  <div class="roleplay-card">
+    <div class="roleplay-header">
+      <span class="roleplay-scenario">Scenario 01 — The Warm Walk-In</span>
+      <span class="roleplay-type">Standard</span>
+    </div>
+    <div class="roleplay-body">
+      <div class="roleplay-setup">Guest walks in with a smile, looks around with curiosity. They seem open and friendly. Clearly interested in joining.</div>
+      <div class="roleplay-objective"><strong>Your objective:</strong> Execute the full greeting sequence cleanly — stand, move, name exchange in the right order, framework, "come on back." This is your baseline. Every element should land naturally and conversationally. Do not rush through the framework just because they seem easy. This is where habits are built.</div>
+      <div class="coaching-note">The warm walk-in is a trap for complacency. Because they are already friendly, it is tempting to skip steps and jump straight to rapport building. Do not. Every element of the greeting exists for a reason. Execute all of it.</div>
+    </div>
+  </div>
+
+  <div class="roleplay-card">
+    <div class="roleplay-header">
+      <span class="roleplay-scenario">Scenario 02 — The Skeptical Guest</span>
+      <span class="roleplay-type">Defensive Energy</span>
+    </div>
+    <div class="roleplay-body">
+      <div class="roleplay-setup">Guest walks in with guarded body language — arms slightly crossed, minimal eye contact, flat affect. They have clearly been in gyms before and are ready for a sales pitch they do not want.</div>
+      <div class="roleplay-objective"><strong>Your objective:</strong> Do not mirror their energy or shrink from it. Match their pace — calm, unhurried, genuine — but do not reduce your warmth. The framework is especially important here: telling a guarded guest exactly what to expect immediately removes their biggest anxiety (that they are walking into a high-pressure situation). "Sound fair?" should land like a relief.</div>
+      <div class="coaching-note">Guarded guests become your biggest advocates when they feel genuinely respected and not sold to. The greeting is your single best tool for disarming that defense. Confidence and genuine warmth are the only things that work. Trying harder or louder makes it worse.</div>
+    </div>
+  </div>
+
+  <div class="roleplay-card">
+    <div class="roleplay-header">
+      <span class="roleplay-scenario">Scenario 03 — The Rushed Guest</span>
+      <span class="roleplay-type">Time Pressure</span>
+    </div>
+    <div class="roleplay-body">
+      <div class="roleplay-setup">Guest opens with: "I only have about 20 minutes — I just wanted to take a quick look around." They are already signaling that they want control of the timeline.</div>
+      <div class="roleplay-objective"><strong>Your objective:</strong> Acknowledge their timeline without surrendering the process. Do not skip the framework — compress it. "Totally — we can absolutely do a quick version of this. Give me 15 minutes and I'll show you everything worth seeing. What's your name?" The greeting still happens. The framework still gets set. You just calibrate the promise to their constraint.</div>
+      <div class="coaching-note">The time objection at the greeting stage is almost always a test, not a real limitation. Most "I only have 20 minutes" guests end up staying for the full tour if you are engaging and efficient. Respect the timeline they gave you — but do not let it collapse the process before it starts.</div>
+    </div>
+  </div>
+
+  <div class="roleplay-card">
+    <div class="roleplay-header">
+      <span class="roleplay-scenario">Scenario 04 — The Couple or Group</span>
+      <span class="roleplay-type">Multiple Guests</span>
+    </div>
+    <div class="roleplay-body">
+      <div class="roleplay-setup">Two people walk in together — a couple, or two friends checking out the club at the same time. There is no clear "lead" guest.</div>
+      <div class="roleplay-objective"><strong>Your objective:</strong> Get both names. Not just the one who speaks first. Make eye contact with both. Address both in the framework. The risk here is that you naturally gravitate toward the more talkative or forward person and the other person feels invisible — which means you have lost half the room before the tour begins. Equal warmth, both names, both acknowledged.</div>
+      <div class="coaching-note">In couple or group tours, the person who is quieter often has more decision-making weight than the one who talks. Do not underestimate or under-engage the quiet one. Getting their name and directing occasional eye contact and questions toward them is essential.</div>
+    </div>
+  </div>
+
+  <!-- CERTIFICATION -->
+  <div class="divider-label">Certification</div>
+
+  <div class="section-header" style="padding-top:0;">
+    <div class="s-eyebrow">Knowledge Check</div>
+    <h2 class="s-title">Greeting Certification</h2>
+    <p class="s-sub">15 questions covering every element of this module. 80% or higher to pass. Complete all 7 lessons above to unlock.</p>
+  </div>
+
+  <div class="quiz-section" id="quizSection">
+    <div class="quiz-locked" id="quizLocked">
+      <div class="quiz-locked-icon">🔒</div>
+      <h3>Complete All Lessons to Unlock</h3>
+      <p>Open all 7 lessons above. The quiz unlocks automatically when you finish.</p>
+    </div>
+    <div class="name-panel" id="namePanel" style="display:none;">
+      <h3>Certification Registry</h3>
+      <p>Enter your full name as it should appear on your certification record.</p>
+      <input type="text" class="cf-input" id="empNameInput" placeholder="Full Name"/>
+      <button class="cf-btn" onclick="startQuiz()">Begin Official Test →</button>
+    </div>
+    <div class="quiz-active" id="quizActive" style="display:none;">
+      <div class="q-progress-wrap"><div class="q-progress-bar" id="qBar"></div></div>
+      <div class="q-meta">
+        <span class="q-counter" id="qCounter"></span>
+        <span class="q-topic">Module 02 · The Greeting</span>
+      </div>
+      <div class="q-text" id="qText"></div>
+      <div class="q-options" id="qOptions"></div>
+    </div>
+    <div class="results-panel" id="resultsPanel">
+      <div class="result-score" id="resultScore"></div>
+      <div class="result-label" id="resultLabel"></div>
+      <div id="missedSection"></div>
+      <button class="cf-btn" onclick="resetModule()" style="margin-top:22px;">Return to Module</button>
+    </div>
+  </div>
+
+  <!-- DEPLOY BOX -->
+  <div class="deploy-box">
+    <div class="deploy-title">🚀 How to Deploy This Module</div>
+    <div class="deploy-steps">
+      <div class="deploy-step"><span class="deploy-num">1</span><span class="deploy-text">Download this file — it should be named <code>cf-module-02-greeting.html</code></span></div>
+      <div class="deploy-step"><span class="deploy-num">2</span><span class="deploy-text">Go to <strong>github.com</strong> → your <code>cf-training</code> repository</span></div>
+      <div class="deploy-step"><span class="deploy-num">3</span><span class="deploy-text">Click <strong>Add file → Upload files</strong> → drag the file in → click <strong>Commit changes</strong></span></div>
+      <div class="deploy-step"><span class="deploy-num">4</span><span class="deploy-text">Wait 60 seconds, then your live URL is: <code>https://cityfitness-training.github.io/cf-training/cf-module-02-greeting.html</code></span></div>
+      <div class="deploy-step"><span class="deploy-num">5</span><span class="deploy-text">Paste that URL into Google Sites or your training platform — done</span></div>
+    </div>
+  </div>
+
+</div><!-- end module-wrap -->
+
+<div class="module-footer">
+  <p>City Fitness Philadelphia &nbsp;·&nbsp; Deep Training Module 02 &nbsp;·&nbsp; 2026</p>
+</div>
+
+<iframe name="cf_hidden" id="cf_hidden" style="display:none;"></iframe>
+<form id="certForm" target="cf_hidden" method="GET" action="https://script.google.com/a/macros/cityfitness.com/s/AKfycbzZokf4OQGpHYEkb_9mcVdJ-t9jop9RWIpclIcLSjTWRcBQfeDJ751bl0qO8k7VrZwe/exec">
+  <input type="hidden" name="employee" id="formEmployee"/>
+  <input type="hidden" name="topic" id="formTopic"/>
+  <input type="hidden" name="result" id="formResult"/>
+</form>
+
+<script>
+window.addEventListener('scroll',()=>{
+  const el=document.documentElement;
+  const pct=(el.scrollTop/(el.scrollHeight-el.clientHeight))*100;
+  document.getElementById('topFill').style.width=pct+'%';
+});
+
+let openedLessons=new Set();
+const totalLessons=7;
+
+function toggleLesson(header){
+  const card=header.parentElement;
+  const isOpen=card.classList.contains('open');
+  card.classList.toggle('open',!isOpen);
+  if(!isOpen){
+    openedLessons.add(parseInt(card.dataset.lesson));
+    checkStudyComplete();
+  }
+}
+
+function checkStudyComplete(){
+  if(openedLessons.size>=totalLessons){
+    const banner=document.getElementById('studyBanner');
+    banner.style.display='block';
+    banner.scrollIntoView({behavior:'smooth',block:'center'});
+  }
+}
+
+function unlockQuiz(){
+  document.getElementById('quizLocked').style.display='none';
+  document.getElementById('namePanel').style.display='block';
+  document.getElementById('quizSection').scrollIntoView({behavior:'smooth'});
+}
+
+const questions=[
+  {q:"Within how many seconds do people form lasting first impressions?",a:["30 seconds","2 minutes","7 seconds","1 minute"],c:2},
+  {q:"Which of the four non-verbal elements is considered the most common failure point at City Fitness?",a:["Poor posture","Staying seated when a guest walks in","Not smiling","Walking too fast"],c:1},
+  {q:"What is the correct order for the name exchange?",a:["Give your name first, then ask theirs","Ask their name first, then give yours","Skip names and go straight to the framework","Ask their name only if they seem friendly"],c:1},
+  {q:"Why do we ask for the guest's name first?",a:["Because it is faster","It immediately signals that the interaction is about them, not us","It is easier to remember","It is required by management"],c:1},
+  {q:"What is the correct City Fitness opening line?",a:["Can I help you?","Hi there, welcome!","Hello, welcome to City Fitness! What's your name?","Hey, how's it going?"],c:2},
+  {q:"What is the purpose of laying out expectations during the greeting?",a:["To extend the interaction","To remove uncertainty and reduce the guest's anxiety about the process","To explain pricing early","To qualify whether they can afford a membership"],c:1},
+  {q:"What are the three beats of the framework?",a:["Price, tour, close","Chat at desk, tour, memberships","Goals, buckets, close","Phone, desk, tour"],c:1},
+  {q:"What is the tie-down question used at the end of the framework?",a:["Are you ready?","Does that work for you?","Sound fair?","Do you have any questions?"],c:2},
+  {q:"What does 'Come on back' accomplish even for a first-time visitor?",a:["It gives directions to the desk","It implies they already belong and creates an immediate sense of community","It signals that pricing will come next","It ends the greeting phase"],c:1},
+  {q:"Where should you walk in relation to the guest during the transition?",a:["Well ahead so they can follow","Directly behind them","Alongside or slightly angled toward them — never more than one step ahead","At least three feet in front"],c:2},
+  {q:"For the skeptical or guarded guest, which element of the greeting is most powerful?",a:["Talking more to fill the silence","Reducing your warmth to match their energy","The framework — telling them exactly what to expect removes their biggest anxiety","Skipping straight to the tour"],c:2},
+  {q:"When a guest says 'I only have 20 minutes,' you should:",a:["Tell them to come back when they have more time","Skip all greeting elements and start the tour immediately","Acknowledge their timeline, compress the framework promise, and still execute the greeting","End the interaction and take their contact info"],c:2},
+  {q:"When greeting a couple or group, what is the most common mistake?",a:["Getting both names","Gravitating to the talkative person and making the quiet one feel invisible","Walking ahead of both guests","Skipping the framework"],c:1},
+  {q:"A performative smile that does not reach the eyes creates what effect?",a:["Builds initial trust","Creates distrust before the conversation even begins","Makes no difference","Impresses experienced gym-goers"],c:1},
+  {q:"What is the ultimate goal of the greeting before any sales process begins?",a:["Qualify whether they can afford a membership","Explain the club's differentiators","Make the guest feel seen, trusted, and certain about what to expect","Get them to the desk as quickly as possible"],c:2}
+];
+
+let empName='',qIndex=0,score=0,missed=[];
+
+function startQuiz(){
+  empName=document.getElementById('empNameInput').value.trim();
+  if(!empName){alert('Please enter your full name.');return;}
+  document.getElementById('namePanel').style.display='none';
+  document.getElementById('quizActive').style.display='block';
+  qIndex=0;score=0;missed=[];
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const q=questions[qIndex];
+  document.getElementById('qBar').style.width=((qIndex/questions.length)*100)+'%';
+  document.getElementById('qCounter').textContent=`Question ${qIndex+1} of ${questions.length}`;
+  document.getElementById('qText').textContent=q.q;
+  const opts=document.getElementById('qOptions');
+  opts.innerHTML='';
+  q.a.forEach((opt,i)=>{
+    const btn=document.createElement('button');
+    btn.className='q-opt';
+    btn.textContent=opt;
+    btn.onclick=()=>handleAnswer(i);
+    opts.appendChild(btn);
+  });
+}
+
+function handleAnswer(idx){
+  const q=questions[qIndex];
+  if(idx===q.c){score++;}
+  else{missed.push({q:q.q,a:q.a[q.c]});}
+  qIndex++;
+  if(qIndex<questions.length){renderQuestion();}
+  else{showResults();}
+}
+
+function showResults(){
+  const pct=Math.round((score/questions.length)*100);
+  document.getElementById('quizActive').style.display='none';
+  const rp=document.getElementById('resultsPanel');
+  rp.style.display='block';
+  const scoreEl=document.getElementById('resultScore');
+  scoreEl.textContent=pct+'%';
+  scoreEl.className='result-score '+(pct>=80?'result-pass':'result-fail');
+  document.getElementById('resultLabel').textContent=pct>=80?'Certification Passed — Module 02: The Greeting':'Retake Required — Review Missed Questions Below';
+  let missedHtml='';
+  if(missed.length){
+    missedHtml='<div class="missed-label">Knowledge Gaps — Review These</div>';
+    missed.forEach(m=>{
+      missedHtml+=`<div class="missed-item"><div class="missed-q">${m.q}</div><div class="missed-a">Correct Answer: ${m.a}</div></div>`;
+    });
+  }
+  document.getElementById('missedSection').innerHTML=missedHtml;
+  document.getElementById('formEmployee').value=empName;
+  document.getElementById('formTopic').value='Module 02 - The Greeting';
+  document.getElementById('formResult').value=pct;
+  document.getElementById('certForm').submit();
+}
+
+function resetModule(){
+  document.getElementById('resultsPanel').style.display='none';
+  document.getElementById('namePanel').style.display='block';
+  document.getElementById('empNameInput').value='';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
