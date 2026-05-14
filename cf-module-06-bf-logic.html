@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>CF Training | Module 06: B+F Logic</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:ital,wght@0,400;0,500;0,600;1,400;1,600&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg: #111210;
+  --surface: #171916;
+  --card: #1d1f1c;
+  --border: #272b24;
+  --border-light: #333830;
+  --copper: #B87C4C;
+  --copper-light: #C9A07A;
+  --copper-dim: rgba(184,124,76,0.12);
+  --copper-glow: rgba(184,124,76,0.05);
+  --tan: #BF9B6F;
+  --white: #EEF0E8;
+  --grey: #6e7268;
+  --dim: #909488;
+  --red: #c0392b;
+  --green: #3a9a6a;
+  --green-dim: rgba(58,154,106,0.1);
+  --blue: #4a6aa0;
+  --blue-dim: rgba(74,106,160,0.12);
+  --grad: linear-gradient(135deg, #B87C4C 0%, #C9A07A 100%);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--white);font-family:'Barlow',sans-serif;line-height:1.65;overflow-x:hidden;}
+
+.top-bar{position:fixed;top:0;left:0;right:0;height:3px;background:var(--border);z-index:9999;}
+.top-bar-fill{height:100%;background:var(--grad);width:0%;transition:width .3s ease;}
+
+/* HERO */
+.hero{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;align-items:center;padding:80px 60px;gap:60px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 20% 50%,rgba(184,124,76,0.06) 0%,transparent 70%);}
+.hero-left{position:relative;z-index:1;}
+.hero-eyebrow{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--copper);letter-spacing:4px;text-transform:uppercase;margin-bottom:18px;display:flex;align-items:center;gap:12px;}
+.hero-eyebrow::before{content:'';display:block;width:32px;height:2px;background:var(--copper);}
+.hero-title{font-family:'Barlow Condensed',sans-serif;font-size:clamp(52px,8vw,100px);font-weight:900;line-height:.88;text-transform:uppercase;letter-spacing:-2px;margin-bottom:22px;}
+.hero-title em{font-style:normal;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.hero-sub{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:2px;margin-bottom:20px;}
+.hero-desc{font-size:16px;color:var(--dim);line-height:1.75;margin-bottom:36px;max-width:480px;}
+.hero-stats{display:flex;gap:36px;margin-bottom:44px;}
+.stat{display:flex;flex-direction:column;}
+.stat-num{font-family:'Barlow Condensed',sans-serif;font-size:34px;font-weight:900;color:var(--copper);line-height:1;}
+.stat-label{font-size:11px;color:var(--grey);text-transform:uppercase;letter-spacing:2px;margin-top:3px;}
+.hero-btn{display:inline-flex;align-items:center;gap:10px;background:var(--grad);border:none;padding:16px 32px;color:white;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;letter-spacing:2px;text-transform:uppercase;border-radius:4px;cursor:pointer;transition:.2s;}
+.hero-btn:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(184,124,76,0.3);}
+
+/* HERO RIGHT — value calculator visual */
+.hero-right{position:relative;z-index:1;}
+.value-calc{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:28px;overflow:hidden;}
+.vc-title{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--copper);letter-spacing:3px;text-transform:uppercase;margin-bottom:20px;}
+.vc-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border);}
+.vc-row:last-of-type{border-bottom:none;}
+.vc-amenity{font-size:14px;color:var(--dim);}
+.vc-freq{font-size:13px;color:var(--tan);font-style:italic;}
+.vc-total{display:flex;justify-content:space-between;align-items:center;padding:16px 18px;background:var(--copper-dim);border-radius:8px;margin-top:16px;}
+.vc-total-label{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--copper);}
+.vc-total-val{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;color:var(--copper);}
+.vc-note{font-size:12px;color:var(--grey);margin-top:12px;line-height:1.5;font-style:italic;}
+
+/* LAYOUT */
+.module-wrap{max-width:900px;margin:0 auto;padding:0 40px 120px;}
+.section-header{padding:70px 0 36px;}
+.s-eyebrow{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--copper);letter-spacing:4px;text-transform:uppercase;display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+.s-eyebrow::after{content:'';width:48px;height:1px;background:var(--copper);opacity:.4;}
+.s-title{font-family:'Barlow Condensed',sans-serif;font-size:clamp(30px,5vw,46px);font-weight:900;text-transform:uppercase;letter-spacing:-.5px;line-height:1.05;margin-bottom:10px;}
+.s-sub{font-size:16px;color:var(--dim);max-width:680px;line-height:1.6;}
+
+/* LESSONS */
+.lesson-grid{display:flex;flex-direction:column;gap:2px;}
+.lesson-card{background:var(--surface);border:1px solid var(--border);overflow:hidden;}
+.lesson-card:first-child{border-radius:10px 10px 0 0;}
+.lesson-card:last-child{border-radius:0 0 10px 10px;}
+.lesson-header{display:flex;align-items:center;gap:20px;padding:20px 26px;cursor:pointer;user-select:none;transition:.15s;}
+.lesson-header:hover{background:var(--copper-glow);}
+.lesson-num{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--copper);letter-spacing:2px;min-width:34px;}
+.lesson-title-text{font-size:16px;font-weight:700;flex:1;}
+.lesson-tag{font-size:10px;font-weight:700;color:var(--copper);background:var(--copper-dim);padding:4px 10px;border-radius:20px;text-transform:uppercase;letter-spacing:1px;white-space:nowrap;}
+.lesson-arrow{color:var(--grey);font-size:11px;transition:.3s;font-style:normal;}
+.lesson-card.open .lesson-arrow{transform:rotate(180deg);color:var(--copper);}
+.lesson-card.open .lesson-header{border-bottom:1px solid var(--border);}
+.lesson-body{display:none;padding:28px 26px 26px;}
+.lesson-card.open .lesson-body{display:block;}
+.lesson-body p{color:var(--dim);font-size:15px;line-height:1.75;margin-bottom:14px;}
+.lesson-body p:last-child{margin-bottom:0;}
+.lesson-body strong{color:var(--white);font-weight:700;}
+.lesson-body em{color:var(--tan);font-style:italic;}
+
+/* CALLOUTS */
+.callout{border-radius:8px;padding:18px 22px;margin:18px 0;font-size:15px;line-height:1.65;}
+.callout-rule{border-left:3px solid var(--copper);background:var(--copper-dim);color:var(--copper-light);}
+.callout-script{border-left:3px solid var(--tan);background:rgba(191,155,111,0.07);color:var(--tan);font-style:italic;}
+.callout-warn{border-left:3px solid var(--red);background:rgba(192,57,43,0.08);color:#d97060;}
+.callout-tip{border-left:3px solid var(--green);background:var(--green-dim);color:#7ac09a;}
+.callout-blue{border-left:3px solid var(--blue);background:var(--blue-dim);color:#8ab0d8;}
+.callout-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:3px;text-transform:uppercase;margin-bottom:7px;opacity:.7;display:block;}
+
+/* DIALOGUE */
+.dialogue-block{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:22px;margin:18px 0;}
+.dialogue-title{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--copper);letter-spacing:3px;text-transform:uppercase;margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+.line{display:flex;gap:14px;margin-bottom:14px;align-items:flex-start;}
+.line:last-child{margin-bottom:0;}
+.speaker{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;min-width:90px;padding-top:3px;}
+.speaker.prospect{color:var(--grey);}
+.speaker.consultant{color:var(--copper);}
+.speaker.action{color:rgba(74,106,160,0.8);}
+.line-text{font-size:15px;color:var(--dim);line-height:1.65;}
+.line-text em{color:var(--white);font-style:normal;font-weight:600;}
+.line-text.action-text{font-style:italic;color:rgba(74,106,160,0.7);font-size:13px;}
+
+/* AMENITY CARDS */
+.amenity-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0;}
+.amenity-card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:18px;}
+.amenity-name{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--copper);margin-bottom:8px;}
+.amenity-q{font-size:14px;color:var(--tan);font-style:italic;margin-bottom:8px;line-height:1.5;}
+.amenity-why{font-size:13px;color:var(--dim);line-height:1.5;}
+.amenity-why strong{color:var(--white);}
+
+/* TIER COMPARISON */
+.tier-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin:16px 0;}
+.tier-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;text-align:center;}
+.tier-card.recommended{border-color:var(--copper);background:var(--copper-dim);}
+.tier-badge{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--copper);margin-bottom:8px;}
+.tier-name{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:900;text-transform:uppercase;color:var(--white);margin-bottom:6px;}
+.tier-price{font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:900;color:var(--copper);line-height:1;margin-bottom:4px;}
+.tier-sub{font-size:11px;color:var(--grey);}
+.tier-features{margin-top:14px;text-align:left;}
+.tier-feature{font-size:12px;color:var(--dim);padding:4px 0;border-bottom:1px solid var(--border);line-height:1.4;}
+.tier-feature:last-child{border-bottom:none;}
+.tier-feature.included{color:var(--copper-light);}
+.tier-feature.excluded{color:var(--grey);text-decoration:line-through;opacity:.5;}
+
+/* MISTAKES */
+.mistakes-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px;}
+.mistake-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:18px;}
+.mistake-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:3px;text-transform:uppercase;margin-bottom:8px;}
+.mistake-label.bad{color:var(--red);}
+.mistake-label.good{color:var(--green);}
+.mistake-text{font-size:14px;line-height:1.6;color:var(--dim);}
+.mistake-text strong{color:var(--white);}
+
+/* ROLEPLAY */
+.roleplay-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:14px;}
+.roleplay-header{padding:18px 22px;background:var(--copper-dim);display:flex;justify-content:space-between;align-items:center;}
+.roleplay-scenario{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--copper);}
+.roleplay-type{font-size:11px;color:var(--grey);}
+.roleplay-body{padding:22px;}
+.roleplay-setup{font-size:15px;font-style:italic;color:var(--tan);margin-bottom:14px;padding:12px 16px;background:rgba(191,155,111,0.06);border-radius:6px;line-height:1.6;}
+.roleplay-objective{font-size:14px;color:var(--dim);line-height:1.6;}
+.roleplay-objective strong{color:var(--white);}
+.coaching-note{margin-top:12px;padding:12px 16px;background:rgba(184,124,76,0.07);border-radius:6px;font-size:13px;color:var(--copper-light);line-height:1.6;}
+.coaching-note::before{content:'COACHING NOTE  ';font-weight:800;letter-spacing:2px;font-size:10px;display:block;margin-bottom:3px;opacity:.7;}
+
+/* DIVIDER */
+.divider-label{display:flex;align-items:center;gap:16px;color:var(--grey);font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;margin:56px 0 30px;}
+.divider-label::before,.divider-label::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* STUDY BANNER */
+.study-complete-banner{background:var(--copper-dim);border:1px solid rgba(184,124,76,0.3);border-radius:12px;padding:28px;text-align:center;margin:36px 0;display:none;}
+.study-complete-banner h3{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;color:var(--copper);margin-bottom:6px;}
+.study-complete-banner p{color:var(--dim);font-size:14px;margin-bottom:18px;}
+
+/* QUIZ */
+.quiz-section{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-top:36px;}
+.quiz-locked{padding:56px 40px;text-align:center;}
+.quiz-locked-icon{font-size:36px;margin-bottom:14px;opacity:.3;}
+.quiz-locked h3{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;text-transform:uppercase;color:var(--grey);margin-bottom:6px;}
+.quiz-locked p{color:var(--grey);font-size:14px;}
+.quiz-active{padding:38px;}
+.q-progress-wrap{height:3px;background:var(--border);border-radius:2px;margin-bottom:28px;overflow:hidden;}
+.q-progress-bar{height:100%;background:var(--grad);width:0%;transition:.4s;}
+.q-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;}
+.q-counter{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--copper);letter-spacing:2px;text-transform:uppercase;}
+.q-topic{font-size:11px;color:var(--grey);}
+.q-text{font-size:20px;font-weight:700;color:var(--white);margin-bottom:26px;line-height:1.4;}
+.q-options{display:flex;flex-direction:column;gap:9px;}
+.q-opt{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:15px 18px;color:var(--dim);font-size:15px;text-align:left;cursor:pointer;transition:.2s;font-family:'Barlow',sans-serif;}
+.q-opt:hover{border-color:var(--copper);color:var(--white);background:var(--copper-glow);}
+.name-panel{padding:38px;}
+.name-panel h3{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;color:var(--white);margin-bottom:5px;}
+.name-panel p{color:var(--dim);font-size:14px;margin-bottom:22px;}
+.cf-input{background:var(--bg);border:1px solid var(--border);color:var(--white);padding:13px 16px;width:100%;border-radius:8px;font-family:'Barlow',sans-serif;font-size:16px;margin-bottom:14px;outline:none;transition:.2s;}
+.cf-input:focus{border-color:var(--copper);}
+.cf-btn{background:var(--grad);border:none;padding:15px 28px;color:white;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;letter-spacing:2px;text-transform:uppercase;border-radius:8px;cursor:pointer;width:100%;transition:.2s;}
+.cf-btn:hover{opacity:.9;transform:translateY(-1px);}
+.results-panel{padding:38px;display:none;}
+.result-score{font-family:'Barlow Condensed',sans-serif;font-size:70px;font-weight:900;line-height:1;margin-bottom:6px;}
+.result-pass{color:var(--copper);}
+.result-fail{color:var(--red);}
+.result-label{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--grey);margin-bottom:22px;}
+.missed-label{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;color:var(--dim);letter-spacing:3px;text-transform:uppercase;margin-bottom:10px;margin-top:22px;}
+.missed-item{background:rgba(192,57,43,0.07);border-left:3px solid var(--red);border-radius:0 6px 6px 0;padding:13px 15px;margin-bottom:7px;}
+.missed-q{font-size:14px;color:var(--dim);margin-bottom:5px;}
+.missed-a{font-size:14px;color:var(--tan);font-weight:600;}
+
+.module-footer{text-align:center;padding:50px 40px;border-top:1px solid var(--border);}
+.module-footer p{color:var(--grey);font-size:11px;letter-spacing:3px;text-transform:uppercase;}
+
+@media(max-width:800px){
+  .hero{grid-template-columns:1fr;min-height:auto;padding:80px 24px 40px;}
+  .hero-right{display:none;}
+  .module-wrap{padding:0 20px 80px;}
+  .amenity-grid{grid-template-columns:1fr;}
+  .tier-grid{grid-template-columns:1fr;}
+  .mistakes-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar"><div class="top-bar-fill" id="topFill"></div></div>
+
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow">City Fitness Training · Deep Module Series</div>
+    <h1 class="hero-title">Benefit +<br><em>Frequency.</em></h1>
+    <div class="hero-sub">Close on value. Not on price.</div>
+    <p class="hero-desc">B+F Logic is the bridge between the tour and the price card. It turns the amenities a guest is excited about into a personalized value equation — built entirely from numbers they gave you. When done right, the membership tier sells itself before you ever flip the price sheet.</p>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-num">7</span><span class="stat-label">Core Lessons</span></div>
+      <div class="stat"><span class="stat-num">4</span><span class="stat-label">Full Scripts</span></div>
+      <div class="stat"><span class="stat-num">4</span><span class="stat-label">Role-Play Scenarios</span></div>
+      <div class="stat"><span class="stat-num">15</span><span class="stat-label">Quiz Questions</span></div>
+    </div>
+    <button class="hero-btn" onclick="document.getElementById('lessons').scrollIntoView({behavior:'smooth'})">Begin Training ↓</button>
+  </div>
+  <div class="hero-right">
+    <div class="value-calc">
+      <div class="vc-title">Their Value Equation — Built From Their Numbers</div>
+      <div class="vc-row">
+        <span class="vc-amenity">Pool Club Access</span>
+        <span class="vc-freq">"4–6x per month"</span>
+      </div>
+      <div class="vc-row">
+        <span class="vc-amenity">Revive Recovery Suite</span>
+        <span class="vc-freq">"Every time I work out"</span>
+      </div>
+      <div class="vc-row">
+        <span class="vc-amenity">Studio Classes</span>
+        <span class="vc-freq">"2–3x per week"</span>
+      </div>
+      <div class="vc-row">
+        <span class="vc-amenity">Multi-Club Access</span>
+        <span class="vc-freq">"A few times a month"</span>
+      </div>
+      <div class="vc-total">
+        <span class="vc-total-label">Conclusion</span>
+        <span class="vc-total-val">Performance+</span>
+      </div>
+      <div class="vc-note">Every number in this equation came from them — not from you. That is what makes it impossible to argue with.</div>
+    </div>
+  </div>
+</section>
+
+<div class="module-wrap">
+
+  <div class="section-header" style="padding-top:50px;">
+    <div class="s-eyebrow">The Objective</div>
+    <h2 class="s-title">Get Them to State<br>Their Own Usage.</h2>
+    <p class="s-sub">The entire B+F framework rests on one principle: people cannot argue with their own words. When a guest tells you they would use the pool four times a month and Revive after every workout — and you use those numbers to recommend Performance+ — you are not selling them a membership. You are reflecting their own commitment back to them.</p>
+  </div>
+
+  <div class="callout callout-rule">
+    <div class="callout-label">The Core Principle</div>
+    B+F Logic moves the conversation from "Is this membership worth the price?" to "Based on how you said you'd use it, which tier covers everything you need?" That is a completely different conversation — and it is one you win every time.
+  </div>
+
+  <div class="section-header" id="lessons">
+    <div class="s-eyebrow">Core Lessons</div>
+    <h2 class="s-title">7 B+F Skills That<br>Drive Higher Tiers</h2>
+    <p class="s-sub">Work through all 7 lessons in order. Certification unlocks when you finish.</p>
+  </div>
+
+  <div class="lesson-grid" id="lessonGrid">
+
+    <!-- L1 -->
+    <div class="lesson-card" data-lesson="1">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">01</span>
+        <span class="lesson-title-text">What Is B+F Logic — And Why It Works</span>
+        <span class="lesson-tag">Foundation</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>B+F stands for Benefit plus Frequency. It is a structured approach to connecting the amenities a guest is excited about with how often they will realistically use them — then using those numbers to justify the membership tier that covers everything they want.</p>
+        <p>Here is why it works so powerfully: most price objections happen because the guest is comparing the cost of the membership to an abstract number in their head. B+F replaces that abstract number with a concrete, personalized value equation built entirely from their own words.</p>
+        <div class="callout callout-blue">
+          <div class="callout-label">The Shift B+F Creates</div>
+          Without B+F: "Is $79.50 bi-weekly worth it?" — abstract, easy to second-guess.<br/><br/>
+          With B+F: "Based on using the pool 4x a month, Revive after every workout, and 3 studio classes a week — does Performance+ make sense?" — concrete, personal, and built from their commitments.
+        </div>
+        <p>The guest cannot argue with the second version without contradicting themselves. That is the power of B+F. You are not selling a price. You are confirming a solution they already described.</p>
+        <div class="callout callout-rule">
+          <div class="callout-label">The Three Goals of B+F</div>
+          1. Increase the percentage of guests who choose Performance+ or Studio+. &nbsp; 2. Give you a data-backed justification for the tier you recommend. &nbsp; 3. Create the most powerful objection-handling tool you have — their own stated frequency — before the objection ever arrives.
+        </div>
+      </div>
+    </div>
+
+    <!-- L2 -->
+    <div class="lesson-card" data-lesson="2">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">02</span>
+        <span class="lesson-title-text">Plant Premium Seeds Early — During the Tour</span>
+        <span class="lesson-tag">Timing</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>B+F Logic does not start at the desk. It starts the moment you begin the tour. Every time you show a premium amenity — Revive, the Pool Club, Studio classes, multi-club access — and you gauge their interest, you are laying the groundwork for the frequency conversation that follows.</p>
+        <p>The tour is where you plant the seed. The desk review is where you harvest it.</p>
+        <div class="callout callout-tip">
+          <div class="callout-label">How to Plant the Seed on the Tour</div>
+          At each premium amenity, pause and ask a light frequency question. Not the full B+F review yet — just a casual gauge of interest: "How often do you see yourself taking advantage of something like this?" Their answer is a data point you hold onto. Write it down.
+        </div>
+        <div class="dialogue-block">
+          <div class="dialogue-title">Seeding During the Tour — Three Examples</div>
+          <div class="line"><span class="speaker action">AT REVIVE</span><span class="line-text action-text">Guest lights up looking at the recovery suite.</span></div>
+          <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"If you had access to this every single day, how often do you think you'd take advantage of it?"</em></span></div>
+          <div class="line"><span class="speaker prospect">Guest</span><span class="line-text">"Honestly, probably after every workout. Maybe 4 or 5 times a week."</span></div>
+          <div class="line"><span class="speaker action">AT POOL</span><span class="line-text action-text">Guest asks about lane availability.</span></div>
+          <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"It's 75 feet, three lanes, 80 degrees year-round. For someone who swims — how often would you use this per month?"</em></span></div>
+          <div class="line"><span class="speaker prospect">Guest</span><span class="line-text">"I'd probably try to get in at least twice a week."</span></div>
+          <div class="line"><span class="speaker action">AT STUDIO</span><span class="line-text action-text">Guest comments on the class schedule board.</span></div>
+          <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"Those morning classes fill up fast — they're really popular. How many classes a week do you think would realistically fit your schedule?"</em></span></div>
+          <div class="line"><span class="speaker prospect">Guest</span><span class="line-text">"Two or three probably."</span></div>
+        </div>
+        <p>By the time you reach the desk, you have three data points — all from the guest. You have not mentioned price once. You have not pushed Performance+. You have simply listened and noted. The review almost writes itself.</p>
+      </div>
+    </div>
+
+    <!-- L3 -->
+    <div class="lesson-card" data-lesson="3">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">03</span>
+        <span class="lesson-title-text">The Tour Review — Setting Up the B+F Recap at the Desk</span>
+        <span class="lesson-tag">The Transition</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>As you transition from the floor back to the desk, you set up the B+F recap with a simple, conversational bridge. This is not a formal presentation moment — it is a natural continuation of the tour conversation.</p>
+        <div class="callout callout-script">
+          <div class="callout-label">Tour Review Bridge Script</div>
+          "Hey [Name], before we look at memberships — let's do a quick recap of what we saw and make sure I'm recommending the right fit for you. Sound good?"
+        </div>
+        <p>This framing does three things:</p>
+        <p><strong>It positions you as a consultant, not a closer.</strong> "Make sure I'm recommending the right fit" sounds like genuine service — because it is. You are not presenting options and waiting for them to pick. You are prescribing a specific solution based on what they told you.</p>
+        <p><strong>It signals that a recommendation is coming.</strong> The guest knows they are about to be told which membership fits them — not handed a menu. This reduces decision fatigue and positions you as the expert.</p>
+        <p><strong>It creates a natural yes.</strong> "Sound good?" is a micro tie-down that gets their implicit agreement to proceed. They have consented to hear the recap — which means they have consented to hearing the recommendation that follows.</p>
+        <div class="callout callout-warn">
+          <div class="callout-label">Do Not Skip the Recap</div>
+          Going straight from tour to price card without the B+F review is one of the most common mistakes in the close sequence. The recap is what converts tour excitement into membership justification. Skip it and you are presenting a price without a foundation.
+        </div>
+      </div>
+    </div>
+
+    <!-- L4 -->
+    <div class="lesson-card" data-lesson="4">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">04</span>
+        <span class="lesson-title-text">The Frequency Question — Getting Them to Commit</span>
+        <span class="lesson-tag">The Core Skill</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>The frequency question is the engine of B+F Logic. It is a simple, direct ask for each premium amenity: <em>how often would you use this?</em> The answer becomes the justification for the tier you recommend.</p>
+        <p>Here is the cadence for each amenity during the desk review:</p>
+        <div class="amenity-grid">
+          <div class="amenity-card">
+            <div class="amenity-name">Pool Club</div>
+            <div class="amenity-q">"You mentioned the pool was something you could really benefit from. How often would you realistically use it per month?"</div>
+            <div class="amenity-why">Even <strong>4x per month</strong> at a local pool drop-in rate (often $10–$15/visit) is $40–$60 in value from this amenity alone.</div>
+          </div>
+          <div class="amenity-card">
+            <div class="amenity-name">Revive Suite</div>
+            <div class="amenity-q">"You seemed really excited about Revive. If you had access every day, how many times a week do you think you'd actually use it?"</div>
+            <div class="amenity-why">A single infrared sauna session at a standalone spa runs <strong>$30–$60</strong>. Four uses a month = $120–$240 in standalone value.</div>
+          </div>
+          <div class="amenity-card">
+            <div class="amenity-name">Studio Classes</div>
+            <div class="amenity-q">"How many classes per week do you realistically see yourself taking? Even a conservative estimate."</div>
+            <div class="amenity-why">Boutique studio classes average <strong>$25–$35 each</strong>. Two per week = $200–$280/month in standalone cost.</div>
+          </div>
+          <div class="amenity-card">
+            <div class="amenity-name">Multi-Club Access</div>
+            <div class="amenity-q">"You mentioned [their location/commute]. How often do you think you'd take advantage of visiting a different location?"</div>
+            <div class="amenity-why">Even occasional multi-club use adds massive <strong>schedule flexibility</strong> — especially for members who travel within the city or work from different offices.</div>
+          </div>
+        </div>
+        <div class="callout callout-rule">
+          <div class="callout-label">Listen and Write</div>
+          When they answer, write it down in front of them. This communicates that their answer matters and has just become the basis for your recommendation. It also prevents any "I didn't say that" moments later — because they watched you record it.
+        </div>
+      </div>
+    </div>
+
+    <!-- L5 -->
+    <div class="lesson-card" data-lesson="5">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">05</span>
+        <span class="lesson-title-text">The Recap and Recommendation — Closing the Loop</span>
+        <span class="lesson-tag">The Prescription</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>Once you have gathered their frequency commitments for each amenity, you summarize their numbers back to them and deliver your recommendation as a logical conclusion — not a sales pitch. This is the moment B+F pays off.</p>
+        <div class="callout callout-script">
+          <div class="callout-label">The B+F Recap and Recommendation Script</div>
+          "Okay — so based on everything we talked about: you said you'd use the pool about 4–6 times a month, Revive after most of your workouts which puts you at probably 3–4 times a week, and you'd realistically take 2–3 studio classes a week. That's a lot of access — and it all points to one membership: Performance+. This is the only tier that covers all of it without you having to think twice about what's included. Does that make sense based on what you told me?"
+        </div>
+        <p>Notice the structure: <strong>their numbers → your conclusion → confirmation question.</strong> You are not asking if they want Performance+. You are confirming that it logically follows from their own words. The closing question is not "what do you think?" — it is "does that make sense?" The distinction is everything.</p>
+        <div class="callout callout-tip">
+          <div class="callout-label">One Option First</div>
+          Always recommend one membership — the right one — based on their frequency data. Do not present all three and let them choose. You are the expert. You are prescribing the solution. Presenting options before you have been unable to close on Performance+ tells the guest there is a cheaper answer available and invites them to find it.
+        </div>
+      </div>
+    </div>
+
+    <!-- L6 -->
+    <div class="lesson-card" data-lesson="6">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">06</span>
+        <span class="lesson-title-text">Know the Tiers — When to Present What</span>
+        <span class="lesson-tag">The Tiers</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>B+F Logic only works if you know which tier each amenity lives in — and how to justify the step-down if Performance+ is genuinely not the right fit. Here is a clear framework for tier selection.</p>
+        <div class="tier-grid">
+          <div class="tier-card recommended">
+            <div class="tier-badge">Lead With This</div>
+            <div class="tier-name">Performance+</div>
+            <div class="tier-price">$79.50</div>
+            <div class="tier-sub">Bi-weekly · 12-month</div>
+            <div class="tier-features">
+              <div class="tier-feature included">✓ Pool Club</div>
+              <div class="tier-feature included">✓ Full Revive Suite</div>
+              <div class="tier-feature included">✓ All Studio Classes</div>
+              <div class="tier-feature included">✓ All 8 Locations</div>
+              <div class="tier-feature included">✓ $0 Enrollment</div>
+            </div>
+          </div>
+          <div class="tier-card">
+            <div class="tier-badge">If No Pool/Full Revive</div>
+            <div class="tier-name">Studio+</div>
+            <div class="tier-price">$54.50</div>
+            <div class="tier-sub">Bi-weekly · 12-month</div>
+            <div class="tier-features">
+              <div class="tier-feature excluded">Pool Club</div>
+              <div class="tier-feature included">✓ Cryo + Hydromassage</div>
+              <div class="tier-feature included">✓ All Studio Classes</div>
+              <div class="tier-feature included">✓ All 8 Locations</div>
+              <div class="tier-feature excluded">Full Revive Suite</div>
+            </div>
+          </div>
+          <div class="tier-card">
+            <div class="tier-badge">Last Resort Only</div>
+            <div class="tier-name">Neighborhood</div>
+            <div class="tier-price">$39.99</div>
+            <div class="tier-sub">Bi-weekly · 12-month</div>
+            <div class="tier-features">
+              <div class="tier-feature excluded">Pool Club</div>
+              <div class="tier-feature included">✓ Hydromassage Only</div>
+              <div class="tier-feature excluded">Studio Classes</div>
+              <div class="tier-feature excluded">Multi-Club Access</div>
+              <div class="tier-feature included">✓ Home Club Only</div>
+            </div>
+          </div>
+        </div>
+        <div class="callout callout-warn">
+          <div class="callout-label">The Neighborhood Rule</div>
+          Present Neighborhood only if the guest has explicitly and repeatedly made clear they want basic access only and have no interest in premium benefits — even after you have presented the value. Leading with Neighborhood or offering it proactively leaves significant value and revenue on the table. It is a last resort, not a starting point.
+        </div>
+        <div class="callout callout-blue">
+          <div class="callout-label">Studio+ Key Fact</div>
+          Members who enroll with Studio+ report higher satisfaction and stay engaged longer than Neighborhood members. When Performance+ is genuinely not the fit, Studio+ is your strong alternative — not Neighborhood. Lead with the value of multi-club access and class inclusion before ever mentioning Neighborhood.
+        </div>
+      </div>
+    </div>
+
+    <!-- L7 -->
+    <div class="lesson-card" data-lesson="7">
+      <div class="lesson-header" onclick="toggleLesson(this)">
+        <span class="lesson-num">07</span>
+        <span class="lesson-title-text">B+F as Your Best Objection Weapon</span>
+        <span class="lesson-tag">The Payoff</span>
+        <em class="lesson-arrow">▼</em>
+      </div>
+      <div class="lesson-body">
+        <p>Here is where B+F Logic pays its biggest dividend. When a price objection arrives — <em>"Performance+ is a bit more than I was thinking"</em> — you do not need to defend the price. You simply return to their numbers.</p>
+        <p>The objection is about price. Your response is about value — specifically, the value they calculated themselves during the tour review. You are not arguing. You are reminding.</p>
+        <div class="dialogue-block">
+          <div class="dialogue-title">B+F in Objection Handling — Full Example</div>
+          <div class="line"><span class="speaker prospect">Guest</span><span class="line-text">"I think Performance+ might be a little more than I was planning to spend."</span></div>
+          <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"I completely hear that — and I want to make sure we're making the right decision for you. Can I just walk you back through the numbers for a second?"</em></span></div>
+          <div class="line"><span class="speaker prospect">Guest</span><span class="line-text">"Sure."</span></div>
+          <div class="line"><span class="speaker consultant">Consultant</span><span class="line-text"><em>"You told me you'd use Revive probably 4–5 times a week — that's a recovery spa session most people pay $30–$60 for individually. You said the pool was something you'd use 4–6 times a month. And 2–3 studio classes a week at a boutique studio runs $25–$35 each. When you add those up outside of a membership, you are easily looking at $300–$400+ a month in standalone costs. Performance+ covers all of that at $79.50 bi-weekly — which is roughly $40 a week. Does it still feel like too much when you look at it that way?"</em></span></div>
+          <div class="line"><span class="speaker prospect">Guest</span><span class="line-text">"When you put it like that... no, not really."</span></div>
+        </div>
+        <div class="callout callout-rule">
+          <div class="callout-label">The Golden Rule of B+F Objection Handling</div>
+          You are never arguing about price. You are reminding them of what they said — and showing them what their own usage is actually worth. That is a completely different conversation. One you win because the data came from them.
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end lesson grid -->
+
+  <div class="study-complete-banner" id="studyBanner">
+    <h3>All 7 Lessons Complete</h3>
+    <p>B+F Logic is your close. The certification quiz is now unlocked.</p>
+    <button class="cf-btn" onclick="unlockQuiz()" style="max-width:300px;margin:0 auto;">Unlock Certification ↓</button>
+  </div>
+
+  <!-- MISTAKES -->
+  <div class="divider-label">Common Mistakes</div>
+  <div class="section-header" style="padding-top:0;">
+    <div class="s-eyebrow">What Breaks the Logic</div>
+    <h2 class="s-title">6 B+F Mistakes<br>& How to Fix Them</h2>
+  </div>
+  <div class="mistakes-grid">
+    <div class="mistake-card">
+      <div class="mistake-label bad">✗ The Mistake</div>
+      <div class="mistake-text">Skipping the tour review and going straight from the tour to the price card. <strong>You have no foundation. You are presenting a number with no context.</strong></div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label good">✓ The Fix</div>
+      <div class="mistake-text"><strong>Always do the B+F recap at the desk before touching the price sheet.</strong> Even a 2-minute review changes the entire dynamic of how the price lands.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label bad">✗ The Mistake</div>
+      <div class="mistake-text">Forgetting to plant frequency seeds during the tour. <strong>You get to the desk with no data — and have to ask cold frequency questions that feel like an interrogation.</strong></div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label good">✓ The Fix</div>
+      <div class="mistake-text"><strong>Ask one light frequency question at every premium amenity stop.</strong> By the time you hit the desk, you have the data. The recap is a summary, not a new conversation.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label bad">✗ The Mistake</div>
+      <div class="mistake-text">Presenting all three membership tiers at once: <strong>"We have Performance+, Studio+, and Neighborhood — which do you want?"</strong> You just handed them a reason to choose the cheapest one.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label good">✓ The Fix</div>
+      <div class="mistake-text"><strong>Recommend one tier — the right one based on their frequency data.</strong> Present it as the logical conclusion. Only introduce alternatives if they push back after LIGO.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label bad">✗ The Mistake</div>
+      <div class="mistake-text">Not writing down their frequency answers. <strong>When you quote their numbers back during objection handling, you have no record — and they may dispute or downgrade what they said.</strong></div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label good">✓ The Fix</div>
+      <div class="mistake-text"><strong>Write every frequency answer down in front of them the moment they say it.</strong> That visual commitment makes the number real — and makes it much harder to walk back later.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label bad">✗ The Mistake</div>
+      <div class="mistake-text">Leading with Neighborhood to avoid price friction. <strong>You have assumed they cannot afford more — and denied yourself the chance to show them the value that would justify it.</strong></div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label good">✓ The Fix</div>
+      <div class="mistake-text"><strong>Always lead with Performance+ if their frequency data supports it.</strong> Let the B+F math make the case. The guest will tell you if it genuinely does not work — and then you pivot with LIGO.</div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label bad">✗ The Mistake</div>
+      <div class="mistake-text">During objection handling, arguing about the price instead of returning to their frequency commitments. <strong>You are on defense. They are on offense. You will lose.</strong></div>
+    </div>
+    <div class="mistake-card">
+      <div class="mistake-label good">✓ The Fix</div>
+      <div class="mistake-text"><strong>Never argue price. Return to their numbers.</strong> "Let me walk you back through what you told me." Their own data is the only objection-handler that cannot be argued with.</div>
+    </div>
+  </div>
+
+  <!-- ROLE PLAY -->
+  <div class="divider-label">Role-Play Scenarios</div>
+  <div class="section-header" style="padding-top:0;">
+    <div class="s-eyebrow">Practice</div>
+    <h2 class="s-title">4 B+F Scenarios<br>to Train On</h2>
+  </div>
+
+  <div class="roleplay-card">
+    <div class="roleplay-header">
+      <span class="roleplay-scenario">Scenario 01 — High-Usage Guest, Clear Performance+</span>
+      <span class="roleplay-type">Straightforward</span>
+    </div>
+    <div class="roleplay-body">
+      <div class="roleplay-setup">During the tour, the guest was visibly excited about Revive, asked multiple questions about the pool, and said they would love to try WE/FIT classes. Their frequency answers: Revive 4–5x/week, pool 6x/month, classes 2–3x/week.</div>
+      <div class="roleplay-objective"><strong>Your objective:</strong> Execute the full B+F recap at the desk — summarize their numbers back to them, calculate the standalone value of their stated usage, and recommend Performance+ as the logical conclusion with confidence. Close with: "Based on what you told me, this is the one." Then flip to the price sheet.</div>
+      <div class="coaching-note">This is the scenario B+F was built for. The data is clean, the recommendation is obvious, and your job is to present it with conviction. The most common mistake here is underselling the recommendation — being tentative when you should be certain. Their numbers justify it. Be the expert.</div>
+    </div>
+  </div>
+
+  <div class="roleplay-card">
+    <div class="roleplay-header">
+      <span class="roleplay-scenario">Scenario 02 — No Pool Interest, Moderate Class Usage</span>
+      <span class="roleplay-type">Studio+ Decision</span>
+    </div>
+    <div class="roleplay-body">
+      <div class="roleplay-setup">Guest has zero interest in the pool and does not swim. They loved the studio classes and showed interest in Revive — specifically the cryo chamber. Their frequency answers: classes 2x/week, cryo 2–3x/week, not interested in multi-club.</div>
+      <div class="roleplay-objective"><strong>Your objective:</strong> B+F the Studio+ recommendation. Lead with the class value (boutique classes at $25–$35 each = $200–$280/month for 2 per week). Layer in cryo access. Emphasize the multi-club benefit even if they said they would not use it — frame it as the flexibility they did not know they wanted. Present Studio+ as the clear fit — not as a consolation prize.</div>
+      <div class="coaching-note">Studio+ should be presented with the same conviction as Performance+. It is not the "cheaper version." It is the right version for a guest whose usage pattern does not include the pool. Members who join on Studio+ stay longer and report higher satisfaction — lead with that confidence.</div>
+    </div>
+  </div>
+
+  <div class="roleplay-card">
+    <div class="roleplay-header">
+      <span class="roleplay-scenario">Scenario 03 — Low Frequency Answers Across the Board</span>
+      <span class="roleplay-type">Low-Commitment Guest</span>
+    </div>
+    <div class="roleplay-body">
+      <div class="roleplay-setup">When asked frequency questions, the guest consistently hedges: "Maybe once a month for the sauna," "I probably wouldn't do classes," "I'd mostly just use the weights." Their answers point toward basic access only.</div>
+      <div class="roleplay-objective"><strong>Your objective:</strong> Do not immediately drop to Neighborhood. First, probe gently: "Even conservatively — if you came 3 times a week and had recovery available after each workout, do you think you'd take advantage?" Try to elevate one amenity. If they genuinely do not engage with any premium feature after probing, you can present Neighborhood — but frame it as the starting point with the ability to upgrade, not the final destination.</div>
+      <div class="coaching-note">Low frequency answers often reflect a confidence issue, not a genuine disinterest. The guest may not believe they will actually use the premium features because they have started and stopped before. Probe the Start & Stopper pattern: "What would make you feel like you'd actually show up consistently this time?" That answer may unlock a different frequency conversation entirely.</div>
+    </div>
+  </div>
+
+  <div class="roleplay-card">
+    <div class="roleplay-header">
+      <span class="roleplay-scenario">Scenario 04 — Price Objection After B+F Recap</span>
+      <span class="roleplay-type">Objection Handling</span>
+    </div>
+    <div class="roleplay-body">
+      <div class="roleplay-setup">You have executed a clean B+F recap, recommended Performance+, presented the price — and the guest says: "That's honestly a bit more than I budgeted for. I was thinking more like $50 bi-weekly."</div>
+      <div class="roleplay-objective"><strong>Your objective:</strong> Do not flinch and immediately offer Studio+. First, return to their frequency data: "I hear you — can I walk you back through the numbers one more time?" Rebuild the standalone value equation using their usage commitments. Make the math visible. If after LIGO they are still firm, then — and only then — introduce Studio+ as a genuine alternative that still covers their core interests. Never open with the downgrade.</div>
+      <div class="coaching-note">The budget objection after a clean B+F recap is usually not a real budget limit — it is a comfort issue. They are not sure the membership will stick, so the price feels risky. Returning to their frequency numbers reframes the question: this is not "is $79.50 a lot?" It is "is the value of everything you said you'd use worth $79.50?" That is a question they have already answered.</div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="divider-label">Certification</div>
+  <div class="section-header" style="padding-top:0;">
+    <div class="s-eyebrow">Knowledge Check</div>
+    <h2 class="s-title">B+F Certification</h2>
+    <p class="s-sub">15 questions. 80% or higher to pass. Complete all 7 lessons above to unlock.</p>
+  </div>
+
+  <div class="quiz-section" id="quizSection">
+    <div class="quiz-locked" id="quizLocked">
+      <div class="quiz-locked-icon">🔒</div>
+      <h3>Complete All Lessons to Unlock</h3>
+      <p>Open all 7 lessons above. The quiz unlocks automatically.</p>
+    </div>
+    <div class="name-panel" id="namePanel" style="display:none;">
+      <h3>Certification Registry</h3>
+      <p>Enter your full name as it should appear on your certification record.</p>
+      <input type="text" class="cf-input" id="empNameInput" placeholder="Full Name"/>
+      <button class="cf-btn" onclick="startQuiz()">Begin Official Test →</button>
+    </div>
+    <div class="quiz-active" id="quizActive" style="display:none;">
+      <div class="q-progress-wrap"><div class="q-progress-bar" id="qBar"></div></div>
+      <div class="q-meta">
+        <span class="q-counter" id="qCounter"></span>
+        <span class="q-topic">Module 06 · B+F Logic</span>
+      </div>
+      <div class="q-text" id="qText"></div>
+      <div class="q-options" id="qOptions"></div>
+    </div>
+    <div class="results-panel" id="resultsPanel">
+      <div class="result-score" id="resultScore"></div>
+      <div class="result-label" id="resultLabel"></div>
+      <div id="missedSection"></div>
+      <button class="cf-btn" onclick="resetModule()" style="margin-top:22px;">Return to Module</button>
+    </div>
+  </div>
+
+</div><!-- end module-wrap -->
+
+<div class="module-footer">
+  <p>City Fitness Philadelphia &nbsp;·&nbsp; Deep Training Module 06 &nbsp;·&nbsp; 2026</p>
+</div>
+
+<iframe name="cf_hidden" id="cf_hidden" style="display:none;"></iframe>
+<form id="certForm" target="cf_hidden" method="GET" action="https://script.google.com/a/macros/cityfitness.com/s/AKfycbzZokf4OQGpHYEkb_9mcVdJ-t9jop9RWIpclIcLSjTWRcBQfeDJ751bl0qO8k7VrZwe/exec">
+  <input type="hidden" name="employee" id="formEmployee"/>
+  <input type="hidden" name="topic" id="formTopic"/>
+  <input type="hidden" name="result" id="formResult"/>
+</form>
+
+<script>
+window.addEventListener('scroll',()=>{
+  const el=document.documentElement;
+  const pct=(el.scrollTop/(el.scrollHeight-el.clientHeight))*100;
+  document.getElementById('topFill').style.width=pct+'%';
+});
+
+let openedLessons=new Set();
+const totalLessons=7;
+
+function toggleLesson(header){
+  const card=header.parentElement;
+  const isOpen=card.classList.contains('open');
+  card.classList.toggle('open',!isOpen);
+  if(!isOpen){
+    openedLessons.add(parseInt(card.dataset.lesson));
+    checkStudyComplete();
+  }
+}
+
+function checkStudyComplete(){
+  if(openedLessons.size>=totalLessons){
+    const banner=document.getElementById('studyBanner');
+    banner.style.display='block';
+    banner.scrollIntoView({behavior:'smooth',block:'center'});
+  }
+}
+
+function unlockQuiz(){
+  document.getElementById('quizLocked').style.display='none';
+  document.getElementById('namePanel').style.display='block';
+  document.getElementById('quizSection').scrollIntoView({behavior:'smooth'});
+}
+
+const questions=[
+  {q:"What does B+F stand for?",a:["Budget and Frequency","Benefit and Frequency","Benefit and Features","Best and Final"],c:1},
+  {q:"What is the core principle that makes B+F Logic so effective?",a:["It gives consultants a scripted rebuttal to price objections","People cannot argue with their own words — their stated frequency becomes the justification for the tier","It allows you to present all three tiers at once","It creates urgency by showing limited availability"],c:1},
+  {q:"When should you begin planting B+F seeds?",a:["At the desk during the membership review","Only after HACCL is complete","During the tour at each premium amenity stop","On the T.I. before they come in"],c:2},
+  {q:"What is the ideal light frequency question to use during the tour?",a:["Which membership are you leaning toward?","How much were you looking to spend?","If you had access to this every day, how often do you think you'd take advantage of it?","Do you think you'd use this?"],c:2},
+  {q:"What does the Tour Review Bridge script accomplish?",a:["It presents the price card immediately after the tour","It positions you as a consultant prescribing a solution, signals a recommendation is coming, and gets implicit agreement to proceed","It ends the discovery phase and begins the close","It introduces all three membership tiers"],c:1},
+  {q:"During the B+F desk review, what should you do when the guest gives you a frequency answer?",a:["Nod and move to the next question","Write it down in front of them immediately","Calculate the standalone value in your head and keep going","Ask them to confirm it twice"],c:1},
+  {q:"What is the correct structure of the B+F recommendation?",a:["Present all three tiers and let them choose","Lead with Neighborhood to anchor low, then upgrade","Their numbers → your conclusion → confirmation question — one tier, recommended as the logical fit","Ask how much they want to spend, then recommend accordingly"],c:2},
+  {q:"When should you present the Neighborhood membership?",a:["Always first to give them a lower anchor","When they are a Never Fitness guest","Only when the guest has explicitly and repeatedly made clear they want basic access only — after B+F and LIGO have been applied","As the default for any guest who seems price-sensitive"],c:2},
+  {q:"What key fact should you know about Studio+ members?",a:["They are less satisfied than Performance+ members","They typically downgrade within 6 months","They report higher satisfaction and stay engaged longer than Neighborhood members","They are the least common membership type at City Fitness"],c:2},
+  {q:"When a price objection arrives after a clean B+F recap, your first move should be:",a:["Immediately offer Studio+ as a compromise","Return to their frequency data and rebuild the value equation using their own numbers","Apologize and explain that the price is fixed","Ask them what they were expecting to pay"],c:1},
+  {q:"What is the standalone value argument for studio classes?",a:["Classes are free at most gyms so there is no comparison","Boutique studio classes average $25–$35 each, making 2 per week worth $200–$280/month","Classes have no measurable standalone value","Studio classes are only worth mentioning to Avid Exercisers"],c:1},
+  {q:"A guest gives consistently low frequency answers during the tour. Your first response should be:",a:["Accept the answers and present Neighborhood","Probe gently to see if the low answers reflect a confidence issue rather than genuine disinterest","Skip the B+F recap entirely","Ask them directly why they would not use the premium amenities"],c:1},
+  {q:"What is the 'golden rule' of B+F objection handling?",a:["Always be willing to meet them halfway on price","Never argue price — return to their numbers","If they object, offer the next tier down immediately","Apologize and acknowledge the price is high"],c:1},
+  {q:"Why should you never open with multiple tier options before the guest has seen the price card?",a:["It confuses the consultant","It gives the guest a reason to choose the cheapest option before they have seen the value of the recommended tier","It takes too long","Presenting options is against City Fitness policy"],c:1},
+  {q:"What is the single most important thing B+F Logic accomplishes before the price card is presented?",a:["It tells the guest which location to use","It builds the value equation from the guest's own words so that the recommended tier feels like a logical conclusion rather than a sales pitch","It eliminates the need for HACCL","It introduces all available payment options"],c:1}
+];
+
+let empName='',qIndex=0,score=0,missed=[];
+
+function startQuiz(){
+  empName=document.getElementById('empNameInput').value.trim();
+  if(!empName){alert('Please enter your full name.');return;}
+  document.getElementById('namePanel').style.display='none';
+  document.getElementById('quizActive').style.display='block';
+  qIndex=0;score=0;missed=[];
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const q=questions[qIndex];
+  document.getElementById('qBar').style.width=((qIndex/questions.length)*100)+'%';
+  document.getElementById('qCounter').textContent=`Question ${qIndex+1} of ${questions.length}`;
+  document.getElementById('qText').textContent=q.q;
+  const opts=document.getElementById('qOptions');
+  opts.innerHTML='';
+  q.a.forEach((opt,i)=>{
+    const btn=document.createElement('button');
+    btn.className='q-opt';
+    btn.textContent=opt;
+    btn.onclick=()=>handleAnswer(i);
+    opts.appendChild(btn);
+  });
+}
+
+function handleAnswer(idx){
+  const q=questions[qIndex];
+  if(idx===q.c){score++;}
+  else{missed.push({q:q.q,a:q.a[q.c]});}
+  qIndex++;
+  if(qIndex<questions.length){renderQuestion();}
+  else{showResults();}
+}
+
+function showResults(){
+  const pct=Math.round((score/questions.length)*100);
+  document.getElementById('quizActive').style.display='none';
+  const rp=document.getElementById('resultsPanel');
+  rp.style.display='block';
+  const scoreEl=document.getElementById('resultScore');
+  scoreEl.textContent=pct+'%';
+  scoreEl.className='result-score '+(pct>=80?'result-pass':'result-fail');
+  document.getElementById('resultLabel').textContent=pct>=80?'Certification Passed — Module 06: B+F Logic':'Retake Required — Review Missed Questions Below';
+  let missedHtml='';
+  if(missed.length){
+    missedHtml='<div class="missed-label">Knowledge Gaps — Review These</div>';
+    missed.forEach(m=>{
+      missedHtml+=`<div class="missed-item"><div class="missed-q">${m.q}</div><div class="missed-a">Correct Answer: ${m.a}</div></div>`;
+    });
+  }
+  document.getElementById('missedSection').innerHTML=missedHtml;
+  document.getElementById('formEmployee').value=empName;
+  document.getElementById('formTopic').value='Module 06 - B+F Logic';
+  document.getElementById('formResult').value=pct;
+  document.getElementById('certForm').submit();
+}
+
+function resetModule(){
+  document.getElementById('resultsPanel').style.display='none';
+  document.getElementById('namePanel').style.display='block';
+  document.getElementById('empNameInput').value='';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
