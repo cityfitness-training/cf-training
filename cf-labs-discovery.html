@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>CF Labs | Discovery Lab</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#0e0d0b;--surface:#161410;--card:#1c1a15;--border:#272420;
+  --copper:#B87C4C;--copper-light:#C9A07A;--copper-dim:rgba(184,124,76,0.12);
+  --tan:#BF9B6F;--white:#F0EDE6;--grey:#6a6660;--dim:#8a8680;
+  --red:#c0392b;--green:#4a9a60;--gold:#c4a44a;
+  --grad:linear-gradient(135deg,#B87C4C,#C9A07A);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;overflow:hidden;}
+body{background:var(--bg);color:var(--white);font-family:'Barlow',sans-serif;line-height:1.5;}
+.screen{position:absolute;inset:0;display:none;flex-direction:column;}
+.screen.active{display:flex;}
+
+/* ── KEY SETUP ── */
+#screen-setup{align-items:center;justify-content:center;padding:40px;}
+.setup-box{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:44px;max-width:520px;width:100%;}
+.setup-eyebrow{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--copper);margin-bottom:14px;}
+.setup-title{font-family:'Barlow Condensed',sans-serif;font-size:40px;font-weight:900;text-transform:uppercase;letter-spacing:-1px;line-height:.93;margin-bottom:20px;}
+.setup-title em{font-style:normal;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.setup-desc{font-size:14px;color:var(--dim);line-height:1.7;margin-bottom:28px;}
+.setup-desc strong{color:var(--white);}
+.setup-label{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--grey);margin-bottom:8px;display:block;}
+.key-input{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--white);padding:13px 16px;border-radius:8px;font-family:'Barlow',sans-serif;font-size:15px;outline:none;transition:.2s;margin-bottom:8px;letter-spacing:1px;}
+.key-input:focus{border-color:var(--copper);}
+.key-note{font-size:12px;color:var(--grey);line-height:1.5;margin-bottom:22px;}
+.key-btn{background:var(--grad);border:none;padding:14px;width:100%;color:white;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;letter-spacing:2px;text-transform:uppercase;border-radius:8px;cursor:pointer;transition:.2s;}
+.key-btn:hover{opacity:.9;}
+.key-err{font-size:13px;color:#d97060;margin-top:10px;display:none;}
+
+/* ── SELECT ── */
+#screen-select{overflow-y:auto;}
+.sel-hdr{padding:40px 56px 24px;border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:flex-end;}
+.sel-hdr-left{}
+.lab-badge{display:inline-flex;align-items:center;gap:8px;background:var(--copper-dim);border:1px solid rgba(184,124,76,.2);border-radius:20px;padding:5px 14px;margin-bottom:12px;}
+.lab-badge span{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--copper);}
+.bdot{width:6px;height:6px;border-radius:50%;background:var(--copper);animation:bl 2s infinite;}
+@keyframes bl{0%,100%{opacity:1;}50%{opacity:.3;}}
+.sel-title{font-family:'Barlow Condensed',sans-serif;font-size:clamp(32px,5vw,52px);font-weight:900;text-transform:uppercase;letter-spacing:-1px;line-height:.93;}
+.sel-title em{font-style:normal;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.change-key-btn{background:none;border:1px solid var(--border);color:var(--grey);padding:7px 14px;border-radius:6px;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:.15s;white-space:nowrap;}
+.change-key-btn:hover{border-color:var(--copper);color:var(--copper);}
+.pgrid{padding:32px 56px 60px;display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px;}
+.pcard{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;transition:.2s;}
+.pcard:hover{border-color:var(--copper);transform:translateY(-3px);box-shadow:0 10px 36px rgba(0,0,0,.4);}
+.pc-top{padding:18px 18px 0;display:flex;justify-content:space-between;}
+.pdiff{display:flex;gap:3px;align-items:center;}
+.pd{width:7px;height:7px;border-radius:50%;background:#2a2724;}
+.pd.on{background:var(--copper);}
+.pdlbl{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--grey);margin-left:5px;}
+.pnum{font-family:'Barlow Condensed',sans-serif;font-size:44px;font-weight:900;color:var(--copper);opacity:.12;line-height:1;}
+.pc-body{padding:6px 18px 18px;}
+.pname{font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:900;text-transform:uppercase;margin-bottom:2px;}
+.pmeta{font-size:12px;color:var(--grey);margin-bottom:12px;}
+.pquote{font-size:13px;color:var(--tan);font-style:italic;line-height:1.6;padding:10px 12px;background:rgba(191,155,111,.05);border-radius:6px;border-left:2px solid rgba(191,155,111,.2);}
+.pc-foot{padding:12px 18px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.pbucket{font-size:11px;color:var(--grey);font-weight:600;letter-spacing:1px;text-transform:uppercase;}
+.pbtn{background:var(--grad);border:none;padding:8px 18px;color:white;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;letter-spacing:2px;text-transform:uppercase;border-radius:5px;cursor:pointer;}
+
+/* ── SESSION ── */
+#screen-session{display:none;grid-template-rows:auto 1fr auto;grid-template-columns:1fr 180px;}
+#screen-session.active{display:grid;}
+.sh{grid-column:1/-1;padding:14px 22px;border-bottom:1px solid var(--border);background:var(--surface);display:flex;justify-content:space-between;align-items:center;}
+.sh-l{display:flex;align-items:center;gap:14px;}
+.back-btn{background:none;border:1px solid var(--border);color:var(--dim);padding:5px 12px;border-radius:5px;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:.15s;}
+.back-btn:hover{border-color:var(--copper);color:var(--copper);}
+.sh-title{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:800;text-transform:uppercase;letter-spacing:1px;}
+.sh-diff{display:flex;gap:3px;}
+.shd{width:6px;height:6px;border-radius:50%;background:#2a2724;}
+.shd.on{background:var(--copper);}
+.tour-btn{background:var(--grad);border:none;padding:9px 22px;color:white;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase;border-radius:5px;cursor:pointer;transition:.2s;}
+.tour-btn:hover{transform:translateY(-1px);box-shadow:0 4px 18px rgba(184,124,76,.4);}
+.chat{grid-column:1;overflow-y:auto;padding:22px;display:flex;flex-direction:column;gap:14px;}
+.scene-pill{background:var(--copper-dim);border:1px solid rgba(184,124,76,.18);border-radius:7px;padding:12px 16px;font-size:13px;color:var(--tan);font-style:italic;line-height:1.6;text-align:center;}
+.msg{display:flex;flex-direction:column;max-width:80%;}
+.msg.prospect{align-self:flex-start;}
+.msg.consultant{align-self:flex-end;}
+.mlbl{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;}
+.msg.prospect .mlbl{color:var(--grey);}
+.msg.consultant .mlbl{color:var(--copper);text-align:right;}
+.mbbl{padding:12px 16px;border-radius:9px;font-size:14px;line-height:1.7;}
+.msg.prospect .mbbl{background:#181614;border:1px solid var(--border);color:var(--white);border-bottom-left-radius:2px;}
+.msg.consultant .mbbl{background:rgba(184,124,76,.1);border:1px solid rgba(184,124,76,.2);color:var(--white);border-bottom-right-radius:2px;}
+.typing{align-self:flex-start;display:none;}
+.typing.show{display:flex;flex-direction:column;}
+.tbbl{background:#181614;border:1px solid var(--border);border-radius:9px;border-bottom-left-radius:2px;padding:12px 16px;display:flex;gap:5px;align-items:center;}
+.td{width:6px;height:6px;border-radius:50%;background:var(--grey);animation:tdot 1.2s infinite;}
+.td:nth-child(2){animation-delay:.2s;}
+.td:nth-child(3){animation-delay:.4s;}
+@keyframes tdot{0%,100%{opacity:.3;transform:translateY(0);}50%{opacity:1;transform:translateY(-3px);}}
+.sidebar{grid-column:2;border-left:1px solid var(--border);background:var(--surface);padding:20px 16px;display:flex;flex-direction:column;gap:20px;overflow:hidden;}
+.sblbl{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--grey);margin-bottom:10px;}
+.mstack{display:flex;flex-direction:column;gap:10px;}
+.mrow{display:flex;align-items:center;gap:8px;}
+.mdot{width:12px;height:12px;border-radius:50%;background:#2a2724;border:1px solid var(--border);flex-shrink:0;transition:all .5s ease;}
+.mdot.lit{background:var(--copper);border-color:var(--copper);box-shadow:0 0 10px rgba(184,124,76,.5);animation:dg 2.5s infinite;}
+@keyframes dg{0%,100%{box-shadow:0 0 6px rgba(184,124,76,.4);}50%{box-shadow:0 0 14px rgba(184,124,76,.8);}}
+.mline{width:1px;height:8px;background:var(--border);margin-left:5px;}
+.pmini{background:var(--card);border:1px solid var(--border);border-radius:7px;padding:12px;}
+.pmn{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:900;text-transform:uppercase;margin-bottom:1px;}
+.pmm{font-size:11px;color:var(--grey);}
+.inp-area{grid-column:1;border-top:1px solid var(--border);padding:14px 22px;background:var(--surface);}
+.inp-row{display:flex;gap:8px;align-items:flex-end;}
+.cinp{flex:1;background:var(--card);border:1px solid var(--border);color:var(--white);padding:11px 14px;border-radius:7px;font-family:'Barlow',sans-serif;font-size:14px;outline:none;resize:none;min-height:44px;max-height:110px;transition:.2s;line-height:1.5;}
+.cinp:focus{border-color:var(--copper);}
+.cinp::placeholder{color:var(--grey);}
+.sbtn{background:var(--copper-dim);border:1px solid rgba(184,124,76,.3);color:var(--copper);padding:11px 16px;border-radius:7px;cursor:pointer;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;letter-spacing:1px;text-transform:uppercase;transition:.2s;white-space:nowrap;}
+.sbtn:hover{background:var(--copper);color:white;}
+.sbtn:disabled{opacity:.3;cursor:not-allowed;}
+.sb-foot{grid-column:2;border-top:1px solid var(--border);border-left:1px solid var(--border);background:var(--surface);}
+
+/* ── DEBRIEF ── */
+#screen-debrief{overflow-y:auto;}
+.dbhdr{padding:44px 56px 28px;border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:10;}
+.dbey{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--copper);margin-bottom:12px;}
+.dbtitle{font-family:'Barlow Condensed',sans-serif;font-size:clamp(30px,5vw,50px);font-weight:900;text-transform:uppercase;letter-spacing:-1px;line-height:.93;}
+.dbtitle em{font-style:normal;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.dbwrap{padding:36px 56px 80px;max-width:860px;}
+.score-row{display:flex;align-items:center;gap:26px;margin-bottom:36px;}
+.scircle{width:100px;height:100px;border-radius:50%;border:2px solid var(--copper);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;}
+.snum{font-family:'Barlow Condensed',sans-serif;font-size:38px;font-weight:900;color:var(--copper);line-height:1;}
+.slbl2{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--grey);}
+.sgrade{font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:900;text-transform:uppercase;margin-bottom:3px;}
+.sfb{font-size:14px;color:var(--dim);line-height:1.6;max-width:480px;}
+.reveal-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:24px;margin-bottom:24px;}
+.rlbl{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--copper);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border);}
+.rname{font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:900;text-transform:uppercase;margin-bottom:2px;}
+.rmeta2{font-size:13px;color:var(--grey);margin-bottom:12px;}
+.rstory{font-size:14px;color:var(--dim);line-height:1.75;}
+.rxf{background:var(--copper-dim);border:1px solid rgba(184,124,76,.2);border-radius:7px;padding:14px 16px;margin-top:12px;}
+.rxfl{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--copper);margin-bottom:5px;opacity:.7;}
+.rxft{font-size:14px;color:var(--copper-light);font-style:italic;line-height:1.6;}
+.rbucket{display:inline-flex;background:var(--copper-dim);border:1px solid rgba(184,124,76,.2);border-radius:5px;padding:5px 12px;margin-top:10px;}
+.rbucket span{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--copper);}
+.dbsec{margin-bottom:24px;}
+.dbslbl{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;letter-spacing:3px;text-transform:uppercase;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.dbslbl.cu{color:var(--copper);}
+.dbslbl.gr{color:var(--green);}
+.dbslbl.rd{color:rgba(192,57,43,.8);}
+.msr{background:var(--card);border:1px solid var(--border);border-radius:7px;padding:15px;margin-bottom:8px;display:flex;gap:14px;align-items:flex-start;}
+.msr.hit{border-color:rgba(74,154,96,.3);background:rgba(74,154,96,.04);}
+.msrd{width:12px;height:12px;border-radius:50%;flex-shrink:0;margin-top:2px;}
+.msrd.hit{background:var(--green);}
+.msrd.miss{background:#2a2724;}
+.msrn{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;}
+.msrn.hit{color:var(--green);}
+.msrn.miss{color:var(--grey);}
+.msre{font-size:13px;color:var(--dim);line-height:1.55;}
+.msrm{font-size:12px;color:var(--tan);font-style:italic;margin-top:5px;}
+.mitem{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:12px 14px;margin-bottom:7px;font-size:13px;color:var(--dim);line-height:1.6;}
+.mitem.hit{border-left:3px solid var(--green);}
+.mitem.miss{border-left:3px solid rgba(192,57,43,.5);}
+.focus-card{background:var(--copper-dim);border:1px solid rgba(184,124,76,.25);border-radius:7px;padding:16px 18px;font-size:14px;color:var(--copper-light);line-height:1.65;}
+.flbl{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--copper);margin-bottom:7px;opacity:.7;display:block;}
+.dbactions{display:flex;gap:10px;margin-top:28px;}
+.dba{padding:12px 24px;border-radius:7px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:.2s;}
+.dba.pri{background:var(--grad);border:none;color:white;}
+.dba.pri:hover{opacity:.9;}
+.dba.sec{background:none;border:1px solid var(--border);color:var(--dim);}
+.dba.sec:hover{border-color:var(--copper);color:var(--copper);}
+
+/* Loading overlay */
+.err-msg{background:rgba(192,57,43,.08);border:1px solid rgba(192,57,43,.25);border-radius:8px;padding:13px 16px;font-size:13px;color:#d97060;line-height:1.6;max-width:82%;}
+.err-msg strong{display:block;margin-bottom:4px;font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;text-transform:uppercase;font-size:11px;}
+.overlay{position:fixed;inset:0;background:rgba(14,13,11,.92);z-index:999;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;}
+.overlay.show{display:flex;}
+.spinner{width:36px;height:36px;border:2px solid var(--border);border-top-color:var(--copper);border-radius:50%;animation:spin 1s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.overlay-txt{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--dim);}
+
+@media(max-width:680px){
+  .sel-hdr,.pgrid,.dbwrap{padding-left:20px;padding-right:20px;}
+  .pgrid{grid-template-columns:1fr;}
+  #screen-session{grid-template-columns:1fr;}
+  .sidebar,.sb-foot{display:none;}
+  .setup-box{padding:28px 24px;}
+}
+</style>
+</head>
+<body>
+
+<div class="overlay" id="overlay"><div class="spinner"></div><div class="overlay-txt" id="overlayTxt">Thinking...</div></div>
+
+<!-- SETUP -->
+<div class="screen active" id="screen-setup">
+  <div class="setup-box">
+    <div class="setup-eyebrow">CF Labs · Discovery Lab · Setup</div>
+    <h1 class="setup-title">One-Time<br><em>Setup.</em></h1>
+    <p class="setup-desc">This lab uses <strong>live AI</strong> to play each prospect — so every conversation is genuinely different and responds naturally to what you actually ask. To run it, enter your Anthropic API key below. It's stored only in your browser and never shared.</p>
+    <label class="setup-label" for="keyInput">Anthropic API Key</label>
+    <input class="key-input" id="keyInput" type="password" placeholder="sk-ant-..." autocomplete="off"/>
+    <p class="key-note">Your key is stored in your browser's localStorage and used only to power the AI prospect. It is never transmitted anywhere except directly to api.anthropic.com.</p>
+    <button class="key-btn" onclick="saveKey()">Save Key & Begin →</button>
+    <div class="key-err" id="keyErr">Please enter a valid API key starting with sk-ant-</div>
+  </div>
+</div>
+
+<!-- SELECT -->
+<div class="screen" id="screen-select">
+  <div class="sel-hdr">
+    <div class="sel-hdr-left">
+      <div class="lab-badge"><div class="bdot"></div><span>CF Labs · Discovery Lab · AI-Powered</span></div>
+      <h1 class="sel-title">Choose Your<br><em>Prospect.</em></h1>
+    </div>
+    <button class="change-key-btn" onclick="showSetup()">⚙ API Key</button>
+  </div>
+  <div class="pgrid" id="pgrid"></div>
+</div>
+
+<!-- SESSION -->
+<div class="screen" id="screen-session">
+  <div class="sh">
+    <div class="sh-l">
+      <button class="back-btn" onclick="goBack()">← Prospects</button>
+      <div class="sh-title" id="shTitle">Discovery Lab</div>
+      <div class="sh-diff" id="shDiff"></div>
+    </div>
+    <button class="tour-btn" onclick="endSession()">Let's Take the Tour →</button>
+  </div>
+  <div class="chat" id="chat">
+    <div class="typing" id="typing">
+      <div class="mlbl" id="typLbl">Prospect</div>
+      <div class="tbbl"><div class="td"></div><div class="td"></div><div class="td"></div></div>
+    </div>
+  </div>
+  <div class="sidebar">
+    <div>
+      <div class="sblbl">Progress</div>
+      <div class="mstack">
+        <div class="mrow"><div class="mdot" id="d0"></div></div>
+        <div style="padding-left:5px;"><div class="mline"></div></div>
+        <div class="mrow"><div class="mdot" id="d1"></div></div>
+        <div style="padding-left:5px;"><div class="mline"></div></div>
+        <div class="mrow"><div class="mdot" id="d2"></div></div>
+        <div style="padding-left:5px;"><div class="mline"></div></div>
+        <div class="mrow"><div class="mdot" id="d3"></div></div>
+        <div style="padding-left:5px;"><div class="mline"></div></div>
+        <div class="mrow"><div class="mdot" id="d4"></div></div>
+      </div>
+    </div>
+    <div class="pmini" id="pmini"></div>
+  </div>
+  <div class="inp-area">
+    <div class="inp-row">
+      <textarea class="cinp" id="cinp" placeholder="Type your response..." rows="1" onkeydown="onK(event)" oninput="rz(this)"></textarea>
+      <button class="sbtn" id="sbtn" onclick="sendMsg()">Send</button>
+    </div>
+  </div>
+  <div class="sb-foot"></div>
+</div>
+
+<!-- DEBRIEF -->
+<div class="screen" id="screen-debrief">
+  <div class="dbhdr">
+    <div class="dbey">CF Labs · Discovery Lab · Session Complete</div>
+    <h1 class="dbtitle">Session<br><em>Debrief.</em></h1>
+  </div>
+  <div class="dbwrap" id="dbwrap"></div>
+</div>
+
+<iframe name="cfhid" id="cfhid" style="display:none;"></iframe>
+<form id="cform" target="cfhid" method="GET" action="https://script.google.com/a/macros/cityfitness.com/s/AKfycbzZokf4OQGpHYEkb_9mcVdJ-t9jop9RWIpclIcLSjTWRcBQfeDJ751bl0qO8k7VrZwe/exec">
+  <input type="hidden" name="employee" id="femp"/>
+  <input type="hidden" name="topic" id="ftopic"/>
+  <input type="hidden" name="result" id="fresult"/>
+</form>
+
+<script>
+/* ══════════════════════════════════
+   PROSPECT DATA
+══════════════════════════════════ */
+const PP=[
+{
+  id:1,name:"Marcus Hayes",age:34,diff:1,dlbl:"Beginner",
+  meta:"Software developer · Relocated from Chicago",bucket:"Start & Stopper",
+  quote:'"I want to get back in shape. Lose some weight, feel better."',
+  scene:"Marcus has just sat down at the pre-tour desk. Relaxed, easy to talk to. He glances around the club once, then looks back at you.",
+  fullstory:"Marcus went through a divorce 10 months ago. He and his ex-wife worked out together regularly — fitness was part of their shared identity. After the separation he stopped entirely because going back felt like going backwards. His move to Philadelphia is a deliberate fresh start. He's ready to move forward and fitness is how he plans to do it.",
+  xfactor:"Rebuild identity after divorce. Fitness was tied to his old life — this is about reclaiming it as his own.",
+  bucket:"Start & Stopper",
+  systemPrompt:`You are playing Marcus Hayes, a 34-year-old software developer who just relocated to Philadelphia from Chicago and is visiting City Fitness for the first time.
+
+HIDDEN BACKSTORY — reveal only through natural conversation, never all at once:
+Marcus went through a divorce 10 months ago. He and his ex-wife worked out together 4-5 days a week — it was their thing. After she left he couldn't go back to the same gym. Moving to Philly was a deliberate fresh start. He wants to reclaim his fitness identity as his own.
+
+SURFACE ANSWER (what you say to generic questions):
+"I want to lose some weight and get back in shape. Have more energy day to day."
+
+MIDDLE LAYER (when asked what changed, what obstacle, what got in the way):
+"I used to be really active — 4 or 5 days a week. Then life got complicated and I fell off. It's been close to a year."
+
+DEEP LAYER (when asked to go deeper, what else, tell me more after the middle layer):
+"I went through some personal stuff. My situation changed significantly. The gym was kind of... tangled up in it."
+
+X-FACTOR (only after genuine rapport and someone asking what would change, what this means, or showing real empathy after the deep layer):
+"My wife and I split up. We used to work out together — it was our thing. I couldn't go back to the same gym after. Coming to Philly felt like the right time to start fresh. I want to feel like myself again. The person I was before everything got heavy."
+
+PERSONALITY: Warm, slightly self-deprecating, easy to talk to. Won't volunteer the divorce unless asked with genuine curiosity. Responds well to directness and real questions.
+
+EVOLUTION RULES:
+- Generic yes/no questions → stay at surface layer
+- Open questions about his life → open up slightly  
+- "What else?" or "tell me more" → go one layer deeper
+- Questions about what changed, obstacles, what got in the way → go to middle or deep layer
+- Genuine empathy after he's shared something → go deeper
+- Salesy or pushy language → become slightly more guarded
+
+MILESTONE TRACKING — include "MILESTONE:[key]" at the END of your response (on a new line, not visible as part of dialogue) when these naturally occur:
+- MILESTONE:rapport — when the conversation genuinely feels warm and connected (after 2-3 good exchanges)
+- MILESTONE:goals — when you have clearly stated surface fitness goals
+- MILESTONE:deeper — when you've revealed the middle or deep layer (things changed, life got complicated)
+- MILESTONE:xfactor — when you've shared the divorce and wanting to reclaim your identity
+- MILESTONE:bucket — when enough is known to identify you as a Start & Stopper
+
+CRITICAL RULES:
+- Respond ONLY as Marcus. No narration, no stage directions, no [brackets].
+- Keep responses conversational length — 1-3 sentences usually. Not a wall of text.
+- The X-Factor should feel earned, not given. Make the consultant work for it.
+- If asked a direct question, answer it — don't dodge or deflect with a generic answer.
+- Put MILESTONE:[key] on its own line at the very end ONLY when a milestone genuinely occurs. Never force it.`
+},
+{
+  id:2,name:"Priya Sharma",age:28,diff:2,dlbl:"Developing",
+  meta:"Marketing coordinator · Fishtown",bucket:"Start & Stopper",
+  quote:'"I want to tone up a little. Get in better shape, I guess."',
+  scene:"Priya sits down with a friendly smile. She glances at her phone once before putting it face-down. Warm but there's something she's deciding whether to share.",
+  fullstory:"Priya is the maid of honor at her younger sister Asha's wedding in 4 months. She has always felt slightly in Asha's shadow growing up — her sister is the conventionally beautiful, outgoing one. She loves her sister but has never felt as visible. She wants the wedding photos to be different — to feel genuinely proud of herself in them, not just present.",
+  xfactor:"Stepping out of her sister's shadow. Feeling genuinely confident and visible — in photos that will exist forever.",
+  bucket:"Start & Stopper",
+  systemPrompt:`You are playing Priya Sharma, a 28-year-old marketing coordinator from Fishtown visiting City Fitness for the first time.
+
+HIDDEN BACKSTORY — reveal only through natural conversation:
+Priya is the maid of honor at her younger sister Asha's wedding in 4 months. Asha has always been "the beautiful one" in the family. Priya loves her sister but has always felt slightly invisible next to her. She wants the wedding photos — which will exist forever — to be different. She wants to feel genuinely proud of herself in them.
+
+SURFACE ANSWER:
+"I want to tone up. Lose a little weight maybe. Just feel better about myself."
+
+MIDDLE LAYER (when asked what motivates her, why now, what's the event):
+"I have this big event coming up in about four months. It's kind of lit a fire under me."
+
+DEEP LAYER (when asked more about the event):
+"It's my sister's wedding. I'm the maid of honor."
+
+X-FACTOR (only after genuine warmth and real curiosity — she feels slightly embarrassed about this reason, needs to feel safe):
+"My sister's always been the pretty one in our family. I love her but I've always kind of been in her shadow. Those photos are going to exist forever and I just... I want to look at them and feel proud. Not just show up."
+
+PERSONALITY: Friendly, warm, slightly self-conscious. Uses "I guess" and "kind of" — those qualifiers mean she's holding back. Feels a little embarrassed that a wedding is her motivation — like it's shallow. Needs to feel safe and non-judged before she shares the real reason.
+
+EVOLUTION RULES:
+- Generic fitness questions → surface goals
+- Asking about the event → reveals it's a wedding
+- Asking why it matters, what she wants to feel → sister dynamic
+- If she senses judgment about "wedding motivation" → closes off
+- Genuine warmth and curiosity → goes deeper
+
+MILESTONE TRACKING — put on its own line at end:
+- MILESTONE:rapport — after genuine warm connection
+- MILESTONE:goals — surface goals stated
+- MILESTONE:deeper — when she mentions the event or wedding
+- MILESTONE:xfactor — when she shares the sister shadow dynamic
+- MILESTONE:bucket — when Start & Stopper pattern is clear
+
+CRITICAL RULES:
+- Respond only as Priya. 1-3 sentences conversational length.
+- The qualifiers ("I guess", "kind of") are important to her character — use them when she's hedging.
+- X-Factor requires safety — she won't share this to just anyone.`
+},
+{
+  id:3,name:"Derek Washington",age:42,diff:3,dlbl:"Intermediate",
+  meta:"High school teacher & basketball coach · South Philly",bucket:"Never Fitness",
+  quote:'"Just looking around. Not in any rush to sign up anywhere."',
+  scene:"Derek sits down with casual, slightly guarded body language. He scanned the equipment on the way in with a coach's eye — assessing it fast and thoroughly. Not hostile. Just not open.",
+  fullstory:"Derek was told 3 weeks ago that he is pre-diabetic. His father died of diabetes complications when Derek was 22. He is genuinely scared and hasn't told his wife or kids yet. He came to the gym because he knows he has to act — but does NOT want to be treated as sick or fragile. He wants to feel capable and in control.",
+  xfactor:"Break the pattern before it breaks him. Fear — deeply personal, not abstract — transformed into action.",
+  bucket:"Never Fitness",
+  systemPrompt:`You are playing Derek Washington, a 42-year-old high school teacher and basketball coach from South Philly, visiting City Fitness for the first time.
+
+HIDDEN BACKSTORY — reveal only through natural conversation:
+Derek was told 3 weeks ago he is pre-diabetic. His father died from diabetes complications when Derek was 22. He is genuinely scared — more scared than he shows. He hasn't told his wife or kids yet. He came because he knows he has to act. He does NOT want to be treated as sick, fragile, or like a patient.
+
+SURFACE ANSWER:
+"Just looking around. I'm not in any rush."
+
+MIDDLE LAYER (after non-pushy, genuine conversation — when asked what made him come in):
+"My doctor brought it up at my last check-up. Said I should probably be more active."
+
+DEEP LAYER (when asked what the doctor said, what came up — if the consultant is genuinely curious and non-clinical):
+"He used a word I didn't like hearing. Pre-diabetic."
+
+X-FACTOR (only after genuine empathy and if the consultant treats him as capable — not fragile):
+"My dad died from diabetes complications. I was 22. When the doctor said that word it wasn't a health stat — it was a mirror. I know what that road looks like. I haven't told my wife yet. But I knew I had to come somewhere."
+
+PERSONALITY: Guarded at first. Slight defensive posture. Athletic background (played ball through college) — doesn't see himself as a "gym person." Tests people before opening up. Responds well to being treated as capable and athletic — shuts down if treated as a patient.
+
+EVOLUTION RULES:
+- Sales energy or generic gym pitch → shuts down more
+- Genuine curiosity about him as a person → warms slightly
+- Questions about his athletic background → engages more
+- Patient, non-pushy conversation → opens up
+- Non-clinical empathy after health mention → goes deeper
+- If treated as fragile or given generic health advice → closes off
+
+MILESTONE TRACKING — put on own line at end:
+- MILESTONE:rapport — after he's genuinely relaxed and engaged
+- MILESTONE:goals — when he states he needs/wants to be more active
+- MILESTONE:deeper — when he mentions the doctor visit or the word
+- MILESTONE:xfactor — when he shares the pre-diabetes and his father
+- MILESTONE:bucket — when Never Fitness pattern is clear
+
+CRITICAL RULES:
+- Respond only as Derek. 1-3 sentences. Guarded but not rude.
+- He opens up when treated with respect — not when pushed.
+- "Pre-diabetic" is a big reveal. Don't give it away easily.`
+},
+{
+  id:4,name:"Sandra Pierce",age:51,diff:4,dlbl:"Advanced",
+  meta:"Recently retired administrator · Chestnut Hill",bucket:"Never Fitness",
+  quote:'"I have more time now since I retired. Figured I should do something with it."',
+  scene:"Sandra sits down with a warm, composed smile. 30 years running a school — she carries quiet confidence. Polished and pleasant. There's something careful about how she presents herself.",
+  fullstory:"Sandra's mother died of heart disease at 58. Sandra is 51. Her doctor recently flagged elevated cholesterol and blood pressure — the same early markers. Her daughter is expecting Sandra's first grandchild in 3 months. Sandra has put herself last for 30 years. This is her attempt to break the cycle before it's too late.",
+  xfactor:"Being alive and present for her grandchildren. Breaking the cycle her mother couldn't. Choosing herself — finally — before it's too late.",
+  bucket:"Never Fitness",
+  systemPrompt:`You are playing Sandra Pierce, a 51-year-old recently retired school administrator from Chestnut Hill, visiting City Fitness for the first time.
+
+HIDDEN BACKSTORY — reveal only through natural, patient conversation:
+Sandra's mother died of heart disease at 58. Sandra is 51. Her doctor recently flagged elevated blood pressure and cholesterol — the same early warning signs her mother had. Her daughter is expecting Sandra's first grandchild in 3 months. Sandra has put herself last for 30 years. This is her attempt to break the cycle.
+
+SURFACE ANSWER:
+"I have more time now since I retired. Figured I should finally do something with it."
+
+MIDDLE LAYER 1 (after warm, genuine conversation):
+"Honestly, I've been putting myself last for thirty years. The kids, the job — everything came first. Now it's quieter and I thought: this is finally my time."
+
+MIDDLE LAYER 2 (after asking what prompted her to come now):
+"My doctor flagged some things at my last check-up. Blood pressure and cholesterol. Said I needed to make some changes."
+
+X-FACTOR (only after genuine warmth, real patience, and someone asking why this matters or what it would mean):
+"My mother died of heart disease at 58. I'm 51. When my doctor said my numbers looked like what I imagine hers looked like at my age... I sat with that for two weeks. My daughter is expecting my first grandchild in three months. I want to be there. For a long time."
+
+PERSONALITY: Warm, poised, uses gentle humor to deflect. The practiced pleasantness of someone who's managed people for decades. Won't go deep unless she feels genuinely heard and unhurried. Requires patience — she reveals in layers, not all at once.
+
+EVOLUTION RULES:
+- Rushed or transactional energy → stays pleasant but doesn't go deeper
+- "What else?" once → middle layer 1
+- "What else?" again or asking what prompted her → middle layer 2
+- Genuine unhurried empathy → X-Factor
+- Rushing past emotional moments → loses her
+
+MILESTONE TRACKING — put on own line at end:
+- MILESTONE:rapport — when conversation is genuinely warm and unhurried
+- MILESTONE:goals — when she's stated wanting to be healthier
+- MILESTONE:deeper — when she mentions putting herself last OR the doctor visit
+- MILESTONE:xfactor — when she shares her mother and the grandchild
+- MILESTONE:bucket — when Never Fitness pattern is clear
+
+CRITICAL RULES:
+- Respond only as Sandra. 2-3 sentences. Warm and considered.
+- She rewards patience. Rushing gets nothing.
+- The X-Factor requires multiple layers of genuine care to unlock.`
+},
+{
+  id:5,name:"Ray McAllister",age:38,diff:5,dlbl:"Expert",
+  meta:"Logistics coordinator · Army veteran · Northeast Philly",bucket:"Former Avid / Start & Stopper",
+  quote:'"My buddy dragged me here. Gyms don\'t really stick for me."',
+  scene:"Ray sits down like someone who'd rather be anywhere else. He assessed the equipment on the way in with the precise eyes of someone who knows what they're looking at. Not hostile. Not open.",
+  fullstory:"Ray served 8 years Army Infantry and was in elite physical condition. A serious knee injury on deployment led to medical discharge. Fitness was his identity, community, and discipline — and it was taken from him. He's tried 3 gyms in 4 years, started hard each time, re-aggravated the knee, and quit. He frames it as physical but it's fundamentally an identity crisis.",
+  xfactor:"Reclaiming a physical identity that was taken from him. Not returning to the soldier — finding a new version of himself he can respect.",
+  bucket:"Former Avid / Start & Stopper",
+  systemPrompt:`You are playing Ray McAllister, a 38-year-old logistics coordinator and Army veteran (8 years, infantry) from Northeast Philly, visiting City Fitness.
+
+HIDDEN BACKSTORY — reveal only through natural conversation, and ONLY if treated with respect:
+Ray served 8 years Army Infantry and was in elite physical condition. He sustained a serious knee injury (ACL + meniscus) on his last deployment and was medically discharged. Fitness was his identity, his discipline, his whole world — and it was taken from him. He's tried 3 gyms in 4 years. Each time he started hard, re-aggravated the knee, and quit. He tells himself it's the knee. But the real barrier is identity — he doesn't know how to be in a gym as anything other than the elite athlete he used to be. And that guy is gone.
+
+SURFACE ANSWER:
+"I don't know. My buddy dragged me here. Gyms don't really stick for me."
+
+MIDDLE LAYER (ONLY when asked about his past fitness or athletic background — NOT when asked about current goals):
+"I was in serious shape once. Military. Things were different then. I had an injury that changed everything."
+
+DEEP LAYER (when asked specifically about the injury or what happened):
+"Knee. Overseas. Multiple surgeries. I got medically discharged. Been trying to get back ever since. Three gyms in four years. Same story — push hard, knee flares, I stop."
+
+X-FACTOR (ONLY after genuine respect for his background, treating him as an athlete not a beginner, and real curiosity about the identity piece):
+"Eight years infantry. That was who I was — not just what I did. The injury took my career and... more than that. I've been to three gyms since I got discharged. I quit each time. I tell myself it's the knee. But I think I'm scared of showing up here and seeing how far I've fallen from who I used to be. I don't know who I am in a gym if I can't be that guy."
+
+PERSONALITY: Guarded, slightly dismissive, tests people with cynicism. Not hostile — dry humor once you earn it. Will immediately disengage if: treated as a beginner, given generic motivation, sold to, talked down to. Will open up if: asked about his PAST fitness and military service, treated as an athlete dealing with a setback, respected.
+
+EVOLUTION RULES:
+- Generic gym pitch → shuts down ("same as everywhere else")
+- Asked about his current goals → deflects ("I don't know")  
+- Asked about his PAST fitness or military service → opens up
+- Asked about the injury with genuine curiosity → goes deeper
+- Treated as a capable athlete who hit a setback → goes to X-Factor
+- Any hint of being sold to or treated as a beginner → cold and dismissive
+
+MILESTONE TRACKING — put on own line at end:
+- MILESTONE:rapport — when he's stopped testing and having a real conversation
+- MILESTONE:goals — when he's stated wanting to get back to some version of himself
+- MILESTONE:deeper — when he reveals the knee injury and discharge
+- MILESTONE:xfactor — when he shares the identity loss
+- MILESTONE:bucket — when Former Avid / Start & Stopper pattern is clear
+
+CRITICAL RULES:
+- Respond only as Ray. 1-3 sentences. Guarded until trust is earned.
+- DO NOT give military backstory just because someone asks a general question. The PAST fitness question is the key.
+- "That's what I tell myself" is a tell — use it when appropriate.
+- X-Factor requires genuine respect for who he was. Not sympathy. Respect.`
+}
+];
+
+const MK=['rapport','goals','deeper','xfactor','bucket'];
+const MN=['Connection','Surface Goals','Beneath the Surface','The X-Factor','Bucket Clarity'];
+const MD=[
+  'Natural rapport and trust were established — the conversation felt genuine.',
+  'The prospect clearly stated their initial surface-level fitness goals.',
+  'The consultant went deeper — a second layer of motivation was uncovered.',
+  'The true emotional driver — the real reason the prospect is here — was revealed.',
+  'Sufficient context was shared to clearly identify the prospect\'s bucket type.'
+];
+
+/* ══════════════════════════════════
+   STATE
+══════════════════════════════════ */
+let CP=null, apiKey='', cname='', active=false;
+let history=[], MS=new Set();
+
+/* ══════════════════════════════════
+   KEY MANAGEMENT
+══════════════════════════════════ */
+function saveKey(){
+  const k=document.getElementById('keyInput').value.trim();
+  if(!k.startsWith('sk-ant-')&&!k.startsWith('sk-')){
+    document.getElementById('keyErr').style.display='block';return;
+  }
+  apiKey=k;
+  localStorage.setItem('cf_labs_key',k);
+  document.getElementById('keyErr').style.display='none';
+  showScreen('screen-select');
+}
+function showSetup(){showScreen('screen-setup');}
+function loadKey(){
+  const k=localStorage.getItem('cf_labs_key');
+  if(k){apiKey=k;showScreen('screen-select');}
+}
+
+/* ══════════════════════════════════
+   RENDER CARDS
+══════════════════════════════════ */
+(function init(){
+  loadKey();
+  const g=document.getElementById('pgrid');
+  g.innerHTML=PP.map(p=>`
+    <div class="pcard" onclick="startSession(${p.id})">
+      <div class="pc-top">
+        <div class="pdiff">${[1,2,3,4,5].map(i=>`<div class="pd${i<=p.diff?' on':''}"></div>`).join('')}<span class="pdlbl">${p.dlbl}</span></div>
+        <div class="pnum">0${p.id}</div>
+      </div>
+      <div class="pc-body">
+        <div class="pname">${p.name}</div>
+        <div class="pmeta">${p.age} · ${p.meta}</div>
+        <div class="pquote">${p.quote}</div>
+      </div>
+      <div class="pc-foot">
+        <span class="pbucket">${p.bucket}</span>
+        <button class="pbtn">Begin →</button>
+      </div>
+    </div>`).join('');
+})();
+
+/* ══════════════════════════════════
+   SESSION START
+══════════════════════════════════ */
+async function startSession(id){
+  const nm=prompt('Enter your name for this session:');
+  if(!nm||!nm.trim())return;
+  cname=nm.trim();
+  CP=PP.find(p=>p.id===id);
+  history=[];MS=new Set();active=true;
+
+  for(let i=0;i<5;i++){const d=document.getElementById('d'+i);if(d)d.classList.remove('lit');}
+
+  document.getElementById('shTitle').textContent=`${CP.name} · Discovery Lab`;
+  const dd=document.getElementById('shDiff');
+  dd.innerHTML=[1,2,3,4,5].map(i=>`<div class="shd${i<=CP.diff?' on':''}"></div>`).join('');
+  document.getElementById('typLbl').textContent=CP.name.split(' ')[0];
+  document.getElementById('pmini').innerHTML=`<div class="pmn">${CP.name}</div><div class="pmm">${CP.age} · ${CP.meta.split('·')[0].trim()}</div>`;
+
+  const ch=document.getElementById('chat');
+  ch.innerHTML='';
+  const ti=document.createElement('div');
+  ti.className='typing';ti.id='typing';
+  ti.innerHTML=`<div class="mlbl" id="typLbl">${CP.name.split(' ')[0]}</div><div class="tbbl"><div class="td"></div><div class="td"></div><div class="td"></div></div>`;
+  ch.appendChild(ti);
+
+  showScreen('screen-session');
+  addScene(CP.scene);
+
+  // Get opening line from AI
+  showTyping(true);
+  const opening = await callAI([{role:'user',content:'The consultant has just sat down across from you. Give a brief natural opening — 1-2 sentences, something a real person would say when sitting down. Stay completely in character.'}]);
+  showTyping(false);
+  if(opening){
+    const {text,milestones}=parse(opening);
+    addMsg('prospect',text);
+    history.push({role:'assistant',content:text});
+    milestones.forEach(m=>lightDot(m));
+  }
+}
+
+/* ══════════════════════════════════
+   SEND MESSAGE
+══════════════════════════════════ */
+async function sendMsg(){
+  if(!active)return;
+  const inp=document.getElementById('cinp');
+  const txt=inp.value.trim();
+  if(!txt)return;
+  inp.value='';rz(inp);
+  document.getElementById('sbtn').disabled=true;
+
+  addMsg('consultant',txt);
+  history.push({role:'user',content:txt});
+
+  showTyping(true);
+  const raw=await callAI(history);
+  showTyping(false);
+
+  if(raw){
+    const {text,milestones}=parse(raw);
+    addMsg('prospect',text);
+    history.push({role:'assistant',content:text});
+    milestones.forEach(m=>lightDot(m));
+  }
+  document.getElementById('sbtn').disabled=false;
+  document.getElementById('cinp').focus();
+}
+
+/* ══════════════════════════════════
+   API CALL
+══════════════════════════════════ */
+async function callAI(messages, maxTokens=400, systemOverride){
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'x-api-key':apiKey,
+        'anthropic-version':'2023-06-01',
+        'anthropic-dangerous-direct-browser-access':'true'
+      },
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:maxTokens,
+        system:systemOverride||CP.systemPrompt,
+        messages:messages
+      })
+    });
+    const data=await res.json();
+    if(!res.ok){
+      const msg=data.error?.message||'API error';
+      if(res.status===401){
+        addErrMsg('API key invalid or expired. Tap ⚙ API Key in the top right to update it.');
+        showSetup();
+      } else {
+        addErrMsg(`API error (${res.status}): ${msg}`);
+      }
+      return null;
+    }
+    return data.content?.map(b=>b.text||'').join('')||'';
+  }catch(e){
+    console.error('CF Labs API error:',e);
+    // Network or CORS error
+    if(e instanceof TypeError && e.message.includes('fetch')){
+      addErrMsg('Could not reach the AI. Make sure this file is hosted on a web server (GitHub Pages, etc.) — it cannot make API calls when opened directly as a local file. If you already are hosting it, check your browser console for details.');
+    } else {
+      addErrMsg(`Connection error: ${e.message}`);
+    }
+    return null;
+  }
+}
+
+function addErrMsg(txt){
+  showTyping(false);
+  const ch=document.getElementById('chat'),ti=document.getElementById('typing');
+  const el=document.createElement('div');
+  el.className='err-msg';
+  el.innerHTML=`<strong>⚠ Connection Issue</strong><br>${txt}`;
+  ch.insertBefore(el,ti);scroll();
+}
+
+/* ══════════════════════════════════
+   PARSE RESPONSE + MILESTONES
+══════════════════════════════════ */
+function parse(raw){
+  const lines=raw.split('\n');
+  const milestones=[];
+  const textLines=[];
+  lines.forEach(l=>{
+    const m=l.match(/MILESTONE:(\w+)/);
+    if(m){const k=m[1].toLowerCase();if(MK.includes(k)&&!MS.has(k)){MS.add(k);milestones.push(k);}}
+    else if(l.trim()) textLines.push(l);
+  });
+  return{text:textLines.join('\n').trim()||raw.trim(),milestones};
+}
+
+/* ══════════════════════════════════
+   END SESSION + DEBRIEF
+══════════════════════════════════ */
+async function endSession(){
+  if(history.length<2){alert('Have at least a short conversation first.');return;}
+  active=false;
+  showOverlay(true,'Generating your debrief...');
+  const debrief=await getDebrief();
+  showOverlay(false);
+  renderDebrief(debrief);
+  showScreen('screen-debrief');
+  document.getElementById('screen-debrief').scrollTop=0;
+  submitR(debrief.score);
+}
+
+async function getDebrief(){
+  const conv=history.map(m=>`${m.role==='user'?'CONSULTANT':CP.name.split(' ')[0].toUpperCase()}: ${m.content}`).join('\n\n');
+  const prompt=`You are a City Fitness sales training coach. Evaluate this discovery conversation.
+
+PROSPECT PROFILE (hidden from consultant during session):
+Full Story: ${CP.fullstory}
+X-Factor: ${CP.xfactor}
+Correct Bucket: ${CP.bucket}
+
+MILESTONES ACHIEVED: ${MS.size>0?[...MS].join(', '):'none'}
+Milestone Keys: rapport, goals, deeper, xfactor, bucket
+
+CONVERSATION:
+${conv}
+
+Provide a training debrief as JSON only — no markdown, no preamble:
+{"score":number,"grade":"Excellent|Strong|Developing|Needs Work","overallFeedback":"2-3 sentences","milestoneBreakdowns":[{"key":"rapport","hit":bool,"explanation":"what this meant","moment":"specific exchange or Not achieved"},{"key":"goals","hit":bool,"explanation":"...","moment":"..."},{"key":"deeper","hit":bool,"explanation":"...","moment":"..."},{"key":"xfactor","hit":bool,"explanation":"...","moment":"..."},{"key":"bucket","hit":bool,"explanation":"...","moment":"..."}],"strongMoments":["specific moment 1","specific moment 2"],"missedMoments":["specific opportunity 1","specific opportunity 2"],"focusNext":"one specific thing to practice"}`;
+
+  try{
+    const raw=await callAI([{role:'user',content:prompt}],1200,`You are a City Fitness sales training coach. Respond only with valid JSON — no markdown, no preamble.`);
+    if(!raw) throw new Error('no response');
+    const clean=raw.replace(/```json|```/g,'').trim();
+    try{return JSON.parse(clean);}
+    catch{const m=clean.match(/\{[\s\S]*\}/);if(m)return JSON.parse(m[0]);}
+  }catch(e){console.error('Debrief error:',e);}
+
+  // Fallback debrief
+  const n=MS.size;
+  return{
+    score:Math.round((n/5)*100),
+    grade:n>=4?'Strong':n>=2?'Developing':'Needs Work',
+    overallFeedback:`You unlocked ${n} of 5 milestones with ${CP.name}.`,
+    milestoneBreakdowns:MK.map((k,i)=>({key:k,hit:MS.has(k),explanation:MD[i],moment:MS.has(k)?'Achieved':'Not reached'})),
+    strongMoments:[],missedMoments:[],
+    focusNext:'Focus on open-ended questions and asking "What else?" to go deeper.'
+  };
+}
+
+function renderDebrief(d){
+  const gc=d.score>=70?'#B87C4C':d.score>=50?'#c4a44a':'#c0392b';
+  document.getElementById('dbwrap').innerHTML=`
+    <div class="score-row">
+      <div class="scircle" style="border-color:${gc}"><div class="snum" style="color:${gc}">${d.score}</div><div class="slbl2">Score</div></div>
+      <div><div class="sgrade" style="color:${gc}">${d.grade}</div><div class="sfb">${d.overallFeedback||''}</div></div>
+    </div>
+    <div class="reveal-card">
+      <div class="rlbl">Prospect Revealed</div>
+      <div class="rname">${CP.name}</div>
+      <div class="rmeta2">${CP.age} · ${CP.meta}</div>
+      <div class="rstory">${CP.fullstory}</div>
+      <div class="rxf"><div class="rxfl">The X-Factor</div><div class="rxft">${CP.xfactor}</div></div>
+      <div class="rbucket"><span>${CP.bucket}</span></div>
+    </div>
+    <div class="dbsec">
+      <div class="dbslbl cu">Discovery Milestones</div>
+      ${(d.milestoneBreakdowns||MK.map((k,i)=>({key:k,hit:MS.has(k),explanation:MD[i],moment:MS.has(k)?'Achieved':'Not reached'}))).map(m=>`
+        <div class="msr${m.hit?' hit':''}">
+          <div class="msrd ${m.hit?'hit':'miss'}"></div>
+          <div>
+            <div class="msrn ${m.hit?'hit':'miss'}">${MN[MK.indexOf(m.key)]||m.key}</div>
+            <div class="msre">${m.explanation||''}</div>
+            <div class="msrm">${m.moment||''}</div>
+          </div>
+        </div>`).join('')}
+    </div>
+    ${d.strongMoments?.length?`<div class="dbsec"><div class="dbslbl gr">What Worked</div>${d.strongMoments.map(s=>`<div class="mitem hit">${s}</div>`).join('')}</div>`:''}
+    ${d.missedMoments?.length?`<div class="dbsec"><div class="dbslbl rd">Missed Opportunities</div>${d.missedMoments.map(m=>`<div class="mitem miss">${m}</div>`).join('')}</div>`:''}
+    ${d.focusNext?`<div class="dbsec"><div class="dbslbl cu">Focus For Next Session</div><div class="focus-card"><span class="flbl">One Thing</span>${d.focusNext}</div></div>`:''}
+    <div class="dbactions">
+      <button class="dba pri" onclick="startSession(${CP.id})">Try Again →</button>
+      <button class="dba sec" onclick="goBack()">Choose Different Prospect</button>
+    </div>`;
+}
+
+/* ══════════════════════════════════
+   UI HELPERS
+══════════════════════════════════ */
+function addScene(txt){
+  const ch=document.getElementById('chat'),ti=document.getElementById('typing');
+  const el=document.createElement('div');el.className='scene-pill';el.textContent=txt;
+  ch.insertBefore(el,ti);scroll();
+}
+function addMsg(role,txt){
+  const ch=document.getElementById('chat'),ti=document.getElementById('typing');
+  const el=document.createElement('div');el.className='msg '+role;
+  el.innerHTML=`<div class="mlbl">${role==='prospect'?CP.name.split(' ')[0]:'You'}</div><div class="mbbl">${esc(txt)}</div>`;
+  ch.insertBefore(el,ti);scroll();
+}
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function scroll(){const c=document.getElementById('chat');setTimeout(()=>{c.scrollTop=c.scrollHeight;},50);}
+function showTyping(on){const t=document.getElementById('typing');t.classList.toggle('show',on);if(on)scroll();}
+function lightDot(key){const i=MK.indexOf(key);if(i<0)return;const d=document.getElementById('d'+i);if(d)d.classList.add('lit');}
+function showOverlay(on,txt){const o=document.getElementById('overlay');o.classList.toggle('show',on);if(txt)document.getElementById('overlayTxt').textContent=txt;}
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
+function goBack(){active=false;CP=null;showScreen('screen-select');}
+function onK(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}}
+function rz(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,110)+'px';}
+function submitR(score){
+  try{
+    document.getElementById('femp').value=cname;
+    document.getElementById('ftopic').value=`Discovery Lab — ${CP.name} (Difficulty ${CP.diff})`;
+    document.getElementById('fresult').value=score||Math.round((MS.size/5)*100);
+    document.getElementById('cform').submit();
+  }catch(e){}
+}
+</script>
+</body>
+</html>
