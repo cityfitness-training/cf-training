@@ -499,16 +499,6 @@ let CP=null, apiKey=API_KEY, cname='', active=false;
 let history=[], MS=new Set();
 
 /* ══════════════════════════════════
-   KEY MANAGEMENT
-══════════════════════════════════ */
-  apiKey=k;
-  localStorage.setItem('cf_labs_key',k);
-  document.getElementById('keyErr').style.display='none';
-  showScreen('screen-select');
-}
-}
-
-/* ══════════════════════════════════
    RENDER CARDS
 ══════════════════════════════════ */
 (function init(){
