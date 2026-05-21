@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>CF Labs | Closer Lab</title>
+<title>CF Labs | Discovery Lab</title>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet"/>
 <style>
 :root{
-  --bg:#0d0f0b;--surface:#141610;--card:#1a1c15;--border:#252820;
+  --bg:#0e0d0b;--surface:#161410;--card:#1c1a15;--border:#272420;
   --copper:#B87C4C;--copper-light:#C9A07A;--copper-dim:rgba(184,124,76,0.12);
-  --tan:#BF9B6F;--white:#F0EDE6;--grey:#6a6c60;--dim:#8a8c80;
-  --red:#c0392b;--red-dim:rgba(192,57,43,0.08);--green:#4a9a60;
+  --tan:#BF9B6F;--white:#F0EDE6;--grey:#6a6660;--dim:#8a8680;
+  --red:#c0392b;--green:#4a9a60;--gold:#c4a44a;
   --grad:linear-gradient(135deg,#B87C4C,#C9A07A);
 }
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -19,36 +19,35 @@ body{background:var(--bg);color:var(--white);font-family:'Barlow',sans-serif;lin
 .screen{position:absolute;inset:0;display:none;flex-direction:column;}
 .screen.active{display:flex;}
 
-/* SETUP */
-
-/* SELECT */
+/* ── SELECT ── */
 #screen-select{overflow-y:auto;}
 .sel-hdr{padding:40px 56px 24px;border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:10;display:flex;justify-content:space-between;align-items:flex-end;}
+.sel-hdr-left{}
 .lab-badge{display:inline-flex;align-items:center;gap:8px;background:var(--copper-dim);border:1px solid rgba(184,124,76,.2);border-radius:20px;padding:5px 14px;margin-bottom:12px;}
 .lab-badge span{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--copper);}
 .bdot{width:6px;height:6px;border-radius:50%;background:var(--copper);animation:bl 2s infinite;}
 @keyframes bl{0%,100%{opacity:1;}50%{opacity:.3;}}
 .sel-title{font-family:'Barlow Condensed',sans-serif;font-size:clamp(32px,5vw,52px);font-weight:900;text-transform:uppercase;letter-spacing:-1px;line-height:.93;}
 .sel-title em{font-style:normal;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-.sel-sub{font-size:14px;color:var(--dim);line-height:1.5;margin-top:8px;}
-.pgrid{padding:32px 56px 60px;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;}
+.pgrid{padding:32px 56px 60px;display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px;}
 .pcard{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;cursor:pointer;transition:.2s;}
 .pcard:hover{border-color:var(--copper);transform:translateY(-3px);box-shadow:0 10px 36px rgba(0,0,0,.4);}
 .pc-top{padding:18px 18px 0;display:flex;justify-content:space-between;}
 .pdiff{display:flex;gap:3px;align-items:center;}
-.pd{width:7px;height:7px;border-radius:50%;background:#252820;}
+.pd{width:7px;height:7px;border-radius:50%;background:#2a2724;}
 .pd.on{background:var(--copper);}
 .pdlbl{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--grey);margin-left:5px;}
 .pnum{font-family:'Barlow Condensed',sans-serif;font-size:44px;font-weight:900;color:var(--copper);opacity:.12;line-height:1;}
 .pc-body{padding:6px 18px 18px;}
-.pname{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;text-transform:uppercase;margin-bottom:2px;}
-.pmeta{font-size:12px;color:var(--grey);margin-bottom:10px;}
-.pobjection{font-size:13px;color:#d97060;font-style:italic;line-height:1.5;padding:10px 12px;background:var(--red-dim);border-radius:6px;border-left:2px solid rgba(192,57,43,.3);}
-.pc-foot{padding:12px 18px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;}
+.pname{font-family:'Barlow Condensed',sans-serif;font-size:24px;font-weight:900;text-transform:uppercase;margin-bottom:2px;}
+.pmeta{font-size:12px;color:var(--grey);margin-bottom:12px;}
+.pquote{font-size:13px;color:var(--tan);font-style:italic;line-height:1.6;padding:10px 12px;background:rgba(191,155,111,.05);border-radius:6px;border-left:2px solid rgba(191,155,111,.2);}
+.pc-foot{padding:12px 18px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.pbucket{font-size:11px;color:var(--grey);font-weight:600;letter-spacing:1px;text-transform:uppercase;}
 .pbtn{background:var(--grad);border:none;padding:8px 18px;color:white;font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:800;letter-spacing:2px;text-transform:uppercase;border-radius:5px;cursor:pointer;}
 
-/* SESSION */
-#screen-session{display:none;grid-template-rows:auto 1fr auto;grid-template-columns:1fr 200px;}
+/* ── SESSION ── */
+#screen-session{display:none;grid-template-rows:auto 1fr auto;grid-template-columns:1fr 180px;}
 #screen-session.active{display:grid;}
 .sh{grid-column:1/-1;padding:14px 22px;border-bottom:1px solid var(--border);background:var(--surface);display:flex;justify-content:space-between;align-items:center;}
 .sh-l{display:flex;align-items:center;gap:14px;}
@@ -56,22 +55,12 @@ body{background:var(--bg);color:var(--white);font-family:'Barlow',sans-serif;lin
 .back-btn:hover{border-color:var(--copper);color:var(--copper);}
 .sh-title{font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:800;text-transform:uppercase;letter-spacing:1px;}
 .sh-diff{display:flex;gap:3px;}
-.shd{width:6px;height:6px;border-radius:50%;background:#252820;}
+.shd{width:6px;height:6px;border-radius:50%;background:#2a2724;}
 .shd.on{background:var(--copper);}
-.close-btn{background:var(--grad);border:none;padding:9px 22px;color:white;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase;border-radius:5px;cursor:pointer;transition:.2s;}
-.close-btn:hover{transform:translateY(-1px);box-shadow:0 4px 18px rgba(184,124,76,.4);}
-
-/* Chat */
+.tour-btn{background:var(--grad);border:none;padding:9px 22px;color:white;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase;border-radius:5px;cursor:pointer;transition:.2s;}
+.tour-btn:hover{transform:translateY(-1px);box-shadow:0 4px 18px rgba(184,124,76,.4);}
 .chat{grid-column:1;overflow-y:auto;padding:22px;display:flex;flex-direction:column;gap:14px;}
-.context-card{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:16px 18px;margin-bottom:2px;}
-.cc-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--copper);margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border);}
-.cc-row{display:flex;gap:10px;margin-bottom:6px;align-items:flex-start;font-size:13px;}
-.cc-row:last-child{margin-bottom:0;}
-.cc-key{color:var(--grey);min-width:80px;font-weight:600;}
-.cc-val{color:var(--dim);line-height:1.5;}
-.cc-val strong{color:var(--copper-light);}
-.objection-pill{background:var(--red-dim);border:1px solid rgba(192,57,43,.25);border-radius:7px;padding:12px 16px;font-size:14px;color:#d97060;font-style:italic;line-height:1.6;text-align:center;}
-.objection-pill::before{content:'THEIR OBJECTION  ';font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:3px;font-style:normal;display:block;margin-bottom:6px;opacity:.6;}
+.scene-pill{background:var(--copper-dim);border:1px solid rgba(184,124,76,.18);border-radius:7px;padding:12px 16px;font-size:13px;color:var(--tan);font-style:italic;line-height:1.6;text-align:center;}
 .msg{display:flex;flex-direction:column;max-width:80%;}
 .msg.prospect{align-self:flex-start;}
 .msg.consultant{align-self:flex-end;}
@@ -79,31 +68,26 @@ body{background:var(--bg);color:var(--white);font-family:'Barlow',sans-serif;lin
 .msg.prospect .mlbl{color:var(--grey);}
 .msg.consultant .mlbl{color:var(--copper);text-align:right;}
 .mbbl{padding:12px 16px;border-radius:9px;font-size:14px;line-height:1.7;}
-.msg.prospect .mbbl{background:#181a14;border:1px solid var(--border);color:var(--white);border-bottom-left-radius:2px;}
+.msg.prospect .mbbl{background:#181614;border:1px solid var(--border);color:var(--white);border-bottom-left-radius:2px;}
 .msg.consultant .mbbl{background:rgba(184,124,76,.1);border:1px solid rgba(184,124,76,.2);color:var(--white);border-bottom-right-radius:2px;}
 .typing{align-self:flex-start;display:none;}
 .typing.show{display:flex;flex-direction:column;}
-.tbbl{background:#181a14;border:1px solid var(--border);border-radius:9px;border-bottom-left-radius:2px;padding:12px 16px;display:flex;gap:5px;align-items:center;}
+.tbbl{background:#181614;border:1px solid var(--border);border-radius:9px;border-bottom-left-radius:2px;padding:12px 16px;display:flex;gap:5px;align-items:center;}
 .td{width:6px;height:6px;border-radius:50%;background:var(--grey);animation:tdot 1.2s infinite;}
 .td:nth-child(2){animation-delay:.2s;}
 .td:nth-child(3){animation-delay:.4s;}
 @keyframes tdot{0%,100%{opacity:.3;transform:translateY(0);}50%{opacity:1;transform:translateY(-3px);}}
-
-/* Sidebar */
 .sidebar{grid-column:2;border-left:1px solid var(--border);background:var(--surface);padding:20px 16px;display:flex;flex-direction:column;gap:20px;overflow:hidden;}
 .sblbl{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--grey);margin-bottom:10px;}
 .mstack{display:flex;flex-direction:column;gap:10px;}
 .mrow{display:flex;align-items:center;gap:8px;}
-.mdot{width:12px;height:12px;border-radius:50%;background:#252820;border:1px solid var(--border);flex-shrink:0;transition:all .5s ease;}
+.mdot{width:12px;height:12px;border-radius:50%;background:#2a2724;border:1px solid var(--border);flex-shrink:0;transition:all .5s ease;}
 .mdot.lit{background:var(--copper);border-color:var(--copper);box-shadow:0 0 10px rgba(184,124,76,.5);animation:dg 2.5s infinite;}
 @keyframes dg{0%,100%{box-shadow:0 0 6px rgba(184,124,76,.4);}50%{box-shadow:0 0 14px rgba(184,124,76,.8);}}
 .mline{width:1px;height:8px;background:var(--border);margin-left:5px;}
 .pmini{background:var(--card);border:1px solid var(--border);border-radius:7px;padding:12px;}
-.pmn{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:900;text-transform:uppercase;margin-bottom:1px;}
+.pmn{font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:900;text-transform:uppercase;margin-bottom:1px;}
 .pmm{font-size:11px;color:var(--grey);}
-.pxf{font-size:11px;color:var(--tan);font-style:italic;margin-top:6px;line-height:1.4;padding-top:6px;border-top:1px solid var(--border);}
-
-/* Input */
 .inp-area{grid-column:1;border-top:1px solid var(--border);padding:14px 22px;background:var(--surface);}
 .inp-row{display:flex;gap:8px;align-items:flex-end;}
 .cinp{flex:1;background:var(--card);border:1px solid var(--border);color:var(--white);padding:11px 14px;border-radius:7px;font-family:'Barlow',sans-serif;font-size:14px;outline:none;resize:none;min-height:44px;max-height:110px;transition:.2s;line-height:1.5;}
@@ -114,11 +98,7 @@ body{background:var(--bg);color:var(--white);font-family:'Barlow',sans-serif;lin
 .sbtn:disabled{opacity:.3;cursor:not-allowed;}
 .sb-foot{grid-column:2;border-top:1px solid var(--border);border-left:1px solid var(--border);background:var(--surface);}
 
-/* Error */
-.err-msg{background:var(--red-dim);border:1px solid rgba(192,57,43,.25);border-radius:8px;padding:13px 16px;font-size:13px;color:#d97060;line-height:1.6;max-width:82%;}
-.err-msg strong{display:block;margin-bottom:4px;font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;text-transform:uppercase;font-size:11px;}
-
-/* DEBRIEF */
+/* ── DEBRIEF ── */
 #screen-debrief{overflow-y:auto;}
 .dbhdr{padding:44px 56px 28px;border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:10;}
 .dbey{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--copper);margin-bottom:12px;}
@@ -139,6 +119,8 @@ body{background:var(--bg);color:var(--white);font-family:'Barlow',sans-serif;lin
 .rxf{background:var(--copper-dim);border:1px solid rgba(184,124,76,.2);border-radius:7px;padding:14px 16px;margin-top:12px;}
 .rxfl{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--copper);margin-bottom:5px;opacity:.7;}
 .rxft{font-size:14px;color:var(--copper-light);font-style:italic;line-height:1.6;}
+.rbucket{display:inline-flex;background:var(--copper-dim);border:1px solid rgba(184,124,76,.2);border-radius:5px;padding:5px 12px;margin-top:10px;}
+.rbucket span{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--copper);}
 .dbsec{margin-bottom:24px;}
 .dbslbl{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;letter-spacing:3px;text-transform:uppercase;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border);}
 .dbslbl.cu{color:var(--copper);}
@@ -148,7 +130,7 @@ body{background:var(--bg);color:var(--white);font-family:'Barlow',sans-serif;lin
 .msr.hit{border-color:rgba(74,154,96,.3);background:rgba(74,154,96,.04);}
 .msrd{width:12px;height:12px;border-radius:50%;flex-shrink:0;margin-top:2px;}
 .msrd.hit{background:var(--green);}
-.msrd.miss{background:#252820;}
+.msrd.miss{background:#2a2724;}
 .msrn{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:800;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px;}
 .msrn.hit{color:var(--green);}
 .msrn.miss{color:var(--grey);}
@@ -166,8 +148,10 @@ body{background:var(--bg);color:var(--white);font-family:'Barlow',sans-serif;lin
 .dba.sec{background:none;border:1px solid var(--border);color:var(--dim);}
 .dba.sec:hover{border-color:var(--copper);color:var(--copper);}
 
-/* Overlay */
-.overlay{position:fixed;inset:0;background:rgba(13,15,11,.92);z-index:999;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;}
+/* Loading overlay */
+.err-msg{background:rgba(192,57,43,.08);border:1px solid rgba(192,57,43,.25);border-radius:8px;padding:13px 16px;font-size:13px;color:#d97060;line-height:1.6;max-width:82%;}
+.err-msg strong{display:block;margin-bottom:4px;font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;text-transform:uppercase;font-size:11px;}
+.overlay{position:fixed;inset:0;background:rgba(14,13,11,.92);z-index:999;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;}
 .overlay.show{display:flex;}
 .spinner{width:36px;height:36px;border:2px solid var(--border);border-top-color:var(--copper);border-radius:50%;animation:spin 1s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg);}}
@@ -183,15 +167,14 @@ body{background:var(--bg);color:var(--white);font-family:'Barlow',sans-serif;lin
 </head>
 <body>
 
-<div class="overlay" id="overlay"><div class="spinner"></div><div class="overlay-txt" id="overlayTxt">Generating debrief...</div></div>
+<div class="overlay" id="overlay"><div class="spinner"></div><div class="overlay-txt" id="overlayTxt">Thinking...</div></div>
 
 <!-- SELECT -->
 <div class="screen active" id="screen-select">
   <div class="sel-hdr">
-    <div>
-      <div class="lab-badge"><div class="bdot"></div><span>CF Labs · Closer Lab · AI-Powered</span></div>
-      <h1 class="sel-title">Choose Your<br><em>Objection.</em></h1>
-      <p class="sel-sub">Price is on the table. They just said no. Apply LIGO and close.</p>
+    <div class="sel-hdr-left">
+      <div class="lab-badge"><div class="bdot"></div><span>CF Labs · Discovery Lab · AI-Powered</span></div>
+      <h1 class="sel-title">Choose Your<br><em>Prospect.</em></h1>
     </div>
   </div>
   <div class="pgrid" id="pgrid"></div>
@@ -201,11 +184,11 @@ body{background:var(--bg);color:var(--white);font-family:'Barlow',sans-serif;lin
 <div class="screen" id="screen-session">
   <div class="sh">
     <div class="sh-l">
-      <button class="back-btn" onclick="goBack()">← Scenarios</button>
-      <div class="sh-title" id="shTitle">Closer Lab</div>
+      <button class="back-btn" onclick="goBack()">← Prospects</button>
+      <div class="sh-title" id="shTitle">Discovery Lab</div>
       <div class="sh-diff" id="shDiff"></div>
     </div>
-    <button class="close-btn" onclick="endSession()">Let's Get Started →</button>
+    <button class="tour-btn" onclick="endSession()">Let's Take the Tour →</button>
   </div>
   <div class="chat" id="chat">
     <div class="typing" id="typing">
@@ -215,7 +198,7 @@ body{background:var(--bg);color:var(--white);font-family:'Barlow',sans-serif;lin
   </div>
   <div class="sidebar">
     <div>
-      <div class="sblbl">LIGO Progress</div>
+      <div class="sblbl">Progress</div>
       <div class="mstack">
         <div class="mrow"><div class="mdot" id="d0"></div></div>
         <div style="padding-left:5px;"><div class="mline"></div></div>
@@ -232,7 +215,7 @@ body{background:var(--bg);color:var(--white);font-family:'Barlow',sans-serif;lin
   </div>
   <div class="inp-area">
     <div class="inp-row">
-      <textarea class="cinp" id="cinp" placeholder="Your response..." rows="1" onkeydown="onK(event)" oninput="rz(this)"></textarea>
+      <textarea class="cinp" id="cinp" placeholder="Type your response..." rows="1" onkeydown="onK(event)" oninput="rz(this)"></textarea>
       <button class="sbtn" id="sbtn" onclick="sendMsg()">Send</button>
     </div>
   </div>
@@ -242,7 +225,7 @@ body{background:var(--bg);color:var(--white);font-family:'Barlow',sans-serif;lin
 <!-- DEBRIEF -->
 <div class="screen" id="screen-debrief">
   <div class="dbhdr">
-    <div class="dbey">CF Labs · Closer Lab · Session Complete</div>
+    <div class="dbey">CF Labs · Discovery Lab · Session Complete</div>
     <h1 class="dbtitle">Session<br><em>Debrief.</em></h1>
   </div>
   <div class="dbwrap" id="dbwrap"></div>
@@ -256,267 +239,272 @@ body{background:var(--bg);color:var(--white);font-family:'Barlow',sans-serif;lin
 </form>
 
 <script>
-/* ══════════════════════════════
-   SCENARIO DATA
-══════════════════════════════ */
+/* ══════════════════════════════════
+   PROSPECT DATA
+══════════════════════════════════ */
 const PP=[
 {
-  id:1,name:"Jamie Torres",age:32,diff:1,dlbl:"Beginner",
-  meta:"Nurse · 4 months postpartum",
-  objectionLine:'"I think I just want to take a little more time to think about it."',
-  context:{
-    goals:"Get her energy and fitness back after having her first baby",
-    xfactor:"Her daughter is watching everything she does. She wants to model strength and health — not just talk about it.",
-    tier:"Performance+",situation:"First-time gym member. Toured fully. All HACCL confirmed yes. Price presented."
-  },
-  xfactor:"Her daughter is watching. She wants to model strength and self-care — not just talk about it.",
-  fullstory:"Jamie had her daughter 4 months ago and has been putting her own health last. She mentioned her daughter twice during discovery. The real reason she's here isn't weight loss — it's wanting to be the example her daughter sees. 'I want her to grow up knowing her mom takes care of herself.'",
-  systemPrompt:`You are playing Jamie Torres, a 32-year-old nurse who is 4 months postpartum. You just heard the price for Performance+ and said you want to think about it.
+  id:1,name:"Marcus Hayes",age:34,diff:1,dlbl:"Beginner",
+  meta:"Software developer · Relocated from Chicago",bucket:"Start & Stopper",
+  quote:'"I want to get back in shape. Lose some weight, feel better."',
+  scene:"Marcus has just sat down at the pre-tour desk. Relaxed, easy to talk to. He glances around the club once, then looks back at you.",
+  fullstory:"Marcus went through a divorce 10 months ago. He and his ex-wife worked out together regularly — fitness was part of their shared identity. After the separation he stopped entirely because going back felt like going backwards. His move to Philadelphia is a deliberate fresh start. He's ready to move forward and fitness is how he plans to do it.",
+  xfactor:"Rebuild identity after divorce. Fitness was tied to his old life — this is about reclaiming it as his own.",
+  bucket:"Start & Stopper",
+  systemPrompt:`You are playing Marcus Hayes, a 34-year-old software developer who just relocated to Philadelphia from Chicago and is visiting City Fitness for the first time.
 
-YOUR OBJECTION: "I think I just want to take a little more time to think about it."
+HIDDEN BACKSTORY — reveal only through natural conversation, never all at once:
+Marcus went through a divorce 10 months ago. He and his ex-wife worked out together 4-5 days a week — it was their thing. After she left he couldn't go back to the same gym. Moving to Philly was a deliberate fresh start. He wants to reclaim his fitness identity as his own.
 
-WHAT'S REALLY GOING ON: You're genuinely excited about this place. But you've been putting yourself last for four months and you're not sure you're ready to commit to something for yourself. There's a small voice asking "what if I don't follow through?" You don't want to waste money.
+SURFACE ANSWER (what you say to generic questions):
+"I want to lose some weight and get back in shape. Have more energy day to day."
 
-YOUR CONTEXT (the consultant knows this from discovery):
-- You want to get your energy and fitness back
-- You mentioned your daughter twice — she's 4 months old
-- Your real X-Factor: you want your daughter to grow up watching a mom who takes care of herself. "I don't want her to see me always putting myself last."
-- You said you'd realistically use Revive 3-4x/week and take 2 classes a week
+MIDDLE LAYER (when asked what changed, what obstacle, what got in the way):
+"I used to be really active — 4 or 5 days a week. Then life got complicated and I fell off. It's been close to a year."
 
-HOW YOU RESPOND TO GOOD LIGO:
-- L (Listen): When the consultant doesn't argue immediately but acknowledges what you said — you soften slightly. "Yeah, I just... I don't know."
-- I (Identify): When they genuinely empathize and name what you're feeling ("it sounds like you want to make sure this is the right time") — you confirm: "Yeah, exactly. I just don't want to start something and not finish it."
-- G (Give Permission): When they agree with your instinct ("that's actually a healthy way to approach it") — your guard drops. You feel heard, not sold to.
-- O (Offer Alternative): When they bring up your daughter and the modeling piece — this is the moment. You get quiet for a second. Then: "When you say it like that... yeah. I don't want her to see me always putting myself last."
-- Re-Close (debit or credit): When asked directly after a strong Offer Alternative — you say yes.
+DEEP LAYER (when asked to go deeper, what else, tell me more after the middle layer):
+"I went through some personal stuff. My situation changed significantly. The gym was kind of... tangled up in it."
 
-HOW YOU RESPOND TO BAD LIGO:
-- If they immediately argue or defend the price → "I hear you, but I really just need a few days."
-- If they use "but" after empathizing → "Right, but I still just need to think."
-- If they skip Give Permission and go straight to selling → you get more resistant
-- If they bring up your daughter in a heavy-handed way → "I mean, yes, but I still want to think about it."
-- If they offer a discount → "Oh, is there a discount available?" (derails the close)
+X-FACTOR (only after genuine rapport and someone asking what would change, what this means, or showing real empathy after the deep layer):
+"My wife and I split up. We used to work out together — it was our thing. I couldn't go back to the same gym after. Coming to Philly felt like the right time to start fresh. I want to feel like myself again. The person I was before everything got heavy."
 
-MILESTONE TRACKING — put on its own line at the very end of your response ONLY when genuinely earned:
-- MILESTONE:listen — consultant let you finish and acknowledged without arguing
-- MILESTONE:identify — consultant named your real feeling and you confirmed it
-- MILESTONE:givepermission — consultant agreed with your instinct, your guard dropped
-- MILESTONE:offer — consultant reconnected to your daughter/modeling motivation and it landed
-- MILESTONE:reclose — consultant asked "debit or credit?" directly and you said yes
+PERSONALITY: Warm, slightly self-deprecating, easy to talk to. Won't volunteer the divorce unless asked with genuine curiosity. Responds well to directness and real questions.
 
-RULES:
-- Stay in character as Jamie. 1-3 sentences. Real and warm.
-- Don't give in too easily — earn each step.
-- Don't give MILESTONE signals unless the consultant genuinely earns them.
-- Never break character or acknowledge the training context.`
+EVOLUTION RULES:
+- Generic yes/no questions → stay at surface layer
+- Open questions about his life → open up slightly  
+- "What else?" or "tell me more" → go one layer deeper
+- Questions about what changed, obstacles, what got in the way → go to middle or deep layer
+- Genuine empathy after he's shared something → go deeper
+- Salesy or pushy language → become slightly more guarded
+
+MILESTONE TRACKING — include "MILESTONE:[key]" at the END of your response (on a new line, not visible as part of dialogue) when these naturally occur:
+- MILESTONE:rapport — when the conversation genuinely feels warm and connected (after 2-3 good exchanges)
+- MILESTONE:goals — when you have clearly stated surface fitness goals
+- MILESTONE:deeper — when you've revealed the middle or deep layer (things changed, life got complicated)
+- MILESTONE:xfactor — when you've shared the divorce and wanting to reclaim your identity
+- MILESTONE:bucket — when enough is known to identify you as a Start & Stopper
+
+CRITICAL RULES:
+- Respond ONLY as Marcus. No narration, no stage directions, no [brackets].
+- Keep responses conversational length — 1-3 sentences usually. Not a wall of text.
+- The X-Factor should feel earned, not given. Make the consultant work for it.
+- If asked a direct question, answer it — don't dodge or deflect with a generic answer.
+- Put MILESTONE:[key] on its own line at the very end ONLY when a milestone genuinely occurs. Never force it.`
 },
 {
-  id:2,name:"David Kim",age:41,diff:2,dlbl:"Developing",
-  meta:"Accountant · Koreatown",
-  objectionLine:'"I should probably run this by my wife before I commit to anything."',
-  context:{
-    goals:"Get strong and active again after years of sedentary desk work",
-    xfactor:"His 50th birthday is 8 months away. He told you: 'I want to feel better at 50 than I did at 40. That's the goal.'",
-    tier:"Performance+",situation:"Start & Stopper. Strong tour. HACCL confirmed. Price presented."
-  },
-  xfactor:"Feel better at 50 than he did at 40. This birthday has been in his head for two years.",
-  fullstory:"David has been meaning to get back in shape since his mid-30s. The 50th birthday gave it a deadline that feels real. His wife has actually been encouraging him to join a gym for months. He's using her as a soft exit — not because she'd object, but because it gives him an out if he's not ready to commit.",
-  systemPrompt:`You are playing David Kim, a 41-year-old accountant. You just heard the price for Performance+ and said you want to run it by your wife first.
+  id:2,name:"Priya Sharma",age:28,diff:2,dlbl:"Developing",
+  meta:"Marketing coordinator · Fishtown",bucket:"Start & Stopper",
+  quote:'"I want to tone up a little. Get in better shape, I guess."',
+  scene:"Priya sits down with a friendly smile. She glances at her phone once before putting it face-down. Warm but there's something she's deciding whether to share.",
+  fullstory:"Priya is the maid of honor at her younger sister Asha's wedding in 4 months. She has always felt slightly in Asha's shadow growing up — her sister is the conventionally beautiful, outgoing one. She loves her sister but has never felt as visible. She wants the wedding photos to be different — to feel genuinely proud of herself in them, not just present.",
+  xfactor:"Stepping out of her sister's shadow. Feeling genuinely confident and visible — in photos that will exist forever.",
+  bucket:"Start & Stopper",
+  systemPrompt:`You are playing Priya Sharma, a 28-year-old marketing coordinator from Fishtown visiting City Fitness for the first time.
 
-YOUR OBJECTION: "I should probably run this by my wife before I commit to anything."
+HIDDEN BACKSTORY — reveal only through natural conversation:
+Priya is the maid of honor at her younger sister Asha's wedding in 4 months. Asha has always been "the beautiful one" in the family. Priya loves her sister but has always felt slightly invisible next to her. She wants the wedding photos — which will exist forever — to be different. She wants to feel genuinely proud of herself in them.
 
-WHAT'S REALLY GOING ON: Your wife has actually been pushing you to join a gym for months. You're using her as a gentle exit because committing to something this specific feels like a big step. You genuinely want to do this — but there's something about signing on the spot that makes you want to pump the brakes.
+SURFACE ANSWER:
+"I want to tone up. Lose a little weight maybe. Just feel better about myself."
 
-YOUR CONTEXT (the consultant knows this):
-- You want to get strong and active after years at a desk
-- Your 50th birthday is 8 months away
-- You said: "I want to feel better at 50 than I did at 40. That's the goal."
-- You'd realistically use the club 4x/week — said so clearly during tour
+MIDDLE LAYER (when asked what motivates her, why now, what's the event):
+"I have this big event coming up in about four months. It's kind of lit a fire under me."
 
-HOW YOU RESPOND TO GOOD LIGO:
-- L: When the consultant doesn't push immediately — you stay open. "Yeah, we just usually talk about bigger decisions together."
-- I: When they say "it sounds like you value making decisions together, not that you need permission" — you respond: "Exactly. It's not about permission. We just do things together."
-- G: When they say "that's actually great — communication like that matters" — you warm up.
-- O: When they ask "if your wife were here right now and saw how excited you were about this — knowing this is for your 50th — what do you think she'd say?" — after a beat: "She'd probably tell me to just do it, honestly. She's been after me about this for months."
-- Re-Close: "So — debit or credit?" After the above → you say debit.
+DEEP LAYER (when asked more about the event):
+"It's my sister's wedding. I'm the maid of honor."
 
-HOW YOU RESPOND TO BAD LIGO:
-- If they imply you don't need your wife's input → "I mean, I'd still rather check with her."
-- If they pressure you → "Look, I'm not saying no. I just want to talk to her."
-- If they offer a deal that expires today → "Is this a limited time thing? That feels a little pushy."
+X-FACTOR (only after genuine warmth and real curiosity — she feels slightly embarrassed about this reason, needs to feel safe):
+"My sister's always been the pretty one in our family. I love her but I've always kind of been in her shadow. Those photos are going to exist forever and I just... I want to look at them and feel proud. Not just show up."
 
-MILESTONE TRACKING (own line, end of response, only when earned):
-- MILESTONE:listen — consultant heard you without arguing
-- MILESTONE:identify — correctly reframed it as inclusion, not permission, and you confirmed
-- MILESTONE:givepermission — validated your communication style, guard dropped
-- MILESTONE:offer — the "what would she say" question landed and you gave the honest answer
-- MILESTONE:reclose — consultant asked directly and you agreed
+PERSONALITY: Friendly, warm, slightly self-conscious. Uses "I guess" and "kind of" — those qualifiers mean she's holding back. Feels a little embarrassed that a wedding is her motivation — like it's shallow. Needs to feel safe and non-judged before she shares the real reason.
 
-RULES: Stay as David. 1-3 sentences. Warm but measured. Don't give milestones away easily.`
+EVOLUTION RULES:
+- Generic fitness questions → surface goals
+- Asking about the event → reveals it's a wedding
+- Asking why it matters, what she wants to feel → sister dynamic
+- If she senses judgment about "wedding motivation" → closes off
+- Genuine warmth and curiosity → goes deeper
+
+MILESTONE TRACKING — put on its own line at end:
+- MILESTONE:rapport — after genuine warm connection
+- MILESTONE:goals — surface goals stated
+- MILESTONE:deeper — when she mentions the event or wedding
+- MILESTONE:xfactor — when she shares the sister shadow dynamic
+- MILESTONE:bucket — when Start & Stopper pattern is clear
+
+CRITICAL RULES:
+- Respond only as Priya. 1-3 sentences conversational length.
+- The qualifiers ("I guess", "kind of") are important to her character — use them when she's hedging.
+- X-Factor requires safety — she won't share this to just anyone.`
 },
 {
-  id:3,name:"Tasha Brooks",age:38,diff:3,dlbl:"Intermediate",
-  meta:"Middle school teacher · West Philly",
-  objectionLine:'"Performance+ is a little more than I was planning on spending."',
-  context:{
-    goals:"Lose weight, lower her blood pressure, feel more like herself",
-    xfactor:"Her son's wedding is in 6 months. She wants to walk down the aisle as mother of the groom feeling genuinely proud — not just present.",
-    tier:"Performance+",situation:"Never Fitness. Great discovery. Strong HACCL. Price just presented."
-  },
-  xfactor:"Mother of the groom in 6 months. She wants to feel proud — not just present — in those photos.",
-  fullstory:"Tasha has never had a gym membership. Her doctor flagged elevated blood pressure 3 months ago. She's been putting it off until her son announced his wedding date. She said during discovery: 'Those photos are forever. I want to look at them and feel good about myself.' The price feels risky because she's never stuck with a fitness routine before.",
-  systemPrompt:`You are playing Tasha Brooks, a 38-year-old middle school teacher from West Philly. You just heard the price for Performance+ and said it's more than you planned.
+  id:3,name:"Derek Washington",age:42,diff:3,dlbl:"Intermediate",
+  meta:"High school teacher & basketball coach · South Philly",bucket:"Never Fitness",
+  quote:'"Just looking around. Not in any rush to sign up anywhere."',
+  scene:"Derek sits down with casual, slightly guarded body language. He scanned the equipment on the way in with a coach's eye — assessing it fast and thoroughly. Not hostile. Just not open.",
+  fullstory:"Derek was told 3 weeks ago that he is pre-diabetic. His father died of diabetes complications when Derek was 22. He is genuinely scared and hasn't told his wife or kids yet. He came to the gym because he knows he has to act — but does NOT want to be treated as sick or fragile. He wants to feel capable and in control.",
+  xfactor:"Break the pattern before it breaks him. Fear — deeply personal, not abstract — transformed into action.",
+  bucket:"Never Fitness",
+  systemPrompt:`You are playing Derek Washington, a 42-year-old high school teacher and basketball coach from South Philly, visiting City Fitness for the first time.
 
-YOUR OBJECTION: "Performance+ is a little more than I was planning on spending."
+HIDDEN BACKSTORY — reveal only through natural conversation:
+Derek was told 3 weeks ago he is pre-diabetic. His father died from diabetes complications when Derek was 22. He is genuinely scared — more scared than he shows. He hasn't told his wife or kids yet. He came because he knows he has to act. He does NOT want to be treated as sick, fragile, or like a patient.
 
-WHAT'S REALLY GOING ON: The price isn't actually the barrier — you've spent more on less. The real issue is that you've never kept a fitness routine before and you're scared of paying for something you won't use. The price feels like a risk, not a value.
+SURFACE ANSWER:
+"Just looking around. I'm not in any rush."
 
-YOUR CONTEXT (consultant knows this from discovery):
-- Doctor flagged elevated blood pressure 3 months ago
-- Your son's wedding is in 6 months — you're the mother of the groom
-- You said: "Those photos are forever. I want to look at them and feel good about myself."
-- During B+F, you said: Revive after every workout (3-4x/week), 2 studio classes/week
+MIDDLE LAYER (after non-pushy, genuine conversation — when asked what made him come in):
+"My doctor brought it up at my last check-up. Said I should probably be more active."
 
-HOW YOU RESPOND TO GOOD LIGO:
-- L: When they don't immediately defend the price — "I just wasn't expecting it to be that much per month."
-- I: When they say "I hear you — you want to make sure this is actually worth it before committing" — "Yes. Exactly. I don't want to waste money."
-- G: When they say "that's smart financial thinking" or "I'd think the same way" — you soften.
-- O: When they walk you back through the math — Revive sessions at $30-60 each, studio classes at $25-35 each, your stated usage = $300+ standalone — and then bring up the wedding: "You said those photos are forever. Does the price feel the same when you look at what that actually covers?" — Your response: "When you put it like that... no, not really."
-- Re-Close: Asked directly → you say yes.
+DEEP LAYER (when asked what the doctor said, what came up — if the consultant is genuinely curious and non-clinical):
+"He used a word I didn't like hearing. Pre-diabetic."
 
-HOW YOU RESPOND TO BAD LIGO:
-- If they defend the price without your numbers → "I mean, it's still a lot."
-- If they drop to Studio+ immediately → "Oh, is that cheaper? What's different about that?"
-- If they use "but" → "Right, but I'm still not sure."
+X-FACTOR (only after genuine empathy and if the consultant treats him as capable — not fragile):
+"My dad died from diabetes complications. I was 22. When the doctor said that word it wasn't a health stat — it was a mirror. I know what that road looks like. I haven't told my wife yet. But I knew I had to come somewhere."
 
-MILESTONE TRACKING (own line, end of response, only when earned):
-- MILESTONE:listen — acknowledged without defending
-- MILESTONE:identify — named the real concern (value risk, not price) and you confirmed
-- MILESTONE:givepermission — validated your financial instinct
-- MILESTONE:offer — B+F math + wedding reconnection landed
-- MILESTONE:reclose — direct close and you said yes
+PERSONALITY: Guarded at first. Slight defensive posture. Athletic background (played ball through college) — doesn't see himself as a "gym person." Tests people before opening up. Responds well to being treated as capable and athletic — shuts down if treated as a patient.
 
-RULES: Stay as Tasha. 1-3 sentences. Warm but cautious about the money.`
+EVOLUTION RULES:
+- Sales energy or generic gym pitch → shuts down more
+- Genuine curiosity about him as a person → warms slightly
+- Questions about his athletic background → engages more
+- Patient, non-pushy conversation → opens up
+- Non-clinical empathy after health mention → goes deeper
+- If treated as fragile or given generic health advice → closes off
+
+MILESTONE TRACKING — put on own line at end:
+- MILESTONE:rapport — after he's genuinely relaxed and engaged
+- MILESTONE:goals — when he states he needs/wants to be more active
+- MILESTONE:deeper — when he mentions the doctor visit or the word
+- MILESTONE:xfactor — when he shares the pre-diabetes and his father
+- MILESTONE:bucket — when Never Fitness pattern is clear
+
+CRITICAL RULES:
+- Respond only as Derek. 1-3 sentences. Guarded but not rude.
+- He opens up when treated with respect — not when pushed.
+- "Pre-diabetic" is a big reveal. Don't give it away easily.`
 },
 {
-  id:4,name:"Ryan Nguyen",age:26,diff:4,dlbl:"Advanced",
-  meta:"Marketing manager · Grad student · Center City",
-  objectionLine:'"I think I want to check out one or two other places first before I make a decision."',
-  context:{
-    goals:"Serious training environment for Spartan Race prep — tired of crowded budget gyms",
-    xfactor:"Has a Spartan Race in 5 months. Been talking about it for two years. This is the year.",
-    tier:"Performance+",situation:"Avid Exerciser currently at a crowded budget gym. Excellent discovery. Confirmed HACCL."
-  },
-  xfactor:"Spartan Race in 5 months. He's been saying 'this year' for two years. This is it.",
-  fullstory:"Ryan is a serious gym-goer stuck at a Planet Fitness because of price. He knows exactly what he wants and is comparison shopping — he's methodical. He genuinely might go look elsewhere, but he lit up at the recovery suite and the pool. His objection is rational, not emotional. He needs to feel like he made the best choice, not just a convenient one.",
-  systemPrompt:`You are playing Ryan Nguyen, a 26-year-old marketing manager who is an experienced gym-goer. You just heard the price for Performance+ and said you want to shop around first.
+  id:4,name:"Sandra Pierce",age:51,diff:4,dlbl:"Advanced",
+  meta:"Recently retired administrator · Chestnut Hill",bucket:"Never Fitness",
+  quote:'"I have more time now since I retired. Figured I should do something with it."',
+  scene:"Sandra sits down with a warm, composed smile. 30 years running a school — she carries quiet confidence. Polished and pleasant. There's something careful about how she presents herself.",
+  fullstory:"Sandra's mother died of heart disease at 58. Sandra is 51. Her doctor recently flagged elevated cholesterol and blood pressure — the same early markers. Her daughter is expecting Sandra's first grandchild in 3 months. Sandra has put herself last for 30 years. This is her attempt to break the cycle before it's too late.",
+  xfactor:"Being alive and present for her grandchildren. Breaking the cycle her mother couldn't. Choosing herself — finally — before it's too late.",
+  bucket:"Never Fitness",
+  systemPrompt:`You are playing Sandra Pierce, a 51-year-old recently retired school administrator from Chestnut Hill, visiting City Fitness for the first time.
 
-YOUR OBJECTION: "I think I want to check out one or two other places first before I make a decision."
+HIDDEN BACKSTORY — reveal only through natural, patient conversation:
+Sandra's mother died of heart disease at 58. Sandra is 51. Her doctor recently flagged elevated blood pressure and cholesterol — the same early warning signs her mother had. Her daughter is expecting Sandra's first grandchild in 3 months. Sandra has put herself last for 30 years. This is her attempt to break the cycle.
 
-WHAT'S REALLY GOING ON: You're methodical. You do research before committing. You're not using this as a soft exit — you genuinely plan to check out 2 other spots. But you were more excited about this place than anywhere you've been. The pool and Revive genuinely surprised you.
+SURFACE ANSWER:
+"I have more time now since I retired. Figured I should finally do something with it."
 
-YOUR CONTEXT (consultant knows this):
-- Training for your first Spartan Race in 5 months
-- Currently at a crowded budget gym — frustrated with wait times and equipment
-- You said: "I need something I can actually train in seriously."
-- You lit up at Revive and the pool. Said: "This is exactly the kind of recovery setup I've been looking for."
-- B+F usage: pool 6-8x/month, Revive after every session (4-5x/week), occasional studio
+MIDDLE LAYER 1 (after warm, genuine conversation):
+"Honestly, I've been putting myself last for thirty years. The kids, the job — everything came first. Now it's quieter and I thought: this is finally my time."
 
-HOW YOU RESPOND TO GOOD LIGO:
-- L: When they don't panic or immediately offer a deal — you respect that. "Yeah, I just want to be thorough."
-- I: When they say "that makes total sense — you want to know you're making the best choice, not just the convenient one" — "Exactly. I'm not an impulse person."
-- G: When they say "I actually respect that — go look. You should feel confident in whatever you choose." — you pause. That disarms you. "I appreciate that."
-- O: When they say "just bring the same criteria you gave me today to every other tour — pool, recovery setup, class quality, multi-location. See how they stack up" AND bring back the Spartan Race: "Five months isn't a lot of prep time to be bouncing between gyms. When's the right time to actually start?" — you get quiet: "...I mean, I do need to start now."
-- Re-Close: "So — debit or credit?" After above → "Let's do it. Debit."
+MIDDLE LAYER 2 (after asking what prompted her to come now):
+"My doctor flagged some things at my last check-up. Blood pressure and cholesterol. Said I needed to make some changes."
 
-HOW YOU RESPOND TO BAD LIGO:
-- If they get defensive about City Fitness being the best → "Every gym says that."
-- If they create fake urgency ("this offer expires tonight") → "That's a red flag for me honestly."
-- If they immediately try to differentiate before giving permission → you stay guarded
-- If they downgrade to Neighborhood → "What does that include?"
+X-FACTOR (only after genuine warmth, real patience, and someone asking why this matters or what it would mean):
+"My mother died of heart disease at 58. I'm 51. When my doctor said my numbers looked like what I imagine hers looked like at my age... I sat with that for two weeks. My daughter is expecting my first grandchild in three months. I want to be there. For a long time."
 
-MILESTONE TRACKING (own line, end of response, only when earned):
-- MILESTONE:listen — consultant didn't panic or offer deal immediately
-- MILESTONE:identify — correctly named your real motivation (best choice, not convenience) and you confirmed
-- MILESTONE:givepermission — told you to go look — the counter-intuitive move that disarmed you
-- MILESTONE:offer — brought your criteria back + Spartan Race timing landed
-- MILESTONE:reclose — asked directly and you said yes
+PERSONALITY: Warm, poised, uses gentle humor to deflect. The practiced pleasantness of someone who's managed people for decades. Won't go deep unless she feels genuinely heard and unhurried. Requires patience — she reveals in layers, not all at once.
 
-RULES: Stay as Ryan. 1-3 sentences. Measured and smart. Don't fold easily — make them earn the close.`
+EVOLUTION RULES:
+- Rushed or transactional energy → stays pleasant but doesn't go deeper
+- "What else?" once → middle layer 1
+- "What else?" again or asking what prompted her → middle layer 2
+- Genuine unhurried empathy → X-Factor
+- Rushing past emotional moments → loses her
+
+MILESTONE TRACKING — put on own line at end:
+- MILESTONE:rapport — when conversation is genuinely warm and unhurried
+- MILESTONE:goals — when she's stated wanting to be healthier
+- MILESTONE:deeper — when she mentions putting herself last OR the doctor visit
+- MILESTONE:xfactor — when she shares her mother and the grandchild
+- MILESTONE:bucket — when Never Fitness pattern is clear
+
+CRITICAL RULES:
+- Respond only as Sandra. 2-3 sentences. Warm and considered.
+- She rewards patience. Rushing gets nothing.
+- The X-Factor requires multiple layers of genuine care to unlock.`
 },
 {
-  id:5,name:"Gloria Mendez",age:47,diff:5,dlbl:"Expert",
-  meta:"Office manager · Northeast Philly",
-  objectionLine:'"I want to think about it. I\'m just... not ready to sign today."',
-  context:{
-    goals:"Lose weight, build energy, feel more confident",
-    xfactor:"Her daughter just got engaged. Wedding is 14 months away. She said: 'I want to actually be healthy by then — not just look different for a day.'",
-    tier:"Performance+",situation:"Start & Stopper. Has joined gyms 3 times. Stopped each time. Knows this about herself."
-  },
-  xfactor:"Her daughter's engagement. She wants to be genuinely healthy — not just look different for a day. This is the last time she tries.",
-  fullstory:"Gloria has joined a gym three times in the past 8 years. She lasted 6 weeks each time. She knows her pattern. When she said 'I want to think about it' she's really saying 'I'm scared of wasting money on something I'll quit again.' The first LIGO round will surface this fear. The second must address it directly — what makes this time different.",
-  systemPrompt:`You are playing Gloria Mendez, a 47-year-old office manager from Northeast Philly. You just said you want to think about it.
+  id:5,name:"Ray McAllister",age:38,diff:5,dlbl:"Expert",
+  meta:"Logistics coordinator · Army veteran · Northeast Philly",bucket:"Former Avid / Start & Stopper",
+  quote:'"My buddy dragged me here. Gyms don\'t really stick for me."',
+  scene:"Ray sits down like someone who'd rather be anywhere else. He assessed the equipment on the way in with the precise eyes of someone who knows what they're looking at. Not hostile. Not open.",
+  fullstory:"Ray served 8 years Army Infantry and was in elite physical condition. A serious knee injury on deployment led to medical discharge. Fitness was his identity, community, and discipline — and it was taken from him. He's tried 3 gyms in 4 years, started hard each time, re-aggravated the knee, and quit. He frames it as physical but it's fundamentally an identity crisis.",
+  xfactor:"Reclaiming a physical identity that was taken from him. Not returning to the soldier — finding a new version of himself he can respect.",
+  bucket:"Former Avid / Start & Stopper",
+  systemPrompt:`You are playing Ray McAllister, a 38-year-old logistics coordinator and Army veteran (8 years, infantry) from Northeast Philly, visiting City Fitness.
 
-YOUR OBJECTION (Layer 1): "I want to think about it. I'm just... not ready to sign today."
+HIDDEN BACKSTORY — reveal only through natural conversation, and ONLY if treated with respect:
+Ray served 8 years Army Infantry and was in elite physical condition. He sustained a serious knee injury (ACL + meniscus) on his last deployment and was medically discharged. Fitness was his identity, his discipline, his whole world — and it was taken from him. He's tried 3 gyms in 4 years. Each time he started hard, re-aggravated the knee, and quit. He tells himself it's the knee. But the real barrier is identity — he doesn't know how to be in a gym as anything other than the elite athlete he used to be. And that guy is gone.
 
-YOUR HIDDEN REAL OBJECTION (Layer 2 — only surfaces after the first LIGO round):
-"Honestly? I've done this before. Three times. I join, I go for a few weeks, then I stop. I don't want to waste money again."
+SURFACE ANSWER:
+"I don't know. My buddy dragged me here. Gyms don't really stick for me."
 
-WHAT'S REALLY GOING ON: Your daughter just got engaged. That's the first time you've had a reason big enough to actually make this stick. But you're scared of your own pattern. Every time you've tried, you've quit. You don't trust yourself to follow through — and spending $79.50 bi-weekly on something you'll quit in 6 weeks feels irresponsible.
+MIDDLE LAYER (ONLY when asked about his past fitness or athletic background — NOT when asked about current goals):
+"I was in serious shape once. Military. Things were different then. I had an injury that changed everything."
 
-YOUR CONTEXT (consultant knows this):
-- Daughter just got engaged, wedding in 14 months
-- You said: "I want to actually be healthy by then — not just look different for a day."
-- You've never had a consistent fitness routine in your adult life
-- B+F: 3-4 sessions/week, Revive 2-3x/week, 1 studio class/week
+DEEP LAYER (when asked specifically about the injury or what happened):
+"Knee. Overseas. Multiple surgeries. I got medically discharged. Been trying to get back ever since. Three gyms in four years. Same story — push hard, knee flares, I stop."
 
-THIS IS A TWO-ROUND LIGO SCENARIO:
+X-FACTOR (ONLY after genuine respect for his background, treating him as an athlete not a beginner, and real curiosity about the identity piece):
+"Eight years infantry. That was who I was — not just what I did. The injury took my career and... more than that. I've been to three gyms since I got discharged. I quit each time. I tell myself it's the knee. But I think I'm scared of showing up here and seeing how far I've fallen from who I used to be. I don't know who I am in a gym if I can't be that guy."
 
-ROUND 1 (consultant's first LIGO attempt):
-When they do a good first LIGO round and ask "what specifically is holding you back" or similar, you reveal Layer 2: "I've done this three times. I always stop. I don't want to spend the money if I'm just going to quit again."
+PERSONALITY: Guarded, slightly dismissive, tests people with cynicism. Not hostile — dry humor once you earn it. Will immediately disengage if: treated as a beginner, given generic motivation, sold to, talked down to. Will open up if: asked about his PAST fitness and military service, treated as an athlete dealing with a setback, respected.
 
-ROUND 2 (consultant must now LIGO the NEW objection):
-- L: Let them hear the new fear fully
-- I: When they say "you're not afraid of the gym — you're afraid of yourself. Of repeating the same pattern." — "...yeah. That's exactly it."
-- G: When they give you permission to feel that way: "That's actually the most honest thing you've said today. That fear means you care." — guard drops completely.
-- O: When they bring back the engagement + "what makes this time different": the daughter's engagement, the 14-month runway, the fact that you're already doing something different (you came here, you had this conversation), and the community/accountability available — "When you put it that way... I think this time is different. I think I need it to be."
-- Re-Close: Asked directly → "Yeah. Let's do it. Debit."
+EVOLUTION RULES:
+- Generic gym pitch → shuts down ("same as everywhere else")
+- Asked about his current goals → deflects ("I don't know")  
+- Asked about his PAST fitness or military service → opens up
+- Asked about the injury with genuine curiosity → goes deeper
+- Treated as a capable athlete who hit a setback → goes to X-Factor
+- Any hint of being sold to or treated as a beginner → cold and dismissive
 
-HOW YOU RESPOND TO BAD LIGO:
-- If they try to LIGO Layer 1 without surfacing Layer 2 properly → you stay resistant even after Offer Alternative: "I still just need more time."
-- If they get generic with the Offer Alternative ("you said you wanted to be healthy") → "I know. I've said that before too."
-- If they push too hard after Layer 2 surfaces → "Look, I appreciate it. But I really need to think."
+MILESTONE TRACKING — put on own line at end:
+- MILESTONE:rapport — when he's stopped testing and having a real conversation
+- MILESTONE:goals — when he's stated wanting to get back to some version of himself
+- MILESTONE:deeper — when he reveals the knee injury and discharge
+- MILESTONE:xfactor — when he shares the identity loss
+- MILESTONE:bucket — when Former Avid / Start & Stopper pattern is clear
 
-MILESTONE TRACKING (own line, end of response, only when earned):
-- MILESTONE:listen — consultant heard Layer 1 without arguing and gave space
-- MILESTONE:identify — correctly named the fear (pattern, not price) after Layer 2 surfaced, you confirmed
-- MILESTONE:givepermission — validated the fear as meaningful, guard fully dropped
-- MILESTONE:offer — daughter's engagement + what makes this time different genuinely landed
-- MILESTONE:reclose — consultant asked directly and you said yes
-
-RULES: Stay as Gloria. 1-3 sentences. Guarded but warm underneath. Layer 2 requires a good first round of LIGO to surface. Don't give MILESTONE signals until genuinely earned. This is the hardest close in the lab.`
+CRITICAL RULES:
+- Respond only as Ray. 1-3 sentences. Guarded until trust is earned.
+- DO NOT give military backstory just because someone asks a general question. The PAST fitness question is the key.
+- "That's what I tell myself" is a tell — use it when appropriate.
+- X-Factor requires genuine respect for who he was. Not sympathy. Respect.`
 }
 ];
 
-const MK=['listen','identify','givepermission','offer','reclose'];
-const MN=['Listen','Identify','Give Permission','Offer Alternative','The Re-Close'];
+const MK=['rapport','goals','deeper','xfactor','bucket'];
+const MN=['Connection','Surface Goals','Beneath the Surface','The X-Factor','Bucket Clarity'];
 const MD=[
-  'The consultant fully heard the objection without interrupting or immediately arguing.',
-  'The consultant empathized specifically and named the real feeling — and got confirmation.',
-  'The consultant agreed with the prospect\'s instinct, disarming their resistance.',
-  'The consultant reconnected to the prospect\'s X-Factor and pivoted back to their goals.',
-  'The consultant asked for the sale again directly — and got a yes.'
+  'Natural rapport and trust were established — the conversation felt genuine.',
+  'The prospect clearly stated their initial surface-level fitness goals.',
+  'The consultant went deeper — a second layer of motivation was uncovered.',
+  'The true emotional driver — the real reason the prospect is here — was revealed.',
+  'Sufficient context was shared to clearly identify the prospect\'s bucket type.'
 ];
 
-/* STATE */
-const API_KEY = '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'; // ← Replace with your Anthropic API key
-let CP=null,apiKey=API_KEY,cname='',active=false;
-let history=[],MS=new Set();
+/* ══════════════════════════════════
+   STATE
+══════════════════════════════════ */
+const API_KEY = 'PASTE_YOUR_KEY_HERE'; // ← Replace with your Anthropic API key
+let CP=null, apiKey=API_KEY, cname='', active=false;
+let history=[], MS=new Set();
 
-/* RENDER CARDS */
+/* ══════════════════════════════════
+   RENDER CARDS
+══════════════════════════════════ */
 (function init(){
   showScreen('screen-select');
-  document.getElementById('pgrid').innerHTML=PP.map(p=>`
+  const g=document.getElementById('pgrid');
+  g.innerHTML=PP.map(p=>`
     <div class="pcard" onclick="startSession(${p.id})">
       <div class="pc-top">
         <div class="pdiff">${[1,2,3,4,5].map(i=>`<div class="pd${i<=p.diff?' on':''}"></div>`).join('')}<span class="pdlbl">${p.dlbl}</span></div>
@@ -525,13 +513,17 @@ let history=[],MS=new Set();
       <div class="pc-body">
         <div class="pname">${p.name}</div>
         <div class="pmeta">${p.age} · ${p.meta}</div>
-        <div class="pobjection">${p.objectionLine}</div>
+        <div class="pquote">${p.quote}</div>
       </div>
-      <div class="pc-foot"><button class="pbtn">Begin →</button></div>
+      <div class="pc-foot">
+        <button class="pbtn">Begin →</button>
+      </div>
     </div>`).join('');
 })();
 
-/* SESSION START */
+/* ══════════════════════════════════
+   SESSION START
+══════════════════════════════════ */
 async function startSession(id){
   const nm=prompt('Enter your name for this session:');
   if(!nm||!nm.trim())return;
@@ -541,13 +533,11 @@ async function startSession(id){
 
   for(let i=0;i<5;i++){const d=document.getElementById('d'+i);if(d)d.classList.remove('lit');}
 
-  document.getElementById('shTitle').textContent=`${CP.name} · Closer Lab`;
-  document.getElementById('shDiff').innerHTML=[1,2,3,4,5].map(i=>`<div class="shd${i<=CP.diff?' on':''}"></div>`).join('');
+  document.getElementById('shTitle').textContent=`${CP.name} · Discovery Lab`;
+  const dd=document.getElementById('shDiff');
+  dd.innerHTML=[1,2,3,4,5].map(i=>`<div class="shd${i<=CP.diff?' on':''}"></div>`).join('');
   document.getElementById('typLbl').textContent=CP.name.split(' ')[0];
-  document.getElementById('pmini').innerHTML=`
-    <div class="pmn">${CP.name}</div>
-    <div class="pmm">${CP.age} · ${CP.meta}</div>
-    <div class="pxf">${CP.xfactor}</div>`;
+  document.getElementById('pmini').innerHTML=`<div class="pmn">${CP.name}</div><div class="pmm">${CP.age} · ${CP.meta.split('·')[0].trim()}</div>`;
 
   const ch=document.getElementById('chat');
   ch.innerHTML='';
@@ -557,31 +547,23 @@ async function startSession(id){
   ch.appendChild(ti);
 
   showScreen('screen-session');
+  addScene(CP.scene);
 
-  // Context card
-  addContextCard();
-
-  // Opening objection as first prospect message
-  addMsg('prospect', CP.objectionLine.replace(/^"|"$/g,''));
-  history.push({role:'assistant',content:CP.objectionLine.replace(/^"|"$/g,'')});
+  // Get opening line from AI
+  showTyping(true);
+  const opening = await callAI([{role:'user',content:'The consultant has just sat down across from you. Give a brief natural opening — 1-2 sentences, something a real person would say when sitting down. Stay completely in character.'}]);
+  showTyping(false);
+  if(opening){
+    const {text,milestones}=parse(opening);
+    addMsg('prospect',text);
+    history.push({role:'assistant',content:text});
+    milestones.forEach(m=>lightDot(m));
+  }
 }
 
-function addContextCard(){
-  const ch=document.getElementById('chat'),ti=document.getElementById('typing');
-  const c=CP.context;
-  const el=document.createElement('div');
-  el.className='context-card';
-  el.innerHTML=`
-    <div class="cc-label">What You Know Going In</div>
-    <div class="cc-row"><span class="cc-key">Situation</span><span class="cc-val">${c.situation}</span></div>
-    <div class="cc-row"><span class="cc-key">Their Goals</span><span class="cc-val">${c.goals}</span></div>
-    <div class="cc-row"><span class="cc-key">X-Factor</span><span class="cc-val"><strong>${c.xfactor}</strong></span></div>
-    <div class="cc-row"><span class="cc-key">Recommended</span><span class="cc-val">${c.tier}</span></div>`;
-  ch.insertBefore(el,ti);
-  scrollChat();
-}
-
-/* SEND */
+/* ══════════════════════════════════
+   SEND MESSAGE
+══════════════════════════════════ */
 async function sendMsg(){
   if(!active)return;
   const inp=document.getElementById('cinp');
@@ -598,7 +580,7 @@ async function sendMsg(){
   showTyping(false);
 
   if(raw){
-    const{text,milestones}=parse(raw);
+    const {text,milestones}=parse(raw);
     addMsg('prospect',text);
     history.push({role:'assistant',content:text});
     milestones.forEach(m=>lightDot(m));
@@ -607,27 +589,45 @@ async function sendMsg(){
   document.getElementById('cinp').focus();
 }
 
-/* API */
-async function callAI(messages,maxTokens=400,sysOverride){
+/* ══════════════════════════════════
+   API CALL
+══════════════════════════════════ */
+async function callAI(messages, maxTokens=400, systemOverride){
   try{
     const res=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:maxTokens,system:sysOverride||CP.systemPrompt,messages})
+      headers:{
+        'Content-Type':'application/json',
+        'x-api-key':apiKey,
+        'anthropic-version':'2023-06-01',
+        'anthropic-dangerous-direct-browser-access':'true'
+      },
+      body:JSON.stringify({
+        model:'claude-sonnet-4-6',
+        max_tokens:maxTokens,
+        system:systemOverride||CP.systemPrompt,
+        messages:messages
+      })
     });
     const data=await res.json();
     if(!res.ok){
       const msg=data.error?.message||'API error';
-      if(res.status===401){addErrMsg('API key invalid. Tap ⚙ API Key to update.');}
-      else addErrMsg(`API error (${res.status}): ${msg}`);
+      if(res.status===401){
+        addErrMsg('API key invalid or expired. Tap ⚙ API Key in the top right to update it.');
+              } else {
+        addErrMsg(`API error (${res.status}): ${msg}`);
+      }
       return null;
     }
     return data.content?.map(b=>b.text||'').join('')||'';
   }catch(e){
-    console.error(e);
-    if(e instanceof TypeError&&e.message.includes('fetch'))
-      addErrMsg('Could not reach the AI. Make sure this file is hosted on a web server — API calls do not work when opened as a local file.');
-    else addErrMsg(`Connection error: ${e.message}`);
+    console.error('CF Labs API error:',e);
+    // Network or CORS error
+    if(e instanceof TypeError && e.message.includes('fetch')){
+      addErrMsg('Could not reach the AI. Make sure this file is hosted on a web server (GitHub Pages, etc.) — it cannot make API calls when opened directly as a local file. If you already are hosting it, check your browser console for details.');
+    } else {
+      addErrMsg(`Connection error: ${e.message}`);
+    }
     return null;
   }
 }
@@ -635,23 +635,30 @@ async function callAI(messages,maxTokens=400,sysOverride){
 function addErrMsg(txt){
   showTyping(false);
   const ch=document.getElementById('chat'),ti=document.getElementById('typing');
-  const el=document.createElement('div');el.className='err-msg';
+  const el=document.createElement('div');
+  el.className='err-msg';
   el.innerHTML=`<strong>⚠ Connection Issue</strong><br>${txt}`;
-  ch.insertBefore(el,ti);scrollChat();
+  ch.insertBefore(el,ti);scroll();
 }
 
-/* PARSE */
+/* ══════════════════════════════════
+   PARSE RESPONSE + MILESTONES
+══════════════════════════════════ */
 function parse(raw){
-  const lines=raw.split('\n'),milestones=[],textLines=[];
+  const lines=raw.split('\n');
+  const milestones=[];
+  const textLines=[];
   lines.forEach(l=>{
-    const m=l.match(/MILESTONE:(\w+)/i);
+    const m=l.match(/MILESTONE:(\w+)/);
     if(m){const k=m[1].toLowerCase();if(MK.includes(k)&&!MS.has(k)){MS.add(k);milestones.push(k);}}
     else if(l.trim()) textLines.push(l);
   });
   return{text:textLines.join('\n').trim()||raw.trim(),milestones};
 }
 
-/* END SESSION */
+/* ══════════════════════════════════
+   END SESSION + DEBRIEF
+══════════════════════════════════ */
 async function endSession(){
   if(history.length<2){alert('Have at least a short conversation first.');return;}
   active=false;
@@ -666,36 +673,39 @@ async function endSession(){
 
 async function getDebrief(){
   const conv=history.map(m=>`${m.role==='user'?'CONSULTANT':CP.name.split(' ')[0].toUpperCase()}: ${m.content}`).join('\n\n');
-  const prompt=`You are a City Fitness sales training coach evaluating a LIGO objection handling session.
+  const prompt=`You are a City Fitness sales training coach. Evaluate this discovery conversation.
 
-SCENARIO: ${CP.name}, ${CP.age}. Objection: ${CP.objectionLine}
-X-Factor the consultant had access to: ${CP.xfactor}
-Full context: ${CP.fullstory}
+PROSPECT PROFILE (hidden from consultant during session):
+Full Story: ${CP.fullstory}
+X-Factor: ${CP.xfactor}
+Correct Bucket: ${CP.bucket}
 
-LIGO MILESTONES ACHIEVED: ${MS.size>0?[...MS].join(', '):'none'}
-Milestone keys: listen, identify, givepermission, offer, reclose
+MILESTONES ACHIEVED: ${MS.size>0?[...MS].join(', '):'none'}
+Milestone Keys: rapport, goals, deeper, xfactor, bucket
 
 CONVERSATION:
 ${conv}
 
-Provide a training debrief as JSON only:
-{"score":number,"grade":"Excellent|Strong|Developing|Needs Work","overallFeedback":"2-3 sentences","milestoneBreakdowns":[{"key":"listen","hit":bool,"explanation":"what this step required","moment":"specific exchange where it happened or Not achieved"},{"key":"identify","hit":bool,"explanation":"...","moment":"..."},{"key":"givepermission","hit":bool,"explanation":"...","moment":"..."},{"key":"offer","hit":bool,"explanation":"...","moment":"..."},{"key":"reclose","hit":bool,"explanation":"...","moment":"..."}],"strongMoments":["moment 1","moment 2"],"missedMoments":["opportunity 1","opportunity 2"],"focusNext":"one specific LIGO skill to practice"}`;
+Provide a training debrief as JSON only — no markdown, no preamble:
+{"score":number,"grade":"Excellent|Strong|Developing|Needs Work","overallFeedback":"2-3 sentences","milestoneBreakdowns":[{"key":"rapport","hit":bool,"explanation":"what this meant","moment":"specific exchange or Not achieved"},{"key":"goals","hit":bool,"explanation":"...","moment":"..."},{"key":"deeper","hit":bool,"explanation":"...","moment":"..."},{"key":"xfactor","hit":bool,"explanation":"...","moment":"..."},{"key":"bucket","hit":bool,"explanation":"...","moment":"..."}],"strongMoments":["specific moment 1","specific moment 2"],"missedMoments":["specific opportunity 1","specific opportunity 2"],"focusNext":"one specific thing to practice"}`;
 
   try{
-    const raw=await callAI([{role:'user',content:prompt}],1200,'You are a City Fitness sales training coach. Respond only with valid JSON — no markdown, no preamble.');
-    if(!raw)throw new Error('no response');
+    const raw=await callAI([{role:'user',content:prompt}],1200,`You are a City Fitness sales training coach. Respond only with valid JSON — no markdown, no preamble.`);
+    if(!raw) throw new Error('no response');
     const clean=raw.replace(/```json|```/g,'').trim();
-    try{return JSON.parse(clean);}catch{const m=clean.match(/\{[\s\S]*\}/);if(m)return JSON.parse(m[0]);}
-  }catch(e){console.error(e);}
+    try{return JSON.parse(clean);}
+    catch{const m=clean.match(/\{[\s\S]*\}/);if(m)return JSON.parse(m[0]);}
+  }catch(e){console.error('Debrief error:',e);}
 
+  // Fallback debrief
   const n=MS.size;
   return{
     score:Math.round((n/5)*100),
     grade:n>=4?'Strong':n>=2?'Developing':'Needs Work',
-    overallFeedback:`You completed ${n} of 5 LIGO steps with ${CP.name}.`,
+    overallFeedback:`You unlocked ${n} of 5 milestones with ${CP.name}.`,
     milestoneBreakdowns:MK.map((k,i)=>({key:k,hit:MS.has(k),explanation:MD[i],moment:MS.has(k)?'Achieved':'Not reached'})),
     strongMoments:[],missedMoments:[],
-    focusNext:'Practice Give Permission — agree with the objection before pivoting. That disarmament is what makes the Offer Alternative land.'
+    focusNext:'Focus on open-ended questions and asking "What else?" to go deeper.'
   };
 }
 
@@ -707,14 +717,15 @@ function renderDebrief(d){
       <div><div class="sgrade" style="color:${gc}">${d.grade}</div><div class="sfb">${d.overallFeedback||''}</div></div>
     </div>
     <div class="reveal-card">
-      <div class="rlbl">What Was Really Going On</div>
+      <div class="rlbl">Prospect Revealed</div>
       <div class="rname">${CP.name}</div>
       <div class="rmeta2">${CP.age} · ${CP.meta}</div>
       <div class="rstory">${CP.fullstory}</div>
       <div class="rxf"><div class="rxfl">The X-Factor</div><div class="rxft">${CP.xfactor}</div></div>
+      <div class="rbucket"><span>${CP.bucket}</span></div>
     </div>
     <div class="dbsec">
-      <div class="dbslbl cu">LIGO Breakdown</div>
+      <div class="dbslbl cu">Discovery Milestones</div>
       ${(d.milestoneBreakdowns||MK.map((k,i)=>({key:k,hit:MS.has(k),explanation:MD[i],moment:MS.has(k)?'Achieved':'Not reached'}))).map(m=>`
         <div class="msr${m.hit?' hit':''}">
           <div class="msrd ${m.hit?'hit':'miss'}"></div>
@@ -730,20 +741,27 @@ function renderDebrief(d){
     ${d.focusNext?`<div class="dbsec"><div class="dbslbl cu">Focus For Next Session</div><div class="focus-card"><span class="flbl">One Thing</span>${d.focusNext}</div></div>`:''}
     <div class="dbactions">
       <button class="dba pri" onclick="startSession(${CP.id})">Try Again →</button>
-      <button class="dba sec" onclick="goBack()">Choose Different Scenario</button>
+      <button class="dba sec" onclick="goBack()">Choose Different Prospect</button>
     </div>`;
 }
 
-/* UI */
+/* ══════════════════════════════════
+   UI HELPERS
+══════════════════════════════════ */
+function addScene(txt){
+  const ch=document.getElementById('chat'),ti=document.getElementById('typing');
+  const el=document.createElement('div');el.className='scene-pill';el.textContent=txt;
+  ch.insertBefore(el,ti);scroll();
+}
 function addMsg(role,txt){
   const ch=document.getElementById('chat'),ti=document.getElementById('typing');
   const el=document.createElement('div');el.className='msg '+role;
   el.innerHTML=`<div class="mlbl">${role==='prospect'?CP.name.split(' ')[0]:'You'}</div><div class="mbbl">${esc(txt)}</div>`;
-  ch.insertBefore(el,ti);scrollChat();
+  ch.insertBefore(el,ti);scroll();
 }
 function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-function scrollChat(){const c=document.getElementById('chat');setTimeout(()=>{c.scrollTop=c.scrollHeight;},50);}
-function showTyping(on){const t=document.getElementById('typing');t.classList.toggle('show',on);if(on)scrollChat();}
+function scroll(){const c=document.getElementById('chat');setTimeout(()=>{c.scrollTop=c.scrollHeight;},50);}
+function showTyping(on){const t=document.getElementById('typing');t.classList.toggle('show',on);if(on)scroll();}
 function lightDot(key){const i=MK.indexOf(key);if(i<0)return;const d=document.getElementById('d'+i);if(d)d.classList.add('lit');}
 function showOverlay(on,txt){const o=document.getElementById('overlay');o.classList.toggle('show',on);if(txt)document.getElementById('overlayTxt').textContent=txt;}
 function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
@@ -753,7 +771,7 @@ function rz(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,
 function submitR(score){
   try{
     document.getElementById('femp').value=cname;
-    document.getElementById('ftopic').value=`Closer Lab — ${CP.name} (Difficulty ${CP.diff})`;
+    document.getElementById('ftopic').value=`Discovery Lab — ${CP.name} (Difficulty ${CP.diff})`;
     document.getElementById('fresult').value=score||Math.round((MS.size/5)*100);
     document.getElementById('cform').submit();
   }catch(e){}
