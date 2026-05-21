@@ -546,6 +546,7 @@ const MD=[
 /* STATE */
 let CP=null,apiKey='',cname='',active=false;
 let history=[],MS=new Set();
+let lastScore=0,lastGrade='';
 
 /* KEY MANAGEMENT */
 function saveKey(){
@@ -714,7 +715,7 @@ async function endSession(){
   renderDebrief(debrief);
   showScreen('screen-debrief');
   document.getElementById('screen-debrief').scrollTop=0;
-  submitR(debrief.score);
+  submitLabSession(debrief.score, debrief.grade);
 }
 
 async function getDebrief(){
@@ -783,6 +784,7 @@ function renderDebrief(d){
     ${d.focusNext?`<div class="dbsec"><div class="dbslbl cu">Focus For Next Session</div><div class="focus-card"><span class="flbl">One Thing</span>${d.focusNext}</div></div>`:''}
     <div class="dbactions">
       <button class="dba pri" onclick="startSession(${CP.id})">Try Again →</button>
+      <button class="dba sec" onclick="downloadTranscript()">↓ Download Transcript</button>
       <button class="dba sec" onclick="goBack()">Choose Different Scenario</button>
     </div>`;
 }
@@ -803,13 +805,62 @@ function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classL
 function goBack(){active=false;CP=null;showScreen('screen-select');}
 function onK(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}}
 function rz(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,110)+'px';}
-function submitR(score){
+function submitLabSession(score,grade){
+  lastScore=score||Math.round((MS.size/5)*100);
+  lastGrade=grade||'';
   try{
-    document.getElementById('femp').value=cname;
-    document.getElementById('ftopic').value=`Closer Lab — ${CP.name} (Difficulty ${CP.diff})`;
-    document.getElementById('fresult').value=score||Math.round((MS.size/5)*100);
-    document.getElementById('cform').submit();
+    const transcript=history.map(m=>{
+      const spk=m.role==='user'?cname.toUpperCase():CP.name.split(' ')[0].toUpperCase();
+      return spk+': '+m.content;
+    }).join('\n\n');
+    const preview=transcript.length>2000?transcript.substring(0,2000)+'... [truncated — download for full transcript]':transcript;
+    const params=new URLSearchParams({
+      employee:cname,
+      lab:'Closer Lab',
+      prospect:CP.name,
+      difficulty:CP.diff,
+      score:lastScore,
+      grade:lastGrade,
+      milestones:[...MS].join(', ')||'none',
+      transcript:preview
+    });
+    fetch(`https://script.google.com/a/macros/cityfitness.com/s/AKfycbzCNu6qhDHgV6NM6ZrCmZjzCn01xDcnP0a-Sukx_pnEMK6utm51X1NT_9BprBteXv85YQ/exec?${params.toString()}`);
   }catch(e){}
+}
+
+function downloadTranscript(){
+  const lines=[];
+  lines.push('CF LABS — CLOSER LAB');
+  lines.push('='.repeat(50));
+  lines.push('Employee : '+cname);
+  lines.push('Date     : '+new Date().toLocaleString());
+  lines.push('Prospect : '+CP.name+' (Difficulty '+CP.diff+' — '+CP.dlbl+')');
+  lines.push('Objection: '+CP.objectionLine.replace(/"/g,''));
+  lines.push('Score    : '+lastScore+' — '+lastGrade);
+  lines.push('LIGO Steps: '+([...MS].join(', ')||'none'));
+  lines.push('');
+  lines.push('CONVERSATION');
+  lines.push('-'.repeat(50));
+  history.forEach(m=>{
+    const spk=m.role==='user'?cname.toUpperCase():CP.name.split(' ')[0].toUpperCase();
+    lines.push('');
+    lines.push(spk+':');
+    lines.push(m.content);
+  });
+  lines.push('');
+  lines.push('='.repeat(50));
+  lines.push('WHAT WAS REALLY GOING ON');
+  lines.push('-'.repeat(50));
+  lines.push(CP.fullstory);
+  lines.push('');
+  lines.push('X-FACTOR: '+CP.xfactor);
+  const blob=new Blob([lines.join('\n')],{type:'text/plain'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download='CF-Closer-'+CP.name.replace(' ','-')+'-'+cname+'-'+new Date().toISOString().slice(0,10)+'.txt';
+  a.click();
+  URL.revokeObjectURL(url);
 }
 </script>
 </body>
