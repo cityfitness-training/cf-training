@@ -273,6 +273,18 @@ body{background:var(--bg);color:var(--white);font-family:'Barlow',sans-serif;lin
   <input type="hidden" name="result" id="fresult"/>
 </form>
 
+<iframe name="labhid" id="labhid" style="display:none;"></iframe>
+<form id="labform" target="labhid" method="GET" action="https://script.google.com/a/macros/cityfitness.com/s/AKfycbzCNu6qhDHgV6NM6ZrCmZjzCn01xDcnP0a-Sukx_pnEMK6utm51X1NT_9BprBteXv85YQ/exec">
+  <input type="hidden" name="employee" id="lf_employee"/>
+  <input type="hidden" name="lab" id="lf_lab"/>
+  <input type="hidden" name="prospect" id="lf_prospect"/>
+  <input type="hidden" name="difficulty" id="lf_difficulty"/>
+  <input type="hidden" name="score" id="lf_score"/>
+  <input type="hidden" name="grade" id="lf_grade"/>
+  <input type="hidden" name="milestones" id="lf_milestones"/>
+  <input type="hidden" name="transcript" id="lf_transcript"/>
+</form>
+
 <script>
 /* ══════════════════════════════════
    PROSPECT DATA
@@ -825,7 +837,7 @@ function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classL
 function goBack(){active=false;CP=null;showScreen('screen-select');}
 function onK(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}}
 function rz(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,110)+'px';}
-function submitLabSession(score, grade){
+function submitLabSession(score,grade){
   lastScore=score||Math.round((MS.size/5)*100);
   lastGrade=grade||'';
   try{
@@ -833,18 +845,16 @@ function submitLabSession(score, grade){
       const spk=m.role==='user'?cname.toUpperCase():CP.name.split(' ')[0].toUpperCase();
       return spk+': '+m.content;
     }).join('\n\n');
-    const preview=transcript.length>2000?transcript.substring(0,2000)+'... [truncated — download for full transcript]':transcript;
-    const params=new URLSearchParams({
-      employee:cname,
-      lab:'Discovery Lab',
-      prospect:CP.name,
-      difficulty:CP.diff,
-      score:lastScore,
-      grade:lastGrade,
-      milestones:[...MS].join(', ')||'none',
-      transcript:preview
-    });
-    fetch(`https://script.google.com/a/macros/cityfitness.com/s/AKfycbzCNu6qhDHgV6NM6ZrCmZjzCn01xDcnP0a-Sukx_pnEMK6utm51X1NT_9BprBteXv85YQ/exec?${params.toString()}`);
+    const preview=transcript.length>2000?transcript.substring(0,2000)+'... [download for full]':transcript;
+    document.getElementById('lf_employee').value=cname;
+    document.getElementById('lf_lab').value='Discovery Lab';
+    document.getElementById('lf_prospect').value=CP.name;
+    document.getElementById('lf_difficulty').value=CP.diff;
+    document.getElementById('lf_score').value=lastScore;
+    document.getElementById('lf_grade').value=lastGrade;
+    document.getElementById('lf_milestones').value=[...MS].join(', ')||'none';
+    document.getElementById('lf_transcript').value=preview;
+    document.getElementById('labform').submit();
   }catch(e){}
 }
 
