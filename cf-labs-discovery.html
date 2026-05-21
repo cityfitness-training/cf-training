@@ -157,11 +157,31 @@ body{background:var(--bg);color:var(--white);font-family:'Barlow',sans-serif;lin
 @keyframes spin{to{transform:rotate(360deg);}}
 .overlay-txt{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--dim);}
 
+
+/* ── KEY SETUP ── */
+#screen-setup{align-items:center;justify-content:center;padding:40px;}
+.setup-box{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:44px;max-width:520px;width:100%;}
+.setup-eyebrow{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--copper);margin-bottom:14px;}
+.setup-title{font-family:'Barlow Condensed',sans-serif;font-size:40px;font-weight:900;text-transform:uppercase;letter-spacing:-1px;line-height:.93;margin-bottom:20px;}
+.setup-title em{font-style:normal;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.setup-desc{font-size:14px;color:var(--dim);line-height:1.7;margin-bottom:28px;}
+.setup-desc strong{color:var(--white);}
+.setup-label{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--grey);margin-bottom:8px;display:block;}
+.key-input{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--white);padding:13px 16px;border-radius:8px;font-family:'Barlow',sans-serif;font-size:15px;outline:none;transition:.2s;margin-bottom:8px;letter-spacing:1px;}
+.key-input:focus{border-color:var(--copper);}
+.key-note{font-size:12px;color:var(--grey);line-height:1.5;margin-bottom:22px;}
+.key-btn{background:var(--grad);border:none;padding:14px;width:100%;color:white;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:800;letter-spacing:2px;text-transform:uppercase;border-radius:8px;cursor:pointer;transition:.2s;}
+.key-btn:hover{opacity:.9;}
+.key-err{font-size:13px;color:#d97060;margin-top:10px;display:none;}
+.change-key-btn{background:none;border:1px solid var(--border);color:var(--grey);padding:7px 14px;border-radius:6px;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:.15s;white-space:nowrap;}
+.change-key-btn:hover{border-color:var(--copper);color:var(--copper);}
+
 @media(max-width:680px){
   .sel-hdr,.pgrid,.dbwrap{padding-left:20px;padding-right:20px;}
   .pgrid{grid-template-columns:1fr;}
   #screen-session{grid-template-columns:1fr;}
   .sidebar,.sb-foot{display:none;}
+  .setup-box{padding:28px 24px;}
   }
 </style>
 </head>
@@ -169,13 +189,28 @@ body{background:var(--bg);color:var(--white);font-family:'Barlow',sans-serif;lin
 
 <div class="overlay" id="overlay"><div class="spinner"></div><div class="overlay-txt" id="overlayTxt">Thinking...</div></div>
 
+<!-- SETUP -->
+<div class="screen active" id="screen-setup">
+  <div class="setup-box">
+    <div class="setup-eyebrow">CF Labs · Discovery Lab · Setup</div>
+    <h1 class="setup-title">One-Time<br><em>Setup.</em></h1>
+    <p class="setup-desc">This lab uses <strong>live AI</strong> to play each prospect — so every conversation is genuinely different and responds naturally to what you actually ask. Enter your Anthropic API key below. It's stored only in your browser.</p>
+    <label class="setup-label" for="keyInput">Anthropic API Key</label>
+    <input class="key-input" id="keyInput" type="password" placeholder="sk-ant-..." autocomplete="off"/>
+    <p class="key-note">Your key is stored in your browser's localStorage and only used to call api.anthropic.com directly. It is never shared.</p>
+    <button class="key-btn" onclick="saveKey()">Save Key & Begin →</button>
+    <div class="key-err" id="keyErr">Please enter a valid API key starting with sk-ant-</div>
+  </div>
+</div>
+
 <!-- SELECT -->
-<div class="screen active" id="screen-select">
+<div class="screen" id="screen-select">
   <div class="sel-hdr">
     <div class="sel-hdr-left">
       <div class="lab-badge"><div class="bdot"></div><span>CF Labs · Discovery Lab · AI-Powered</span></div>
       <h1 class="sel-title">Choose Your<br><em>Prospect.</em></h1>
     </div>
+    <button class="change-key-btn" onclick="showSetup()">⚙ API Key</button>
   </div>
   <div class="pgrid" id="pgrid"></div>
 </div>
@@ -494,15 +529,34 @@ const MD=[
 /* ══════════════════════════════════
    STATE
 ══════════════════════════════════ */
-const API_KEY = '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'; // ← Replace with your Anthropic API key
-let CP=null, apiKey=API_KEY, cname='', active=false;
+let CP=null, apiKey='', cname='', active=false;
 let history=[], MS=new Set();
+
+/* ══════════════════════════════════
+   KEY MANAGEMENT
+══════════════════════════════════ */
+function saveKey(){
+  const k=document.getElementById('keyInput').value.trim();
+  if(!k.startsWith('sk-ant-')&&!k.startsWith('sk-')){
+    document.getElementById('keyErr').style.display='block';return;
+  }
+  apiKey=k;
+  localStorage.setItem('cf_labs_key',k);
+  document.getElementById('keyErr').style.display='none';
+  showScreen('screen-select');
+}
+function showSetup(){showScreen('screen-setup');}
+function loadKey(){
+  const k=localStorage.getItem('cf_labs_key');
+  if(k){apiKey=k;showScreen('screen-select');}
+  else{showScreen('screen-setup');}
+}
 
 /* ══════════════════════════════════
    RENDER CARDS
 ══════════════════════════════════ */
 (function init(){
-  showScreen('screen-select');
+  loadKey();
   const g=document.getElementById('pgrid');
   g.innerHTML=PP.map(p=>`
     <div class="pcard" onclick="startSession(${p.id})">
@@ -614,6 +668,7 @@ async function callAI(messages, maxTokens=400, systemOverride){
       const msg=data.error?.message||'API error';
       if(res.status===401){
         addErrMsg('API key invalid or expired. Tap ⚙ API Key in the top right to update it.');
+        showSetup();
               } else {
         addErrMsg(`API error (${res.status}): ${msg}`);
       }
